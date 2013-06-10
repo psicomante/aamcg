@@ -4,8 +4,8 @@ using System.Collections;
 
 public class CubePlayer
 {
-	private GameObject _cubeAvatar;
 	private string _name;
+	
 	public string Name {
 		get {
 			return _name;
@@ -14,13 +14,14 @@ public class CubePlayer
 			_name = value;
 		}
 	}
-	private NetworkPlayer _networkPlayer;
+	public GameObject CubePrefab {get; set;}
+	public NetworkPlayer Np {get; set;}
 	
 	public CubePlayer (GameObject ca, string n, NetworkPlayer np)
 	{
-		_cubeAvatar = ca;
+		CubePrefab = ca;
 		Name = n;
-		_networkPlayer = np;
+		Np = np;
 	}
 }
 
@@ -33,11 +34,15 @@ public class MenuSimple : MonoBehaviour
 	public const string defaultServerIP = "127.0.0.1";
 	public GameObject target;
 	public GameObject playerPrefab;
-	public List<CubePlayer> cubePlayers = new List<CubePlayer>();
+	public CubePlayer[] cubePlayers = new CubePlayer[10];
 	private int playerCount = 0;
 	//public string username = "";
 	//bool RegisterUI = false;
 	//bool LoginUI = false;	
+	
+	// GUI Variables
+	private bool _loginUI = false;	//save the click on the login menu
+	private string _username = "";				//save the login name
 	
 	void createPlayer (string name, NetworkPlayer np)
 	{
@@ -46,8 +51,30 @@ public class MenuSimple : MonoBehaviour
 		cube.transform.position = new Vector3 (0, playerCount, 0);
 		Debug.Log (cube.transform.position.y);
 		
-		cubePlayers.Add (new CubePlayer (cube, name, np));
+		cubePlayers [playerCount - 1] = new CubePlayer (cube, name, np);
 	}
+	
+	/**
+	 * Returns the connected player index
+	 */
+	int findPlayer (NetworkPlayer np)
+	{
+		for (int i = 0; i < playerCount; i++) {
+			if (np.guid == cubePlayers[i].Np.guid)
+				return i; 
+		}
+		return -1;	
+	}
+	
+	int destroyPlayer (NetworkPlayer np)
+	{
+		int playerIndex = findPlayer (np);
+		if (playerIndex >= 0) {
+			GameObject.DestroyImmediate (cubePlayers [playerIndex].CubePrefab);
+		}
+		return playerIndex;
+			
+	}	
 
 	void OnPlayerConnected (NetworkPlayer player)
 	{
@@ -55,6 +82,12 @@ public class MenuSimple : MonoBehaviour
 		createPlayer (name, player);
 		Debug.Log (name + " connected from " + player.ipAddress + ":" + player.port);
 	}
+	
+	void OnPlayerDisconnected (NetworkPlayer player)
+	{
+		int i = destroyPlayer (player);
+		Debug.Log(cubePlayers[i].Name + " has disconnected");
+	}	
 
 	
 	/**
@@ -77,20 +110,50 @@ public class MenuSimple : MonoBehaviour
 		Network.Connect (serverIP, serverPort, serverPassword);
 	}
 	
-	void OnGUI ()
+	void createGameModeMenu ()
 	{
-		if (Network.peerType == NetworkPeerType.Disconnected) {
-			if (GUI.Button (new Rect (100, 100, 100, 25), "Start Client")) {
-				string username = "Player";
-				//username = GUI.TextArea (new Rect (100, 125, 110, 25), username);
+		// Wrap everything in the designated GUI Area
+		GUILayout.BeginArea (new Rect (0, 0, 200, 200));
+
+		// Begin the singular Horizontal Group
+		//GUILayout.BeginHorizontal();
+
+		// Place a Button normally
+		//if (GUILayout.RepeatButton ("Increase max\nSlider Value"))
+		//{
+		//	maxSliderValue += 3.0f * Time.deltaTime;
+		//}
+
+		// Arrange two more Controls vertically beside the Button
+		GUILayout.BeginVertical ();
+		GUILayout.Box ("Select a Mode");
+		if (GUILayout.Button ("Start Client"))
+			_loginUI = true;
+		if (GUILayout.Button ("Start Server"))
+			LaunchServer ();
+		
+		// End the Groups and Area
+		GUILayout.EndVertical ();
+		//GUILayout.EndHorizontal();
+		GUILayout.EndArea ();
+	}
+	
+	public void createLoginGUI ()
+	{
+		_username = GUI.TextArea (new Rect (100, 125, 110, 25), _username);
 					
-				//if (GUI.Button (new Rect (100, 150, 110, 25), "Login")) {
-					ConnectToServer ();
-				//}				
-			}
-			if (GUI.Button (new Rect (100, 125, 100, 25), "Start Server")) {
-				LaunchServer ();
-			}
+		if (GUILayout.Button ("Login")) {
+			ConnectToServer ();
+			_loginUI = false;
+		}
+	}
+	
+	void OnGUI ()
+	{		
+		if (Network.peerType == NetworkPeerType.Disconnected && !_loginUI) {
+			createGameModeMenu ();
+		} else if (Network.peerType == NetworkPeerType.Disconnected && _loginUI) {
+			createLoginGUI ();
 		} else {
 			if (Network.peerType == NetworkPeerType.Client) {
 				
