@@ -1,9 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using AAMCG;
+using Amocogo;
 
-
+/**
+ * 
+ * @author Roberto Pesando <https://github.com/psicomante>
+ * @author Ruben Caliandro <https://github.com/Chosko>
+ * 
+ */ 
 public class MenuSimple : MonoBehaviour
 {
 	private int maxConnections = 10;
@@ -11,6 +16,7 @@ public class MenuSimple : MonoBehaviour
 	private int serverPort = 25001;	
 	
 	public const string defaultServerIP = "127.0.0.1";
+	public string serverIP = defaultServerIP;
 	public GameObject target;
 	public GameObject playerPrefab;
 	public ConnectedPlayer[] cubePlayers = new ConnectedPlayer[10];
@@ -119,10 +125,10 @@ public class MenuSimple : MonoBehaviour
 	
 	public void createLoginGUI ()
 	{
-		_username = GUI.TextArea (new Rect (100, 125, 110, 25), _username);
-					
+		_username = GUI.TextArea (new Rect (100, 125, 110, 25), _username = "Player");
+		serverIP = GUI.TextArea (new Rect (100, 150, 110, 25), serverIP);
 		if (GUILayout.Button ("Login")) {
-			ConnectToServer ();
+			ConnectToServer (serverIP);
 			_loginUI = false;
 		}
 	}
