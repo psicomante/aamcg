@@ -1,29 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using AAMCG;
 
-public class CubePlayer
-{
-	private string _name;
-	
-	public string Name {
-		get {
-			return _name;
-		}
-		private set {
-			_name = value;
-		}
-	}
-	public GameObject CubePrefab {get; set;}
-	public NetworkPlayer Np {get; set;}
-	
-	public CubePlayer (GameObject ca, string n, NetworkPlayer np)
-	{
-		CubePrefab = ca;
-		Name = n;
-		Np = np;
-	}
-}
 
 public class MenuSimple : MonoBehaviour
 {
@@ -34,7 +13,7 @@ public class MenuSimple : MonoBehaviour
 	public const string defaultServerIP = "127.0.0.1";
 	public GameObject target;
 	public GameObject playerPrefab;
-	public CubePlayer[] cubePlayers = new CubePlayer[10];
+	public ConnectedPlayer[] cubePlayers = new ConnectedPlayer[10];
 	private int playerCount = 0;
 	//public string username = "";
 	//bool RegisterUI = false;
@@ -51,7 +30,7 @@ public class MenuSimple : MonoBehaviour
 		cube.transform.position = new Vector3 (0, playerCount, 0);
 		Debug.Log (cube.transform.position.y);
 		
-		cubePlayers [playerCount - 1] = new CubePlayer (cube, name, np);
+		cubePlayers [playerCount - 1] = new ConnectedPlayer (cube, name, np);
 	}
 	
 	/**
