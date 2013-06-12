@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Amocogo
+namespace Amucuga
 {
 	public class ConnectedPlayer
 	{

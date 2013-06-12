@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using Amocogo;
+using Amucuga;
 
 /**
  * 
@@ -15,9 +15,10 @@ public class MenuSimple : MonoBehaviour
 	private string serverPassword = "Psicomante";
 	private int serverPort = 25001;	
 	
-	public const string defaultServerIP = "127.0.0.1";
-	public string serverIP = defaultServerIP;
+	public const string DEFAULT_SERVER_IP = "127.0.0.1";
+	public string serverIP = DEFAULT_SERVER_IP;
 	public GameObject target;
+	public Rigidbody rigidbody;
 	public GameObject playerPrefab;
 	public ConnectedPlayer[] cubePlayers = new ConnectedPlayer[10];
 	private int playerCount = 0;
@@ -60,7 +61,11 @@ public class MenuSimple : MonoBehaviour
 		return playerIndex;
 			
 	}	
-
+	/**
+	 * Unity Event - launches on Player Connection
+	 * 
+	 * @see createPlayer
+	 */
 	void OnPlayerConnected (NetworkPlayer player)
 	{
 		string name = "Player-" + playerCount++;
@@ -90,7 +95,7 @@ public class MenuSimple : MonoBehaviour
 	 * 
 	 * @param serverIP the server IP, discover
 	 **/
-	void ConnectToServer (string serverIP = defaultServerIP)
+	void ConnectToServer (string serverIP = DEFAULT_SERVER_IP)
 	{
 		Network.Connect (serverIP, serverPort, serverPassword);
 	}
@@ -145,7 +150,7 @@ public class MenuSimple : MonoBehaviour
 				GUI.Label (new Rect (100, 100, 100, 25), "Client");
 					
 				if (GUI.Button (new Rect (100, 125, 110, 25), "Change Colour")) {
-					networkView.RPC ("ChangeColor", RPCMode.Others);
+					networkView.RPC ("ChangeColor", RPCMode.Server);
 				}
 					
 				if (GUI.Button (new Rect (100, 175, 110, 25), "Logout")) {
@@ -165,6 +170,33 @@ public class MenuSimple : MonoBehaviour
 		
 		GUI.Label (new Rect (Screen.width - 100, Screen.height - 25, 100, 25), "v1.0");
 	}
+	/**
+	 * Unity Event
+	 */
+	void FixedUpdate ()
+	{
+		float rollSpeed = 8;
+		if (Input.GetKey("right"))
+		{
+		rigidbody.AddTorque(Vector3.back * rollSpeed);
+		}
+		 
+		if (Input.GetKey("left"))
+		{
+		rigidbody.AddTorque(Vector3.forward * rollSpeed);
+		}
+		 
+		if (Input.GetKey("up"))
+		{
+		rigidbody.AddTorque(Vector3.right * rollSpeed);
+		}
+		 
+		if (Input.GetKey("down"))
+		{
+		rigidbody.AddTorque(Vector3.left * rollSpeed);
+		}
+	}
+
 
 	[RPC]
 	void ChangeColor ()
