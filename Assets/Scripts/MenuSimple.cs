@@ -197,6 +197,11 @@ public class MenuSimple : MonoBehaviour
 			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Vector3.left * forceMultiplier);
 			//rigidbody.AddTorque(Vector3.left * rollSpeed);
 		}
+		
+		if(Input.acceleration.magnitude != 0)
+		{
+			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Input.acceleration);
+		}
 	}
 
 
