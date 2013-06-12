@@ -17,11 +17,11 @@ public class MenuSimple : MonoBehaviour
 	
 	public const string DEFAULT_SERVER_IP = "127.0.0.1";
 	public string serverIP = DEFAULT_SERVER_IP;
-	public GameObject target;
-	public Rigidbody rigidbody;
 	public GameObject playerPrefab;
 	public ConnectedPlayer[] cubePlayers = new ConnectedPlayer[10];
 	private int playerCount = 0;
+	private int playerNumber = -1;
+	private float forceMultiplier = 20;
 	//public string username = "";
 	//bool RegisterUI = false;
 	//bool LoginUI = false;	
@@ -32,21 +32,19 @@ public class MenuSimple : MonoBehaviour
 	
 	void createPlayer (string name, NetworkPlayer np)
 	{
-		GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
-		cube.AddComponent<Rigidbody> ();
-		cube.transform.position = new Vector3 (0, playerCount, 0);
-		Debug.Log (cube.transform.position.y);
-		
-		cubePlayers [playerCount - 1] = new ConnectedPlayer (cube, name, np);
+		//GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
+		//cube.AddComponent<Rigidbody> ();
+		GameObject playerInstance = (GameObject)GameObject.Instantiate(playerPrefab, new Vector3 (0, playerCount, 0), Quaternion.identity);
+		cubePlayers [playerCount - 1] = new ConnectedPlayer (playerInstance, name, np);
 	}
 	
 	/**
 	 * Returns the connected player index
 	 */
-	int findPlayer (NetworkPlayer np)
+	int findPlayer (string guid)
 	{
 		for (int i = 0; i < playerCount; i++) {
-			if (np.guid == cubePlayers[i].Np.guid)
+			if (guid == cubePlayers[i].NPlayer.guid)
 				return i; 
 		}
 		return -1;	
@@ -54,9 +52,9 @@ public class MenuSimple : MonoBehaviour
 	
 	int destroyPlayer (NetworkPlayer np)
 	{
-		int playerIndex = findPlayer (np);
+		int playerIndex = findPlayer (np.guid);
 		if (playerIndex >= 0) {
-			GameObject.DestroyImmediate (cubePlayers [playerIndex].CubePrefab);
+			GameObject.DestroyImmediate (cubePlayers [playerIndex].Cube);
 		}
 		return playerIndex;
 			
@@ -150,7 +148,7 @@ public class MenuSimple : MonoBehaviour
 				GUI.Label (new Rect (100, 100, 100, 25), "Client");
 					
 				if (GUI.Button (new Rect (100, 125, 110, 25), "Change Colour")) {
-					networkView.RPC ("ChangeColor", RPCMode.Server);
+					networkView.RPC ("ChangeColor", RPCMode.Server, Network.player.guid);
 				}
 					
 				if (GUI.Button (new Rect (100, 175, 110, 25), "Logout")) {
@@ -178,31 +176,41 @@ public class MenuSimple : MonoBehaviour
 		float rollSpeed = 8;
 		if (Input.GetKey("right"))
 		{
-		rigidbody.AddTorque(Vector3.back * rollSpeed);
+			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Vector3.back * forceMultiplier);
+			//rigidbody.AddTorque(Vector3.back * rollSpeed);
 		}
 		 
 		if (Input.GetKey("left"))
 		{
-		rigidbody.AddTorque(Vector3.forward * rollSpeed);
+			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Vector3.forward * forceMultiplier);
+			//rigidbody.AddTorque(Vector3.forward * rollSpeed);
 		}
 		 
 		if (Input.GetKey("up"))
 		{
-		rigidbody.AddTorque(Vector3.right * rollSpeed);
+			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Vector3.right * forceMultiplier);
+			//rigidbody.AddTorque(Vector3.right * rollSpeed);
 		}
 		 
 		if (Input.GetKey("down"))
 		{
-		rigidbody.AddTorque(Vector3.left * rollSpeed);
+			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Vector3.left * forceMultiplier);
+			//rigidbody.AddTorque(Vector3.left * rollSpeed);
 		}
 	}
 
 
 	[RPC]
-	void ChangeColor ()
+	void ChangeColor (string guid)
 	{
 		
-		target.renderer.material.color = new Color (Random.value, Random.value, Random.value);
+		cubePlayers[findPlayer(guid)].Cube.renderer.material.color = new Color (Random.value, Random.value, Random.value);
 	}
 	
+	[RPC]
+	void ChangeForce (string guid, Vector3 force)
+	{
+		findPlayer(guid);
+		cubePlayers[findPlayer(guid)].Cube.rigidbody.AddForce(force);
+	}
 }

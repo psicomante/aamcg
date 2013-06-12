@@ -9,26 +9,16 @@ namespace Amucuga
 		
 		public int Score {get; set;}				// player score
 		
-		public GameObject CubePrefab { get; set; }	// the cube unity object
+		public GameObject Cube { get; set; }	// the cube unity object
 	
-		public NetworkPlayer Np { get; set; }
+		public NetworkPlayer NPlayer { get; set; }
 		
-		public ConnectedPlayer (GameObject ca, string n, NetworkPlayer np)
+		public ConnectedPlayer (GameObject playerCube, string playerName, NetworkPlayer networkPlayer)
 		{
 			Score = 0;			//reset the score
-			CubePrefab = ca;	//
-			Name = n;
-			Np = np;
+			Cube = playerCube;	//
+			Name = playerName;
+			NPlayer = networkPlayer;
 		}
 	}
 }
-
-/*		public string Name {
-			get {
-				return _name;
-			}
-			private set {
-				_name = value;
-			}
-		}
-			 */
