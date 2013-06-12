@@ -54,7 +54,11 @@ public class MenuSimple : MonoBehaviour
 	{
 		int playerIndex = findPlayer (np.guid);
 		if (playerIndex >= 0) {
+			Network.RemoveRPCs(np);
+			Network.DestroyPlayerObjects(np);
 			GameObject.DestroyImmediate (cubePlayers [playerIndex].Cube);
+			playerCount--;
+			cubePlayers[playerIndex] = null;
 		}
 		return playerIndex;
 			
@@ -173,34 +177,46 @@ public class MenuSimple : MonoBehaviour
 	 */
 	void FixedUpdate ()
 	{
-		float rollSpeed = 8;
-		if (Input.GetKey("right"))
+		if(Network.peerType == NetworkPeerType.Disconnected)
+			return;
+		float keyboardGravity = -9.81f;
+		
+		if (Input.GetKey("space"))
+		{
+			keyboardGravity*=-1;
+		}
+		
+		if (Input.GetKey("s"))
 		{
 			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Vector3.back * forceMultiplier);
 			//rigidbody.AddTorque(Vector3.back * rollSpeed);
 		}
 		 
-		if (Input.GetKey("left"))
+		if (Input.GetKey("w"))
 		{
 			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Vector3.forward * forceMultiplier);
 			//rigidbody.AddTorque(Vector3.forward * rollSpeed);
 		}
 		 
-		if (Input.GetKey("up"))
+		if (Input.GetKey("d"))
 		{
 			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Vector3.right * forceMultiplier);
 			//rigidbody.AddTorque(Vector3.right * rollSpeed);
 		}
 		 
-		if (Input.GetKey("down"))
+		if (Input.GetKey("a"))
 		{
 			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Vector3.left * forceMultiplier);
 			//rigidbody.AddTorque(Vector3.left * rollSpeed);
-		}
+		}//rigidbody.AddTorque(Vector3.left * rollSpeed);
 		
 		if(Input.acceleration.magnitude != 0)
 		{
 			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, Input.acceleration);
+		}
+		else
+		{
+			networkView.RPC("ChangeForce", RPCMode.Server, Network.player.guid, new Vector3(0,keyboardGravity,0));
 		}
 	}
 
@@ -217,5 +233,6 @@ public class MenuSimple : MonoBehaviour
 	{
 		findPlayer(guid);
 		cubePlayers[findPlayer(guid)].Cube.rigidbody.AddForce(force);
+		Debug.Log(force.ToString());
 	}
 }
