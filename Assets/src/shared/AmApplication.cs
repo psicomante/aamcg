@@ -2,6 +2,19 @@ using System;
 
 namespace Amucuga
 {
+    /// <summary>
+    /// Enum to save the current opened panel
+    /// </summary>
+    public enum GUIState
+    {
+        /// <summary>
+        /// The Main menu panel
+        /// </summary>
+        MAIN_PANEL,
+        CLIENT_PANEL,
+        SERVER_PANEL
+    }
+
 	public static class AmApplication
 	{
 		/// <summary>
