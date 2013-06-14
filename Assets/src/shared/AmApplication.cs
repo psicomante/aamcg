@@ -48,7 +48,12 @@ namespace Amucuga
 		/// <seealso>
 		/// MainMenuGui.OnServerInitialized
 		/// </seealso>
-		public const string SERVER_SCENE = "ServerScene";
+		public const string GAME_SCENE = "GameScene";
+
+        /// <summary>
+        /// The Main Menu Scene name. Loaded on Logout.
+        /// </summary>
+        public const string MAIN_MENU = "MainMenu";
 	}
 }
 

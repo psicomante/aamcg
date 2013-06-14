@@ -7,10 +7,12 @@ using Amucuga;
 /// </summary>
 public class MainMenuGui : MonoBehaviour
 {
+    /// <summary>
+    /// The current GUI State
+    /// </summary>
     public GUIState currentGUIState = GUIState.MAIN_PANEL;
 
-    // TODO:
-    // move this code to AmApplication Class (maybe creating a new AmApplication objects)
+    //Server configuration vars
     private int GUIPort = AmApplication.DEFAULT_SERVER_PORT;
     private string GUIServerHost = AmApplication.DEFAULT_SERVER_HOST;
     private string GUIServerName = AmApplication.DEFAULT_SERVER_NAME;
@@ -22,7 +24,7 @@ public class MainMenuGui : MonoBehaviour
     /// </summary>
     void Start()
     {
-        print("Starting Main Menu GUI");
+        Debug.Log("Starting Main Menu GUI");
     }
 
     /// <summary>
@@ -66,9 +68,16 @@ public class MainMenuGui : MonoBehaviour
     /// </summary>
     void OnServerInitialized()
     {
-        Debug.Log("Server initialized and ready - loading " + AmApplication.SERVER_SCENE);
-        Application.LoadLevel(AmApplication.SERVER_SCENE);
+        Debug.Log("Server initialized and ready - loading " + AmApplication.GAME_SCENE);
+        Application.LoadLevel(AmApplication.GAME_SCENE);
         Debug.Log("Connections: " + Network.connections.Length);
+    }
+
+    void OnConnectedToServer()
+    {
+        Debug.Log("Client connected to server - loading " + AmApplication.GAME_SCENE);
+        Application.LoadLevel(AmApplication.GAME_SCENE);
+        Debug.Log("Scene loaded");
     }
 
     //////////////////////////////////////////////////////////////////
@@ -102,7 +111,7 @@ public class MainMenuGui : MonoBehaviour
 
         if (GUI.Button(new Rect(10, 60, 180, 25), "Start a Dedicated Server"))
         {
-            Network.InitializeServer(GUIMaxPlayers, GUIPort, !Network.HavePublicAddress());
+            Network.InitializeServer(GUIMaxPlayers, GUIPort, false); //!Network.HavePublicAddress());
         }
 
         //return to the main menu		
