@@ -63,7 +63,7 @@ namespace Amucuga
         /// <summary>
         /// An upper bound for the velocity of the player
         /// </summary>
-        public const float MAX_VELOCITY_MAGNITUDE = 2;
+        public const float MAX_VELOCITY_MAGNITUDE = 3;
 	}
 }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Amucuga;
 
 /// <summary>
@@ -14,10 +15,9 @@ public class PlayerManager : MonoBehaviour
     public GameObject lightPrefab;
 
     /// <summary>
-    /// The player connected
+    /// The list of connected players
     /// </summary>
-    /// TODO: allow multiplayer
-    public GameObject player;
+    private SortedList<string, ConnectedPlayer> _players;
 
     /// <summary>
     /// Intialize the PlayerManager
@@ -33,6 +33,7 @@ public class PlayerManager : MonoBehaviour
         //Initializes the scene objects
         GameObject.Instantiate(planePrefab);
         GameObject.Instantiate(lightPrefab);
+        _players = new SortedList<string, ConnectedPlayer>();
     }
 
     // Update is called once per frame
@@ -46,9 +47,22 @@ public class PlayerManager : MonoBehaviour
     /// <summary>
     /// Handles the PlayerConnected event
     /// </summary>
-    void OnPlayerConnected()
+    /// <param name="np">The NetworkPlayer</param>
+    void OnPlayerConnected(NetworkPlayer np)
     {
-        player = (GameObject)GameObject.Instantiate(playerPrefab);
+        GameObject playerCube = (GameObject)GameObject.Instantiate(playerPrefab);
+        playerCube.renderer.material.color = new Color(Random.value, Random.value, Random.value);
+        _players.Add(np.guid, new ConnectedPlayer(playerCube, np));
+    }
+
+    /// <summary>
+    /// Handles the PlayerDisconnected event
+    /// </summary>
+    /// <param name="np">The NetworkPlayer</param>
+    void OnPlayerDisconnected(NetworkPlayer np)
+    {
+        _players[np.guid].Destroy();
+        _players[np.guid] = null;
     }
 
     /// <summary>
@@ -59,16 +73,14 @@ public class PlayerManager : MonoBehaviour
     [RPC]
     void AddForce(string guid, Vector3 force)
     {
-        player.rigidbody.AddForce(force);
-        Debug.Log("1 - magnitude: " + player.rigidbody.velocity.magnitude);
-        if (player.rigidbody.velocity.sqrMagnitude > AmApplication.MAX_VELOCITY_MAGNITUDE * AmApplication.MAX_VELOCITY_MAGNITUDE)
+        _players[guid].Cube.rigidbody.AddForce(force);
+
+        // Limits the player's velocity
+        if (_players[guid].Cube.rigidbody.velocity.sqrMagnitude > AmApplication.MAX_VELOCITY_MAGNITUDE * AmApplication.MAX_VELOCITY_MAGNITUDE)
         {
-            Vector3 v = player.rigidbody.velocity;
+            Vector3 v = _players[guid].Cube.rigidbody.velocity;
             v.Normalize();
-            player.rigidbody.velocity = v * AmApplication.MAX_VELOCITY_MAGNITUDE;
-            //Debug.Log("2 - magnitude: " + player.rigidbody.velocity.magnitude);
-            //player.rigidbody.velocity *= AmApplication.MAX_VELOCITY_MAGNITUDE;
-            //Debug.Log("3 - magnitude: " + player.rigidbody.velocity.magnitude);
+            _players[guid].Cube.rigidbody.velocity = v * AmApplication.MAX_VELOCITY_MAGNITUDE;
         }
     }
 }
