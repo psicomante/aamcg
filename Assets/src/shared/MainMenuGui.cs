@@ -88,38 +88,37 @@ public class MainMenuGui : MonoBehaviour
     /// Displaies the server settings. 
     /// Render the menu controls for starting a dedicated server
     /// </summary>
-    private void displayServerSettings()
-    {
+    private void displayServerSettings ()
+	{
 
-        //Port Area
-        GUILayout.BeginArea(new Rect(10, 10, 100, 50));
-        GUILayout.Label("Port: ");
-        GUIPort = int.Parse(GUI.TextField(new Rect(0, 20, 50, 21), GUIPort.ToString()));
-        GUILayout.EndArea();
+		//Port Area
+		GUILayout.BeginArea (new Rect (10, 10, 100, 50));
+		GUILayout.Label ("Port: ");
+		GUIPort = int.Parse (GUI.TextField (new Rect (0, 20, 50, 21), GUIPort.ToString ()));
+		GUILayout.EndArea ();
 
-        //Max Players
-        GUILayout.BeginArea(new Rect(65, 10, 100, 50));
-        GUILayout.Label("Max. Players: ");
-        GUIMaxPlayers = int.Parse(GUI.TextField(new Rect(0, 20, 50, 21), GUIMaxPlayers.ToString()));
-        GUILayout.EndArea();
+		//Max Players
+		GUILayout.BeginArea (new Rect (65, 10, 100, 50));
+		GUILayout.Label ("Max. Players: ");
+		GUIMaxPlayers = int.Parse (GUI.TextField (new Rect (0, 20, 50, 21), GUIMaxPlayers.ToString ()));
+		GUILayout.EndArea ();
 
-        //Game Name
-        GUILayout.BeginArea(new Rect(155, 10, 200, 50));
-        GUILayout.Label("Game Name: ");
-        GUIServerName = GUI.TextField(new Rect(0, 20, 150, 21), GUIServerName);
-        GUILayout.EndArea();
+		//Game Name
+		GUILayout.BeginArea (new Rect (155, 10, 200, 50));
+		GUILayout.Label ("Game Name: ");
+		GUIServerName = GUI.TextField (new Rect (0, 20, 150, 21), GUIServerName);
+		GUILayout.EndArea ();
+		
+		//start a server
+		if (GUI.Button (new Rect (10, 60, 180, 25), "Start a Dedicated Server")) {
+			Network.InitializeServer (GUIMaxPlayers, GUIPort, false); //!Network.HavePublicAddress());
+		}
 
-        if (GUI.Button(new Rect(10, 60, 180, 25), "Start a Dedicated Server"))
-        {
-            Network.InitializeServer(GUIMaxPlayers, GUIPort, false); //!Network.HavePublicAddress());
-        }
-
-        //return to the main menu		
-        if (GUI.Button(new Rect(10, 90, 100, 25), "Main Menu"))
-        {
-            currentGUIState = GUIState.MAIN_PANEL;
-        }
-    }
+		//return to the main menu		
+		if (GUI.Button (new Rect (10, 90, 100, 25), "Main Menu")) {
+			currentGUIState = GUIState.MAIN_PANEL;
+		}
+	}
 
     /// <summary>
     /// Displaies the client settings.
