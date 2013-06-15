@@ -54,6 +54,16 @@ namespace Amucuga
         /// The Main Menu Scene name. Loaded on Logout.
         /// </summary>
         public const string MAIN_MENU = "MainMenu";
+
+        /// <summary>
+        /// A multiplier for the forces applied to all players.
+        /// </summary>
+        public const float FORCE_MULTIPLIER = 13;
+
+        /// <summary>
+        /// An upper bound for the velocity of the player
+        /// </summary>
+        public const float MAX_VELOCITY_MAGNITUDE = 2;
 	}
 }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Amucuga;
 
 /// <summary>
 /// The server PlayerManager
@@ -51,12 +52,23 @@ public class PlayerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds a force to a player
+    /// Applies a force to a player
     /// </summary>
-    /// <param name="force"></param>
+    /// <param name="force">The force to apply</param>
+    /// <param name="guid">The guid of the player</param>
     [RPC]
-    void AddForce(Vector3 force)
+    void AddForce(string guid, Vector3 force)
     {
         player.rigidbody.AddForce(force);
+        Debug.Log("1 - magnitude: " + player.rigidbody.velocity.magnitude);
+        if (player.rigidbody.velocity.sqrMagnitude > AmApplication.MAX_VELOCITY_MAGNITUDE * AmApplication.MAX_VELOCITY_MAGNITUDE)
+        {
+            Vector3 v = player.rigidbody.velocity;
+            v.Normalize();
+            player.rigidbody.velocity = v * AmApplication.MAX_VELOCITY_MAGNITUDE;
+            //Debug.Log("2 - magnitude: " + player.rigidbody.velocity.magnitude);
+            //player.rigidbody.velocity *= AmApplication.MAX_VELOCITY_MAGNITUDE;
+            //Debug.Log("3 - magnitude: " + player.rigidbody.velocity.magnitude);
+        }
     }
 }
