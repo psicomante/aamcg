@@ -11,7 +11,6 @@ public class PlayerManager : MonoBehaviour
 
     //Prefabs
     public GameObject playerPrefab;
-    public GameObject planePrefab;
     public GameObject lightPrefab;
 
     /// <summary>
@@ -31,7 +30,6 @@ public class PlayerManager : MonoBehaviour
         Debug.Log("Start Server Player Manager");
 
         //Initializes the scene objects
-        GameObject.Instantiate(planePrefab);
         GameObject.Instantiate(lightPrefab);
         _players = new SortedList<string, ConnectedPlayer>();
     }

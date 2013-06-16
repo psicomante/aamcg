@@ -65,6 +65,41 @@ namespace Amucuga
         /// An upper bound for the velocity of the player
         /// </summary>
         public const float MAX_VELOCITY_MAGNITUDE = 3;
+
+        /// <summary>
+        /// The width of a tile (in meters)
+        /// </summary>
+        public const int MAP_TILE_WIDTH = 1;
+
+        /// <summary>
+        /// The width of a tile (in meters)
+        /// </summary>
+        public const int MAP_TILE_DEPTH = 1;
+
+        /// <summary>
+        /// The game map width (in tiles)
+        /// </summary>
+        public const int MAP_WIDTH = 10;
+
+        /// <summary>
+        /// The game map depth (in tiles)
+        /// </summary>
+        public const int MAP_DEPTH = 10;
+
+        /// <summary>
+        /// The number of holes on the game map
+        /// </summary>
+        public const int MAP_HOLES = 10;
+
+        /// <summary>
+        /// The min dimension of an hole (in tiles)
+        /// </summary>
+        public const int MAP_MIN_HOLE_DIMENSION = 1;
+
+        /// <summary>
+        /// The max dimension of an hole (in tiles)
+        /// </summary>
+        public const int MAP_MAX_HOLE_DIMENSION = 4;
 		
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);
