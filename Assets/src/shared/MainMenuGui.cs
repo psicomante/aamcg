@@ -114,7 +114,7 @@ public class MainMenuGui : MonoBehaviour
 		
 		//start a server
 		if (GUI.Button (new Rect (10, 60, 180, 25), "Start a Dedicated Server")) {
-			Network.InitializeServer (GUIMaxPlayers, GUIPort, false); //!Network.HavePublicAddress());
+			Network.InitializeServer (GUIMaxPlayers, GUIPort, !Network.HavePublicAddress ()); //!Network.HavePublicAddress());
 		}
 
 		//return to the main menu		
