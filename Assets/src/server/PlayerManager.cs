@@ -48,12 +48,14 @@ public class PlayerManager : MonoBehaviour
     /// Handles the PlayerConnected event
     /// </summary>
     /// <param name="np">The NetworkPlayer</param>
-    void OnPlayerConnected(NetworkPlayer np)
-    {
-        GameObject playerCube = (GameObject)GameObject.Instantiate(playerPrefab);
-        playerCube.renderer.material.color = new Color(Random.value, Random.value, Random.value);
-        _players.Add(np.guid, new ConnectedPlayer(playerCube, np));
-    }
+    void OnPlayerConnected (NetworkPlayer np)
+	{
+		print ("Player from " + np.ipAddress + " connected");
+		print ("Connections " + Network.connections.Length);
+		GameObject playerCube = (GameObject)GameObject.Instantiate (playerPrefab, new Vector3 (0, (float)Network.connections.Length, 0), Quaternion.identity);
+		playerCube.renderer.material.color = new Color (Random.value, Random.value, Random.value);
+		_players.Add (np.guid, new ConnectedPlayer (playerCube, np));
+	}
 
     /// <summary>
     /// Handles the PlayerDisconnected event
