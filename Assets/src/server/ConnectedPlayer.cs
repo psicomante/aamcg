@@ -18,6 +18,16 @@ namespace Amucuga
         /// </summary>
 		public NetworkPlayer NPlayer { get; set; }
 		
+		/// <summary>
+		/// The player name. Displayed on the player cube (on the server)
+		/// </summary>
+		public string Name { get; private set; }
+		
+		/// <summary>
+		/// The player score. Displayed in the server (on the player list), in the client (on the hud)
+		/// </summary>
+		public int Score {get; private set;}
+		
         /// <summary>
         /// Initializes a new instance of the ConnectedPlayer Class
         /// </summary>
