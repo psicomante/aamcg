@@ -62,7 +62,7 @@ public class PlayerManager : MonoBehaviour
     void OnPlayerDisconnected(NetworkPlayer np)
     {
         _players[np.guid].Destroy();
-        _players[np.guid] = null;
+        _players.Remove(np.guid);
     }
 
     /// <summary>
