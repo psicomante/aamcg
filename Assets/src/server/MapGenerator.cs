@@ -43,8 +43,8 @@ public class MapGenerator : MonoBehaviour {
         //Generates the holes.
         for (int counter = 0; counter < gridHoles; counter++)
         {
-            int i = Random.Range(0, gridWidth);
-            int j = Random.Range(0, gridDepth);
+            int i = Random.Range(0, gridWidth - 1);
+            int j = Random.Range(0, gridDepth - 1);
             GenerateHole(i, j);
         }
 
@@ -69,31 +69,38 @@ public class MapGenerator : MonoBehaviour {
         {
             IncrementIndices(ref i, ref j);
             if (i == iCursor && j == jCursor)
+            {
                 return;
+            }
         }
         iCursor = i;
         jCursor = j;
         int holeDimension = Random.Range(gridMinHoleDimension, gridMaxHoleDimension);
 
-        int holeCounter = 0;
         bool[] holePositions = new bool[9];
-        holePositions[0] = true;
+        holePositions[4] = true;
         for (int k = 1; k < holeDimension; k++)
         {
             IncrementIndices(ref i, ref j, iCursor - 1, iCursor + 1, jCursor - 1, jCursor + 1);
-            holeCounter++;
+            if (i == iCursor && j == jCursor)
+                break;
             while (HasAdjacentHoles(i, j))
             {
+                bool mustBreak = false;
                 IncrementIndices(ref i, ref j, iCursor - 1, iCursor + 1, jCursor - 1, jCursor + 1);
-                holeCounter++;
                 if (i == iCursor && j == jCursor)
-                    return;
+                {
+                    mustBreak = true;
+                    break;
+                }
+                if (mustBreak)
+                    break;
             }
-            Debug.Log("holecounter: " + holeCounter);
-            holePositions[holeCounter] = true;
+            int index = (i - (iCursor - 1)) + 3 * (j - (jCursor - 1));
+            holePositions[index] = true;
         }
-        i = iCursor;
-        j = jCursor;
+        i = iCursor-1;
+        j = jCursor-1;
         for (int k = 0; k < 9; k++)
         {
             if (holePositions[k])
@@ -118,7 +125,7 @@ public class MapGenerator : MonoBehaviour {
         i++;
         if (i > Mathf.Min(maxI, gridWidth-1))
         {
-            i = Mathf.Min(0,minI);
+            i = Mathf.Max(0,minI);
             j++;
             if (j >Mathf.Min(maxJ, gridDepth-1))
                 j = Mathf.Max(0, minJ);
@@ -131,7 +138,7 @@ public class MapGenerator : MonoBehaviour {
     /// <returns>True if current tile IS a hole, or HAS adjacentHoles. False otherwise</returns>
     private bool HasAdjacentHoles(int i, int j)
     {
-        bool adjacentHoles = false;
+        bool adjacentHoles = false; 
         if (grid[i, j])
         {
             int startWidth = Mathf.Max(0, i - 1);
@@ -140,7 +147,7 @@ public class MapGenerator : MonoBehaviour {
             int endDepth = Mathf.Min(j + 1, gridDepth - 1);
             for (int k = startWidth; k <= endWidth && !adjacentHoles; k++)
             {
-                for (int l = 0; l < gridDepth && !adjacentHoles; l++)
+                for (int l = startDepth; l <= endDepth && !adjacentHoles; l++)
                 {
                     if (!grid[k, l])
                         adjacentHoles = true;

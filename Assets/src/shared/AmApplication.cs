@@ -59,22 +59,22 @@ namespace Amucuga
         /// <summary>
         /// A multiplier for the forces applied to all players.
         /// </summary>
-        public const float FORCE_MULTIPLIER = 13;
+        public const float FORCE_MULTIPLIER = 16;
 
         /// <summary>
         /// An upper bound for the velocity of the player
         /// </summary>
-        public const float MAX_VELOCITY_MAGNITUDE = 3;
+        public const float MAX_VELOCITY_MAGNITUDE = 7;
 
         /// <summary>
         /// The width of a tile (in meters)
         /// </summary>
-        public const int MAP_TILE_WIDTH = 1;
+        public const int MAP_TILE_WIDTH = 2;
 
         /// <summary>
         /// The width of a tile (in meters)
         /// </summary>
-        public const int MAP_TILE_DEPTH = 1;
+        public const int MAP_TILE_DEPTH = 2;
 
         /// <summary>
         /// The game map width (in tiles)
@@ -89,7 +89,7 @@ namespace Amucuga
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 10;
+        public const int MAP_HOLES = 100;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
@@ -99,7 +99,7 @@ namespace Amucuga
         /// <summary>
         /// The max dimension of an hole (in tiles)
         /// </summary>
-        public const int MAP_MAX_HOLE_DIMENSION = 4;
+        public const int MAP_MAX_HOLE_DIMENSION = 9;
 		
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);

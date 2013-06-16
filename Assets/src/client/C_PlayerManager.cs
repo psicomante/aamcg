@@ -51,6 +51,6 @@ public class C_PlayerManager : MonoBehaviour
         if (Input.GetKey("down"))
             networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.back * AmApplication.FORCE_MULTIPLIER);
         if (Input.acceleration.magnitude != 0)
-            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, new Vector3(Input.acceleration.x, Input.acceleration.z, Input.acceleration.y) * AmApplication.FORCE_MULTIPLIER);
+            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, new Vector3(Input.acceleration.x, Input.acceleration.z, Input.acceleration.y) * AmApplication.FORCE_MULTIPLIER * 2);
     }
 }
