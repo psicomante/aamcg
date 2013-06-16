@@ -30,11 +30,10 @@ public class PlayerManager : MonoBehaviour
 
 		Debug.Log ("Start Server Player Manager");
 
-		//Initializes the scene objects
-		GameObject.Instantiate (lightPrefab);
-		GameObject.Instantiate (planePrefab);
-		_players = new SortedList<string, ConnectedPlayer> ();
-	}
+        //Initializes the scene objects
+        GameObject.Instantiate(lightPrefab);
+        _players = new SortedList<string, ConnectedPlayer>();
+    }
 
 	/// <summary>
 	/// Update is called once per frame
