@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Amucuga
 {
@@ -64,6 +65,10 @@ namespace Amucuga
         /// An upper bound for the velocity of the player
         /// </summary>
         public const float MAX_VELOCITY_MAGNITUDE = 3;
+		
+		public static void LoadMainMenu(){
+			Application.LoadLevel (MAIN_MENU);
+		}
 	}
 }
 

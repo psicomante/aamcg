@@ -24,7 +24,7 @@ public class GameGui : MonoBehaviour {
         if (GUI.Button(new Rect(10, 60, 180, 25), "Logout"))
         {
             Network.Disconnect(500);
-            Application.LoadLevel(AmApplication.MAIN_MENU);
+            AmApplication.LoadMainMenu ();
         }
     }
 }

@@ -38,22 +38,21 @@ public class MainMenuGui : MonoBehaviour
     /// <summary>
     /// Raises the GU event.
     /// </summary>
-    void OnGUI()
-    {
-        // calls the correct GUI Panel base on state
-        switch (currentGUIState)
-        {
-            case GUIState.MAIN_PANEL:
-                displayMainPanel();
-                break;
-            case GUIState.CLIENT_PANEL:
-                displayClientSettings();
-                break;
-            case GUIState.SERVER_PANEL:
-                displayServerSettings();
-                break;
-        }
-    }
+    void OnGUI ()
+	{
+		// calls the correct GUI Panel base on state
+		switch (currentGUIState) {
+		case GUIState.MAIN_PANEL:
+			displayMainPanel ();
+			break;
+		case GUIState.CLIENT_PANEL:
+			displayClientSettings ();
+			break;
+		case GUIState.SERVER_PANEL:
+			displayServerSettings ();
+			break;
+		}
+	}
 
     /// <summary>
     /// Raises the failed to connect event.
@@ -114,7 +113,7 @@ public class MainMenuGui : MonoBehaviour
 		
 		//start a server
 		if (GUI.Button (new Rect (10, 60, 180, 25), "Start a Dedicated Server")) {
-			Network.InitializeServer (GUIMaxPlayers, GUIPort, !Network.HavePublicAddress ()); //!Network.HavePublicAddress());
+			Network.InitializeServer (GUIMaxPlayers, GUIPort, false); //!Network.HavePublicAddress());
 		}
 
 		//return to the main menu		
