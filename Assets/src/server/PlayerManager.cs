@@ -11,8 +11,8 @@ public class PlayerManager : MonoBehaviour
 
     //Prefabs
     public GameObject playerPrefab;
-    public GameObject planePrefab;
     public GameObject lightPrefab;
+	public GameObject planePrefab;
 
     /// <summary>
     /// The list of connected players
@@ -22,27 +22,36 @@ public class PlayerManager : MonoBehaviour
     /// <summary>
     /// Intialize the PlayerManager
     /// </summary>
-    void Start()
-    {
-        //Blocks client execution
-        if (Network.isClient)
-            return;
+    void Start ()
+	{
+		//Blocks client execution
+		if (Network.isClient)
+			return;
 
-        Debug.Log("Start Server Player Manager");
+		Debug.Log ("Start Server Player Manager");
 
-        //Initializes the scene objects
-        GameObject.Instantiate(planePrefab);
-        GameObject.Instantiate(lightPrefab);
-        _players = new SortedList<string, ConnectedPlayer>();
-    }
+		//Initializes the scene objects
+		GameObject.Instantiate (lightPrefab);
+		GameObject.Instantiate (planePrefab);
+		_players = new SortedList<string, ConnectedPlayer> ();
+	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        //Blocks client execution
-        if (Network.isClient)
-            return;
-    }
+	/// <summary>
+	/// Update is called once per frame
+	/// </summary>
+	void Update ()
+	{
+		//Blocks client execution
+		if (Network.isClient)
+			return;
+		
+		// checks if the player is Dead
+		CheckRespawn ();
+		
+		// reposition players
+		// WARNING: HIGH SPERIMENTAL
+		//RepositionPlayers ();
+	}
 
     /// <summary>
     /// Handles the PlayerConnected event
@@ -61,11 +70,66 @@ public class PlayerManager : MonoBehaviour
     /// Handles the PlayerDisconnected event
     /// </summary>
     /// <param name="np">The NetworkPlayer</param>
-    void OnPlayerDisconnected(NetworkPlayer np)
-    {
-        _players[np.guid].Destroy();
-        _players.Remove(np.guid);
-    }
+    void OnPlayerDisconnected (NetworkPlayer np)
+	{
+		_players [np.guid].Destroy ();
+		_players.Remove (np.guid);
+	}
+	
+	/// <summary>
+	/// Checks the respawn.
+	/// </summary>
+	void CheckRespawn ()
+	{
+		foreach (KeyValuePair<string,ConnectedPlayer> p in _players) {
+			string guid = p.Value.NPlayer.guid;
+			if (IsDead (guid))
+				Respawn (guid);
+		}
+
+	}
+	
+	/// <summary>
+	/// Respawn the specified Player.
+	/// </summary>
+	/// <param name='guid'>
+	/// GUID.
+	/// </param>
+	void Respawn (string guid)
+	{
+		_players[guid].Cube.transform.position = new Vector3 (0, _players.Count, 0);	
+	}
+	
+	/// <summary>
+	/// Determines whether this instance is dead the specified guid.
+	/// </summary>
+	/// <returns>
+	/// <c>true</c> if this instance is dead the specified guid; otherwise, <c>false</c>.
+	/// </returns>
+	/// <param name='guid'>
+	/// If set to <c>true</c> GUID.
+	/// </param>
+	bool IsDead (string guid)
+	{
+		if (_players [guid].Cube.transform.position.y > AmApplication.MAX_PLAYABLE_AREA_Y || _players [guid].Cube.transform.position.y < -1*AmApplication.MAX_PLAYABLE_AREA_Y)
+			return true;
+		return false;
+	}
+	
+	/// <summary>
+	/// Repositions the players HIGH SPERIMENTAL CODE. Must refactoring based on input
+	/// </summary>
+	void RepositionPlayers ()
+	{
+		foreach (KeyValuePair<string,ConnectedPlayer> p in _players) {
+			float x = p.Value.Cube.transform.rotation.x;
+			float y = p.Value.Cube.transform.rotation.y;
+			float z = p.Value.Cube.transform.rotation.z;
+			float w = p.Value.Cube.transform.rotation.w;
+			p.Value.Cube.transform.rotation = new Quaternion (x, y, 0, 0);
+		}
+	}
+	
 
     /// <summary>
     /// Applies a force to a player

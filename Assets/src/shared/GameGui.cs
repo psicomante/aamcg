@@ -27,9 +27,13 @@ public class GameGui : MonoBehaviour {
     /// </summary>
     void OnGUI ()
 	{
-		GUILayout.Label ("IP Address: " + _serverIPAddress);
-		GUILayout.Label ("Connections: " + Network.connections.Length);
-		
+		// show IP Address and Connections
+		if (Network.isServer) {
+			GUILayout.Label ("IP Address: " + _serverIPAddress);
+			GUILayout.Label ("Connections: " + Network.connections.Length);			
+		}
+
+		// show Logout
 		if (GUI.Button (new Rect (10, 60, 180, 25), "Logout")) {
 			NetworkManager.Shutdown ();
 			AmApplication.LoadMainMenu ();

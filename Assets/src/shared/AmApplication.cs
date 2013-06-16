@@ -66,9 +66,12 @@ namespace Amucuga
         /// </summary>
         public const float MAX_VELOCITY_MAGNITUDE = 3;
 		
+		public const float MAX_PLAYABLE_AREA_Y = 10;
+		
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);
 		}
+		
 	}
 }
 
