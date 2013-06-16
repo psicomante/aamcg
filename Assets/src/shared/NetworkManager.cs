@@ -51,11 +51,16 @@ public class NetworkManager : MonoBehaviour {
 	/// </returns>
 	public static string GetLocalIPAddress ()
 	{
-		string HostName = Dns.GetHostName ();
-		print (HostName);
+		// gets local machine HostName
+		string HostName = Dns.GetHostName ();		
 		
+		// gets ipAddresses list. I take the first one, maybe it would need a bit of refactoring.
 		IPAddress[] ipAddresses = System.Net.Dns.GetHostAddresses (HostName);
-		return ipAddresses[0].ToString();
+		
+		// return the first address on ip address list
+		return ipAddresses [0].ToString ();
+		
+		//other implementation
 		/*
 		IPHostEntry ipEntry = System.Net.Dns.GetHostEntry (HostName);
 		
