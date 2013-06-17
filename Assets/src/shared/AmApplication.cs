@@ -89,7 +89,7 @@ namespace Amucuga
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 100;
+        public const int MAP_HOLES = 7;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
