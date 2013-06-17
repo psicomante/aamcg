@@ -10,17 +10,25 @@ public class MapGenerator : MonoBehaviour {
     /// <summary>
     /// The boolean grid that represents the map
     /// </summary>
-    private bool[,] grid;
-    private int gridWidth = AmApplication.MAP_WIDTH;
-    private int gridDepth = AmApplication.MAP_DEPTH;
-    private int gridHoles = AmApplication.MAP_HOLES;
-    private int gridMinHoleDimension = AmApplication.MAP_MIN_HOLE_DIMENSION;
-    private int gridMaxHoleDimension = AmApplication.MAP_MAX_HOLE_DIMENSION;
+    private bool[,] _grid;
+    private int _gridWidth = AmApplication.MAP_WIDTH;
+    private int _gridDepth = AmApplication.MAP_DEPTH;
+    private int _gridHoles = AmApplication.MAP_HOLES;
+    private int _gridMinHoleDimension = AmApplication.MAP_MIN_HOLE_DIMENSION;
+    private int _gridMaxHoleDimension = AmApplication.MAP_MAX_HOLE_DIMENSION;
+    private GameObject[,] _map;
+    private GameObject[,] _powerups;
 
     /// <summary>
-    /// The tile prefab
+    /// prefabs
     /// </summary>
     public GameObject tilePrefab;
+    public GameObject powerupPrefab;
+
+    /// <summary>
+    /// A timer
+    /// </summary>
+    private float _timer;
 
 	/// <summary>
 	/// Initialize the MapGenerator
@@ -30,30 +38,36 @@ public class MapGenerator : MonoBehaviour {
         if (Network.isClient)
             return;
 
+        _timer = 0;
+        _grid = new bool[_gridWidth, _gridDepth];
+        _map = new GameObject[_gridWidth, _gridDepth];
+        _powerups = new GameObject[_gridWidth, _gridDepth];
+
         //Generates the map (without holes).
-        grid = new bool[gridWidth, gridWidth];
-        for (int i = 0; i < gridWidth; i++)
+        for (int i = 0; i < _gridWidth; i++)
         {
-            for (int j = 0; j < gridDepth; j++)
+            for (int j = 0; j < _gridDepth; j++)
             {
-                grid[i, j] = true;
+                _grid[i, j] = true;
+                _map[i, j] = null;
+                _powerups[i, j] = null;
             }
         }
 
         //Generates the holes.
-        for (int counter = 0; counter < gridHoles; counter++)
+        for (int counter = 0; counter < _gridHoles; counter++)
         {
-            int i = Random.Range(0, gridWidth - 1);
-            int j = Random.Range(0, gridDepth - 1);
+            int i = Random.Range(0, _gridWidth - 1);
+            int j = Random.Range(0, _gridDepth - 1);
             GenerateHole(i, j);
         }
 
-        for (int i = 0; i < gridWidth; i++)
+        for (int i = 0; i < _gridWidth; i++)
         {
-            for (int j = 0; j < gridDepth; j++)
+            for (int j = 0; j < _gridDepth; j++)
             {
-                if(grid[i,j])
-                    GameObject.Instantiate(tilePrefab, new Vector3(AmApplication.MAP_TILE_WIDTH * (i - gridWidth / 2), 0, AmApplication.MAP_TILE_DEPTH * (j - gridDepth / 2)), Quaternion.identity);
+                if (_grid[i, j])
+                    _map[i, j] = (GameObject)GameObject.Instantiate(tilePrefab, new Vector3(AmApplication.MAP_TILE_WIDTH * (i - _gridWidth / 2), 0, AmApplication.MAP_TILE_DEPTH * (j - _gridDepth / 2)), Quaternion.identity);
             }
         }
 	}
@@ -75,7 +89,7 @@ public class MapGenerator : MonoBehaviour {
         }
         iCursor = i;
         jCursor = j;
-        int holeDimension = Random.Range(gridMinHoleDimension, gridMaxHoleDimension);
+        int holeDimension = Random.Range(_gridMinHoleDimension, _gridMaxHoleDimension);
 
         bool[] holePositions = new bool[9];
         holePositions[4] = true;
@@ -104,7 +118,7 @@ public class MapGenerator : MonoBehaviour {
         for (int k = 0; k < 9; k++)
         {
             if (holePositions[k])
-                grid[i,j] = false;
+                _grid[i,j] = false;
             IncrementIndices(ref i, ref j, iCursor - 1, iCursor + 1, jCursor - 1, jCursor + 1);
         }
     }
@@ -114,7 +128,7 @@ public class MapGenerator : MonoBehaviour {
     /// </summary>
     private void IncrementIndices(ref int i, ref int j)
     {
-        IncrementIndices(ref i, ref j, 0, gridWidth, 0, gridDepth);
+        IncrementIndices(ref i, ref j, 0, _gridWidth, 0, _gridDepth);
     }
 
     /// <summary>
@@ -123,11 +137,11 @@ public class MapGenerator : MonoBehaviour {
     private void IncrementIndices(ref int i, ref int j, int minI, int maxI, int minJ, int maxJ)
     {
         i++;
-        if (i > Mathf.Min(maxI, gridWidth-1))
+        if (i > Mathf.Min(maxI, _gridWidth-1))
         {
             i = Mathf.Max(0,minI);
             j++;
-            if (j >Mathf.Min(maxJ, gridDepth-1))
+            if (j >Mathf.Min(maxJ, _gridDepth-1))
                 j = Mathf.Max(0, minJ);
         }
     }
@@ -139,17 +153,17 @@ public class MapGenerator : MonoBehaviour {
     private bool HasAdjacentHoles(int i, int j)
     {
         bool adjacentHoles = false; 
-        if (grid[i, j])
+        if (_grid[i, j])
         {
             int startWidth = Mathf.Max(0, i - 1);
-            int endWidth = Mathf.Min(i + 1, gridWidth - 1);
+            int endWidth = Mathf.Min(i + 1, _gridWidth - 1);
             int startDepth = Mathf.Max(0, j - 1);
-            int endDepth = Mathf.Min(j + 1, gridDepth - 1);
+            int endDepth = Mathf.Min(j + 1, _gridDepth - 1);
             for (int k = startWidth; k <= endWidth && !adjacentHoles; k++)
             {
                 for (int l = startDepth; l <= endDepth && !adjacentHoles; l++)
                 {
-                    if (!grid[k, l])
+                    if (!_grid[k, l])
                         adjacentHoles = true;
                 }
             }
@@ -159,5 +173,62 @@ public class MapGenerator : MonoBehaviour {
             adjacentHoles = true;
         }
         return adjacentHoles;
+    }
+
+    /// <summary>
+    /// Randomly draws with a certain probability
+    /// </summary>
+    /// <param name="p">The probability</param>
+    /// <returns>true if success, false otherwise</returns>
+    private bool DrawWithProbability(float p)
+    {
+        return Random.value < p;
+    }
+
+    /// <summary>
+    /// Updates the MapGenerator
+    /// </summary>
+    void Update()
+    {
+        // Blocks client execution
+        if (Network.isClient)
+            return;
+
+        _timer += Time.deltaTime;
+        if (_timer > 1)
+        {
+            Debug.Log("Trying to spawn new powerup");
+            _timer -= 1;
+            // Try to spawn a new powerup
+            if (DrawWithProbability((float)AmApplication.POWERUP_AVG_PER_MINUTE / 60f))
+            {
+                Debug.Log("Spawning new powerup");
+                SpawnPowerUp();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Spawns a new powerup on a random tile
+    /// </summary>
+    private void SpawnPowerUp()
+    {
+        int i = Random.Range(0, _gridWidth);
+        int j = Random.Range(0, _gridDepth);
+        int iCursor = i;
+        int jCursor = j;
+
+        // Spawns a new powerup only if the tile exists and if the tile is empty
+        while (_map[i, j] == null || _powerups[i,j] != null)
+        {
+            IncrementIndices(ref i, ref j);
+            if (i == iCursor && j == jCursor)
+            {
+                Debug.Log("Powerup not spawned!");
+                return;
+            }
+        }
+        _powerups[i,j] = (GameObject)GameObject.Instantiate(powerupPrefab, _map[i,j].transform.position + new Vector3(0,1,0), Quaternion.identity);
+        Debug.Log("New powerup spawned!");
     }
 }

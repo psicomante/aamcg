@@ -100,7 +100,15 @@ namespace Amucuga
         /// The max dimension of an hole (in tiles)
         /// </summary>
         public const int MAP_MAX_HOLE_DIMENSION = 9;
+
+        /// <summary>
+        /// The average of power up spawned for each minute
+        /// </summary>
+        public const int POWERUP_AVG_PER_MINUTE = 10;
 		
+        /// <summary>
+        /// The vertical limit beyond which the player respawns
+        /// </summary>
 		public const float MAX_PLAYABLE_AREA_Y = 10;
 		
 		public static void LoadMainMenu(){
