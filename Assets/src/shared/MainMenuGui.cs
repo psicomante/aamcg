@@ -20,7 +20,7 @@ public class MainMenuGui : MonoBehaviour
     private string GUIServerName = AmApplication.DEFAULT_SERVER_NAME;
     private int GUIServerPort = AmApplication.DEFAULT_SERVER_PORT;
     private int GUIMaxPlayers = AmApplication.DEFAULT_MAX_PLAYERS;
-	private string GUIClientName;
+    private string GUIClientName;
 
     /// <summary>
     /// Start this instance.
@@ -54,40 +54,12 @@ public class MainMenuGui : MonoBehaviour
 		}
 	}
 
-    /// <summary>
-    /// Raises the failed to connect event.
-    /// </summary>
-    /// <param name='error'>
-    /// Error.
-    /// </param>
-    void OnFailedToConnect(NetworkConnectionError error)
-    {
-        Debug.Log("Could not connect to server: " + error);
-    }
-
-    /// <summary>
-    /// Raises the server initialized event.
-    /// </summary>
-    void OnServerInitialized()
-    {
-        Debug.Log("Server initialized and ready - loading " + AmApplication.GAME_SCENE);
-        Application.LoadLevel(AmApplication.GAME_SCENE);
-        Debug.Log("Connections: " + Network.connections.Length);
-    }
-
-    void OnConnectedToServer()
-    {
-        Debug.Log("Client connected to server - loading " + AmApplication.GAME_SCENE);
-        Application.LoadLevel(AmApplication.GAME_SCENE);
-        Debug.Log("Scene loaded");
-    }
-
     //////////////////////////////////////////////////////////////////
     // DISPLAY MENU FUNCTIONS
     //////////////////////////////////////////////////////////////////
 
     /// <summary>
-    /// Displaies the server settings. 
+    /// Displaies the server settings.
     /// Render the menu controls for starting a dedicated server
     /// </summary>
     private void displayServerSettings ()
@@ -110,13 +82,13 @@ public class MainMenuGui : MonoBehaviour
 		GUILayout.Label ("Game Name: ");
 		GUIServerName = GUI.TextField (new Rect (0, 20, 150, 21), GUIServerName);
 		GUILayout.EndArea ();
-		
+
 		//start a server
 		if (GUI.Button (new Rect (10, 60, 180, 25), "Start a Dedicated Server")) {
 			Network.InitializeServer (GUIMaxPlayers, GUIPort, false); //!Network.HavePublicAddress());
 		}
 
-		//return to the main menu		
+		//return to the main menu
 		if (GUI.Button (new Rect (10, 90, 100, 25), "Main Menu")) {
 			currentGUIState = GUIState.MAIN_PANEL;
 		}
@@ -128,7 +100,7 @@ public class MainMenuGui : MonoBehaviour
     private void displayClientSettings ()
 	{
 		GUIClientName = "Player" + (Mathf.Round(Random.value * 100)).ToString ();
-		
+
 		GUILayout.BeginArea (new Rect (10, 10, 100, 50));
 		GUILayout.Label ("Direct connect");
 		GUILayout.EndArea ();
@@ -142,12 +114,12 @@ public class MainMenuGui : MonoBehaviour
 		GUILayout.Label ("Game Port: ");
 		GUIServerPort = int.Parse (GUI.TextField (new Rect (0, 20, 80, 21), GUIServerPort.ToString ()));
 		GUILayout.EndArea ();
-		
+
 		GUILayout.BeginArea (new Rect (230, 30, 100, 50));
 		GUILayout.Label ("Player Name: ");
 		GUIClientName = GUI.TextField (new Rect (0, 20, 80, 21), GUIClientName);
-		GUILayout.EndArea ();		
-		
+		GUILayout.EndArea ();
+
 		// connection to server
 		if (GUI.Button (new Rect (10, 80, 100, 24), "Connect")) {
 			Debug.Log ("Connecting to " + GUIServerHost + ":" + GUIServerPort);

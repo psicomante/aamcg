@@ -11,7 +11,7 @@ public class C_PlayerManager : MonoBehaviour
     /// <summary>
     /// Initializes the PlayerManager
     /// </summary>
-    void Start() 
+    void Start()
     {
         //Blocks the server execution
         if (Network.isServer)
@@ -51,4 +51,5 @@ public class C_PlayerManager : MonoBehaviour
         if (Input.acceleration.magnitude != 0)
             networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, new Vector3(Input.acceleration.x, 0, Input.acceleration.y) * AmApplication.FORCE_MULTIPLIER * 2);
     }
+
 }

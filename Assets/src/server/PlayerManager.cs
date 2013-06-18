@@ -6,13 +6,17 @@ using Amucuga;
 /// <summary>
 /// The server PlayerManager
 /// </summary>
+/// <description>
+/// Remember that Every object that sends or receives network messages 
+/// requires a NetworkView component
+/// </description>
 public class PlayerManager : MonoBehaviour
 {
 
     //Prefabs
     public GameObject playerPrefab;
     public GameObject lightPrefab;
-	public GameObject planePrefab;
+    public GameObject planePrefab;
 
     /// <summary>
     /// The list of connected players
@@ -43,10 +47,10 @@ public class PlayerManager : MonoBehaviour
 		//Blocks client execution
 		if (Network.isClient)
 			return;
-		
+
 		// checks if the player is Dead
 		CheckRespawn ();
-		
+
 		// reposition players
 		// WARNING: HIGH SPERIMENTAL
 		//RepositionPlayers ();
@@ -74,7 +78,7 @@ public class PlayerManager : MonoBehaviour
 		_players [np.guid].Destroy ();
 		_players.Remove (np.guid);
 	}
-	
+
 	/// <summary>
 	/// Checks the respawn.
 	/// </summary>
@@ -87,7 +91,7 @@ public class PlayerManager : MonoBehaviour
 		}
 
 	}
-	
+
 	/// <summary>
 	/// Respawn the specified Player.
 	/// </summary>
@@ -96,9 +100,9 @@ public class PlayerManager : MonoBehaviour
 	/// </param>
 	void Respawn (string guid)
 	{
-		_players[guid].Cube.transform.position = new Vector3 (0, _players.Count, 0);	
+		_players[guid].Cube.transform.position = new Vector3 (0, _players.Count, 0);
 	}
-	
+
 	/// <summary>
 	/// Determines whether this instance is dead the specified guid.
 	/// </summary>
@@ -114,7 +118,7 @@ public class PlayerManager : MonoBehaviour
 			return true;
 		return false;
 	}
-	
+
 	/// <summary>
 	/// Repositions the players HIGH SPERIMENTAL CODE. Must refactoring based on input
 	/// </summary>
@@ -128,7 +132,7 @@ public class PlayerManager : MonoBehaviour
 			p.Value.Cube.transform.rotation = new Quaternion (x, y, 0, 0);
 		}
 	}
-	
+
 
     /// <summary>
     /// Applies a force to a player
