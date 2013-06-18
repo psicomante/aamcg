@@ -3,6 +3,15 @@ using System.Collections;
 using System.Net;
 using Amucuga;
 
+/// <summary>
+/// Network manager.
+/// </summary>
+/// <description>
+/// Remember that Every object that sends or receives network messages 
+/// requires a NetworkView component; You could just use one 
+/// networkview for your entire game by referencing it from script, but that wouldn't make sense; in 
+/// general just add a networkview per object that you want networked.
+/// </description>
 public class NetworkManager : MonoBehaviour {
 
 	// Use this for initialization

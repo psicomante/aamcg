@@ -6,10 +6,6 @@ using Amucuga;
 /// <summary>
 /// The server PlayerManager
 /// </summary>
-/// <description>
-/// Remember that Every object that sends or receives network messages 
-/// requires a NetworkView component
-/// </description>
 public class PlayerManager : MonoBehaviour
 {
 
