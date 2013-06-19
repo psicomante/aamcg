@@ -22,6 +22,11 @@ namespace Amucuga
 		/// Constant the game name. It's showed in the main screen.
 		/// </summary>
 		public const string GAME_NAME = "AMuCuGa - Another MUltiplayer CUboids GAme";
+		
+		/// <summary>
+		/// Constant Version Number. Displayed on MainMenu
+		/// </summary>
+		public const string VERSION_NUMBER = "0.1-alpha";
 	
 		/// <summary>
 		/// Constant Server Port

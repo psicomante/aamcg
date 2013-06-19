@@ -28,6 +28,15 @@ public class MainMenuGui : MonoBehaviour
     void Start ()
 	{
 		Debug.Log ("Starting Main Menu GUI");
+		
+		// update the version number (test code)
+		
+		// getting the gameobject named "Version"
+		GameObject go = GameObject.Find ("GameVersion");
+		// getting the component script named "VariableTest(.cs)" and setting 
+		// the public variable to AmApplication.VERSION_NUMBER;
+		go.GetComponent<GameVersionController> ().versionNumber = AmApplication.VERSION_NUMBER;
+		go.guiText.text = go.GetComponent<GameVersionController> ().versionNumber;
 	}
 
     /// <summary>
