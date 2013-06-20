@@ -6,12 +6,12 @@ namespace Amucuga
     /// <summary>
     /// A player connected to the server
     /// </summary>
-	public class ConnectedPlayer
+	public class ConnectedPlayer : MonoBehaviour
 	{
         /// <summary>
         /// The player cube
         /// </summary>
-        public GameObject Cube { get; set; }
+        public GameObject Cube { get { return gameObject; } }
 	
         /// <summary>
         /// The NetworkPlayer associated to the player
@@ -27,17 +27,6 @@ namespace Amucuga
 		/// The player score. Displayed in the server (on the player list), in the client (on the hud)
 		/// </summary>
 		public int Score {get; private set;}
-		
-        /// <summary>
-        /// Initializes a new instance of the ConnectedPlayer Class
-        /// </summary>
-        /// <param name="playerCube">The unity cube object associated to the player</param>
-        /// <param name="networkPlayer">The NetworkPlayer associated to the player</param>
-        public ConnectedPlayer (GameObject playerCube, NetworkPlayer networkPlayer)
-		{
-			Cube = playerCube;
-			NPlayer = networkPlayer;
-		}
 
         /// <summary>
         /// Destroys all the player objects

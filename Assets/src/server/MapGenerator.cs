@@ -30,6 +30,21 @@ public class MapGenerator : MonoBehaviour {
     /// </summary>
     private float _timer;
 
+    /// <summary>
+    /// The i index of the map center
+    /// </summary>
+    private int _mapCenterI;
+
+    /// <summary>
+    /// The j index of the map center
+    /// </summary>
+    private int _mapCenterJ;
+
+    /// <summary>
+    /// The player spawn point
+    /// </summary>
+    public Vector3 PlayerSpawnPoint { get; private set; }
+    
 	/// <summary>
 	/// Initialize the MapGenerator
 	/// </summary>
@@ -70,6 +85,13 @@ public class MapGenerator : MonoBehaviour {
                     _map[i, j] = (GameObject)GameObject.Instantiate(tilePrefab, new Vector3(AmApplication.MAP_TILE_WIDTH * (i - _gridWidth / 2), 0, AmApplication.MAP_TILE_DEPTH * (j - _gridDepth / 2)), Quaternion.identity);
             }
         }
+
+        _mapCenterI = _gridWidth / 2;
+        _mapCenterJ = _gridWidth / 2;
+
+        GameObject playerSpawnTile = SearchSpawnTile();
+        PlayerSpawnPoint = playerSpawnTile.transform.position;
+        playerSpawnTile.renderer.material.color = Color.red;
 	}
 
     /// <summary>
@@ -227,5 +249,22 @@ public class MapGenerator : MonoBehaviour {
         }
         _powerups[i,j] = (GameObject)GameObject.Instantiate(powerupPrefab, _map[i,j].transform.position + new Vector3(0,1,0), Quaternion.identity);
         Debug.Log("New powerup spawned!");
+    }
+
+    /// <summary>
+    /// Search the spawn point
+    /// </summary>
+    /// <returns>The tile of the spawn point</returns>
+    private GameObject SearchSpawnTile()
+    {
+        int i = _mapCenterI;
+        int j = _mapCenterJ;
+
+        while (_map[i, j] == null)
+        {
+            IncrementIndices(ref i, ref j);
+
+        }
+        return _map[i, j];
     }
 }

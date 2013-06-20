@@ -12,7 +12,15 @@ namespace Amucuga
         /// The Main menu panel
         /// </summary>
         MAIN_PANEL,
+
+        /// <summary>
+        /// The client menu panel
+        /// </summary>
         CLIENT_PANEL,
+
+        /// <summary>
+        /// The server menu panel
+        /// </summary>
         SERVER_PANEL
     }
 
@@ -94,12 +102,12 @@ namespace Amucuga
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 7;
+        public const int MAP_HOLES = 20;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
         /// </summary>
-        public const int MAP_MIN_HOLE_DIMENSION = 1;
+        public const int MAP_MIN_HOLE_DIMENSION = 9;
 
         /// <summary>
         /// The max dimension of an hole (in tiles)
@@ -110,6 +118,11 @@ namespace Amucuga
         /// The average of power up spawned for each minute
         /// </summary>
         public const int POWERUP_AVG_PER_MINUTE = 6;
+
+        /// <summary>
+        /// The game object that contains the map generator
+        /// </summary>
+        public const string GAMEOBJECT_MAP_GENERATOR_NAME = "Main Camera";
 		
         /// <summary>
         /// The vertical limit beyond which the player respawns
