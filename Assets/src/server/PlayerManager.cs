@@ -159,14 +159,15 @@ public class PlayerManager : MonoBehaviour
     [RPC]
     void AddForce(string guid, Vector3 force)
     {
-        _players[guid].Cube.rigidbody.AddForce(new Vector3(force.x, 0, force.z));
+        ConnectedPlayer player = _players[guid];
+        player.Cube.rigidbody.AddForce(new Vector3(force.x,  player.CanFly ? force.y : 0, force.z));
 
         // Limits the player's velocity
-        if (_players[guid].Cube.rigidbody.velocity.sqrMagnitude > AmApplication.MAX_VELOCITY_MAGNITUDE * AmApplication.MAX_VELOCITY_MAGNITUDE)
+        if (player.Cube.rigidbody.velocity.sqrMagnitude > AmApplication.MAX_VELOCITY_MAGNITUDE * AmApplication.MAX_VELOCITY_MAGNITUDE)
         {
-            Vector3 v = _players[guid].Cube.rigidbody.velocity;
+            Vector3 v = player.Cube.rigidbody.velocity;
             v.Normalize();
-            _players[guid].Cube.rigidbody.velocity = v * AmApplication.MAX_VELOCITY_MAGNITUDE;
+            player.Cube.rigidbody.velocity = v * AmApplication.MAX_VELOCITY_MAGNITUDE;
         }
     }
 }

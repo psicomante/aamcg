@@ -128,6 +128,11 @@ namespace Amucuga
         /// The vertical limit beyond which the player respawns
         /// </summary>
 		public const float MAX_PLAYABLE_AREA_Y = 10;
+
+        /// <summary>
+        /// The time that a gameobject must wait for being deleted
+        /// </summary>
+        public const float GAMEOBJECT_DESTROY_DELAY = 0.2f;
 		
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);
