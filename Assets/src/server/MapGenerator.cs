@@ -197,12 +197,10 @@ public class MapGenerator : MonoBehaviour {
         _timer += Time.deltaTime;
         if (_timer > 1)
         {
-            Debug.Log("Trying to spawn new powerup");
             _timer -= 1;
             // Try to spawn a new powerup
             if (DrawWithProbability((float)AmApplication.POWERUP_AVG_PER_MINUTE / 60f))
             {
-                Debug.Log("Spawning new powerup");
                 SpawnPowerUp();
             }
         }
@@ -224,7 +222,6 @@ public class MapGenerator : MonoBehaviour {
             IncrementIndices(ref i, ref j);
             if (i == iCursor && j == jCursor)
             {
-                Debug.Log("Powerup not spawned!");
                 return;
             }
         }

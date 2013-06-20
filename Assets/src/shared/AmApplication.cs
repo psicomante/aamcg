@@ -109,7 +109,7 @@ namespace Amucuga
         /// <summary>
         /// The average of power up spawned for each minute
         /// </summary>
-        public const int POWERUP_AVG_PER_MINUTE = 10;
+        public const int POWERUP_AVG_PER_MINUTE = 6;
 		
         /// <summary>
         /// The vertical limit beyond which the player respawns
