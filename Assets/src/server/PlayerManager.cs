@@ -45,6 +45,7 @@ public class PlayerManager : MonoBehaviour
         //Initializes the scene objects
         GameObject.Instantiate(lightPrefab);
         _players = new SortedList<string, ConnectedPlayer>();
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 
     /// <summary>
@@ -62,6 +63,30 @@ public class PlayerManager : MonoBehaviour
         // reposition players
         // WARNING: HIGH SPERIMENTAL
         //RepositionPlayers ();
+    }
+
+    /// <summary>
+    /// Fixed update is called once per frame
+    /// </summary>
+    void FixedUpdate()
+    {
+        // Blocks client execution
+        if (Network.isClient)
+            return;
+
+        // Limits the player speed
+        foreach (KeyValuePair<string, ConnectedPlayer> p in _players)
+        {
+            ConnectedPlayer player = p.Value;
+
+            // Limits the player's velocity
+            if (player.Cube.rigidbody.velocity.sqrMagnitude > player.MaxVelocityMagnitude * player.MaxVelocityMagnitude)
+            {
+                Vector3 v = player.Cube.rigidbody.velocity;
+                v.Normalize();
+                player.Cube.rigidbody.velocity = v * player.MaxVelocityMagnitude;
+            }
+        }
     }
 
     /// <summary>
@@ -160,14 +185,6 @@ public class PlayerManager : MonoBehaviour
     void AddForce(string guid, Vector3 force)
     {
         ConnectedPlayer player = _players[guid];
-        player.Cube.rigidbody.AddForce(new Vector3(force.x,  player.CanFly ? force.y : 0, force.z));
-
-        // Limits the player's velocity
-        if (player.Cube.rigidbody.velocity.sqrMagnitude > AmApplication.MAX_VELOCITY_MAGNITUDE * AmApplication.MAX_VELOCITY_MAGNITUDE)
-        {
-            Vector3 v = player.Cube.rigidbody.velocity;
-            v.Normalize();
-            player.Cube.rigidbody.velocity = v * AmApplication.MAX_VELOCITY_MAGNITUDE;
-        }
+        player.Cube.rigidbody.AddForce(new Vector3(force.x,  player.CanFly ? force.y : 0, force.z) * player.ForceMultiplier);
     }
 }

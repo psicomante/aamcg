@@ -41,17 +41,17 @@ public class C_PlayerManager : MonoBehaviour
 
         //Input management
         if (Input.GetKey("left"))
-            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.left * AmApplication.FORCE_MULTIPLIER);
+            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.left);
         if (Input.GetKey("right"))
-            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.right * AmApplication.FORCE_MULTIPLIER);
+            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.right);
         if (Input.GetKey("up"))
-            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.forward * AmApplication.FORCE_MULTIPLIER);
+            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.forward);
         if (Input.GetKey("down"))
-            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.back * AmApplication.FORCE_MULTIPLIER);
+            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.back);
         if (Input.GetKey("space"))
-            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.up * AmApplication.FORCE_MULTIPLIER);
+            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, Vector3.up);
         if (Input.acceleration.magnitude != 0)
-            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, new Vector3(Input.acceleration.x, 0, Input.acceleration.y) * AmApplication.FORCE_MULTIPLIER * 2);
+            networkView.RPC("AddForce", RPCMode.Server, Network.player.guid, new Vector3(Input.acceleration.x, Input.acceleration.z, Input.acceleration.y)*1.5f);
     }
 
 }

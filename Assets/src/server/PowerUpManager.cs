@@ -13,7 +13,7 @@ public class PowerUpManager : MonoBehaviour {
 	/// Initialize the powerup
 	/// </summary>
 	void Start () {
-        int powerUpType = (int)(Random.value * 2.99f);
+        int powerUpType = (int)(Random.value * 5.99f);
         switch (powerUpType)
         {
             case 0:
@@ -24,6 +24,15 @@ public class PowerUpManager : MonoBehaviour {
                 break;
             case 2:
                 powerUp = new ColorPowerUp();
+                break;
+            case 3:
+                powerUp = new StrengthPowerUp();
+                break;
+            case 4:
+                powerUp = new SpeedPowerUp();
+                break;
+            case 5:
+                powerUp = new BlowPowerUp();
                 break;
             default:
                 throw new System.NotImplementedException("PowerUp " + powerUpType + " not implemented");

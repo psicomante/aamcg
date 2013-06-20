@@ -61,6 +61,22 @@ namespace Amucuga
         public bool IsCumulative { get; protected set; }
 
         /// <summary>
+        /// The powerup name
+        /// </summary>
+        public string Name { get; protected set; }
+
+        /// <summary>
+        /// The remaining life time of the powerup
+        /// </summary>
+        public float CountDown
+        {
+            get
+            {
+                return _remainingTime;
+            }
+        }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="lifeTime">The powerup lifeTime</param>

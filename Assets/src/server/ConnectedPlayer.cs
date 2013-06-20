@@ -37,6 +37,16 @@ namespace Amucuga
         public bool CanFly { get; set; }
 
         /// <summary>
+        /// Multiplies the unary force applied to the rigidbody
+        /// </summary>
+        public float ForceMultiplier { get; set; }
+
+        /// <summary>
+        /// Limits the speed of the player
+        /// </summary>
+        public float MaxVelocityMagnitude { get; set; }
+
+        /// <summary>
         /// Destroys all the player objects
         /// </summary>
         public void Destroy()
@@ -52,6 +62,9 @@ namespace Amucuga
         public void Start()
         {
             _powerUps = new List<PowerUp>();
+            ForceMultiplier = AmApplication.DEFAULT_FORCE_MULTIPLIER;
+            CanFly = false;
+            MaxVelocityMagnitude = AmApplication.DEFAULT_MAX_VELOCITY_MAGNITUDE;
         }
 
         /// <summary>

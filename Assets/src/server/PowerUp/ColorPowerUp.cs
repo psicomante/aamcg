@@ -15,6 +15,7 @@ namespace Amucuga
         {
             PowerUpColor = Color.magenta;
             IsCumulative = false;
+            Name = "Psycho";
         }
 
         /// <summary>

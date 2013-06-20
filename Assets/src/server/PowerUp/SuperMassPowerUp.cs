@@ -8,13 +8,14 @@ namespace Amucuga
     /// </summary>
     public class SuperMassPowerUp : PowerUp
     {
-        public const float MASS_MODIFIER = 0.3f;
+        private const float MASS_MODIFIER = 0.3f;
 
         public SuperMassPowerUp()
             : base(15) 
         {
             PowerUpColor = Color.black;
             IsCumulative = true;
+            Name = "Anvil";
         }
 
         /// <summary>

@@ -16,6 +16,7 @@ namespace Amucuga
         {
             PowerUpColor = Color.blue;
             IsCumulative = false;
+            Name = "Iron Man";
         }
 
         /// <summary>
