@@ -20,7 +20,7 @@ namespace Amucuga
             :base(30)
         {
             Name = "Drunk man";
-            PowerUpColor = Color.magenta;
+            PowerUpColor = Color.red;
             IsCumulative = false;
         }
 

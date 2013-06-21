@@ -138,12 +138,18 @@ namespace Amucuga
         /// The maximum of displacement between the x camera position and the x mass center.
         /// Exceeded this value, the camera begins to move.
         /// </summary>
-        public const float MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER = 5f;
+        public const float MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER = 2f;
 		
 		/// <summary>
 		/// Constant player preference key for server host.
 		/// </summary>
 		public const string PLAYERPREF_HOST_KEY = "host";
+
+        /// <summary>
+        /// The maximum of displacemente between the x player position and the x of the spawn.
+        /// Exceeded this value, the player respawns
+        /// </summary>
+        public const float MAX_PLAYER_DISPLACEMENT_FROM_SPAWN = 25f;
 
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);

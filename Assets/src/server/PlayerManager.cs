@@ -195,6 +195,9 @@ public class PlayerManager : MonoBehaviour
     {
         if (_players[guid].Cube.transform.position.y > AmApplication.MAX_PLAYABLE_AREA_Y || _players[guid].Cube.transform.position.y < -1 * AmApplication.MAX_PLAYABLE_AREA_Y)
             return true;
+        float xSpawn = SpawnPoint.x;
+        if (Mathf.Abs(_players[guid].Cube.transform.position.x - xSpawn) > AmApplication.MAX_PLAYER_DISPLACEMENT_FROM_SPAWN)
+            return true;
         return false;
     }
 

@@ -43,7 +43,13 @@ public class MapGenerator : MonoBehaviour {
     /// <summary>
     /// The player spawn point
     /// </summary>
-    public Vector3 PlayerSpawnPoint { get; private set; }
+    public Vector3 PlayerSpawnPoint 
+    {
+        get
+        {
+            return SearchSpawnTile().transform.position;
+        }
+    }
     
 	/// <summary>
 	/// Initialize the MapGenerator
@@ -88,10 +94,6 @@ public class MapGenerator : MonoBehaviour {
 
         _mapCenterI = _gridWidth / 2;
         _mapCenterJ = _gridDepth / 2;
-
-        GameObject playerSpawnTile = SearchSpawnTile();
-        PlayerSpawnPoint = playerSpawnTile.transform.position;
-        playerSpawnTile.renderer.material.color = Color.red;
 	}
 
     /// <summary>
@@ -248,7 +250,6 @@ public class MapGenerator : MonoBehaviour {
             }
         }
         _powerups[i,j] = (GameObject)GameObject.Instantiate(powerupPrefab, _map[i,j].transform.position + new Vector3(0,1,0), Quaternion.identity);
-        Debug.Log("New powerup spawned!");
     }
 
     /// <summary>
@@ -259,6 +260,15 @@ public class MapGenerator : MonoBehaviour {
     {
         int i = _mapCenterI;
         int j = _mapCenterJ;
+
+        if (camera != null)
+        {
+            i += (int)(camera.transform.position.x / AmApplication.MAP_TILE_WIDTH);
+            if (i >= _gridWidth)
+                i = _gridWidth - 1;
+            else if (i < 0)
+                i = 0;
+        }
 
         while (_map[i, j] == null)
         {

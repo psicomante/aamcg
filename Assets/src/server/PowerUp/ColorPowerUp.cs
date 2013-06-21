@@ -13,7 +13,7 @@ namespace Amucuga
         public ColorPowerUp()
             : base(20)
         {
-            PowerUpColor = Color.red;
+            PowerUpColor = Color.magenta;
             IsCumulative = false;
             Name = "Psycho";
         }

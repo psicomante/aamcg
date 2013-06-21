@@ -23,7 +23,7 @@ public class PowerUpManager : MonoBehaviour {
                 powerUp = new SuperMassPowerUp();
                 break;
             case 2:
-                powerUp = new MassDislocationPowerUp();
+                powerUp = new ColorPowerUp();
                 break;
             case 3:
                 powerUp = new StrengthPowerUp();
@@ -36,7 +36,7 @@ public class PowerUpManager : MonoBehaviour {
                 break;
             case 6:
                 // Disabled for now
-                powerUp = new ColorPowerUp();
+                powerUp = new MassDislocationPowerUp();
                 break;
             default:
                 throw new System.NotImplementedException("PowerUp " + powerUpType + " not implemented");
