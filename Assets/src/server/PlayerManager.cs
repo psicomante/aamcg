@@ -76,7 +76,7 @@ public class PlayerManager : MonoBehaviour
         // Moves the camera to the center of mass if there is enough displacement from that point
         if (Mathf.Abs(xDisplacement) > AmApplication.MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER)
         {
-            camera.rigidbody.AddForce(new Vector3(xDisplacement - Mathf.Sign(xDisplacement) * AmApplication.MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER, 0, 0));
+            camera.rigidbody.AddForce(new Vector3(xDisplacement * 2 - Mathf.Sign(xDisplacement) * AmApplication.MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER, 0, 0));
         }
 
         // Adds a sort of friction (avoid spring behaviour)
