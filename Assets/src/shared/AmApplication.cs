@@ -139,6 +139,11 @@ namespace Amucuga
         /// Exceeded this value, the camera begins to move.
         /// </summary>
         public const float MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER = 5f;
+		
+		/// <summary>
+		/// Constant player preference key for server host.
+		/// </summary>
+		public const string PLAYERPREF_HOST_KEY = "host";
 
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);

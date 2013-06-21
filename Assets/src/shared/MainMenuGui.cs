@@ -16,7 +16,7 @@ public class MainMenuGui : MonoBehaviour
 	//TODO: a better naming?
 	//TODO: a better code class position?
     private int GUIPort = AmApplication.DEFAULT_SERVER_PORT;
-    private string GUIServerHost = AmApplication.DEFAULT_SERVER_HOST;
+    private string GUIServerHost;
     private string GUIServerName = AmApplication.DEFAULT_SERVER_NAME;
     private int GUIServerPort = AmApplication.DEFAULT_SERVER_PORT;
     private int GUIMaxPlayers = AmApplication.DEFAULT_MAX_PLAYERS;
@@ -37,6 +37,8 @@ public class MainMenuGui : MonoBehaviour
 		// the public variable to AmApplication.VERSION_NUMBER;
 		go.GetComponent<GameVersionController> ().versionNumber = AmApplication.VERSION_NUMBER;
 		go.guiText.text = go.GetComponent<GameVersionController> ().versionNumber;
+		
+		GUIServerHost = PlayerSettings.GetHost();
 	}
 
     /// <summary>
@@ -108,7 +110,7 @@ public class MainMenuGui : MonoBehaviour
     /// </summary>
     private void displayClientSettings ()
 	{
-		GUIClientName = "Player" + (Mathf.Round(Random.value * 100)).ToString ();
+		GUIClientName = "Player" + (Mathf.Round (Random.value * 100)).ToString ();
 
 		GUILayout.BeginArea (new Rect (10, 10, 100, 50));
 		GUILayout.Label ("Direct connect");
@@ -131,6 +133,7 @@ public class MainMenuGui : MonoBehaviour
 
 		// connection to server
 		if (GUI.Button (new Rect (10, 80, 100, 24), "Connect")) {
+			PlayerSettings.SetHost(GUIServerHost);
 			Debug.Log ("Connecting to " + GUIServerHost + ":" + GUIServerPort);
 			Network.Connect (GUIServerHost, GUIServerPort);
 		}
