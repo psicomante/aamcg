@@ -53,7 +53,7 @@ public class PlayerManager : MonoBehaviour
     void Update()
     {
         //Blocks client execution
-        if (Network.isClient)
+        if (Network.peerType != NetworkPeerType.Server)
             return;
 
         // checks if the player is Dead
