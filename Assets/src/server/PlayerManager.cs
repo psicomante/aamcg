@@ -45,7 +45,6 @@ public class PlayerManager : MonoBehaviour
         //Initializes the scene objects
         GameObject.Instantiate(lightPrefab);
         _players = new SortedList<string, ConnectedPlayer>();
-        Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 
     /// <summary>
@@ -59,10 +58,49 @@ public class PlayerManager : MonoBehaviour
 
         // checks if the player is Dead
         CheckRespawn();
-
+        CenterCamera();
         // reposition players
         // WARNING: HIGH SPERIMENTAL
         //RepositionPlayers ();
+    }
+
+    /// <summary>
+    /// Adds a force to the camera for moving it to the mass center of the world
+    /// </summary>
+    private void CenterCamera()
+    {
+        Rigidbody camBody = camera.rigidbody;
+        float xMass = PlayersMassCenter().x;
+        float xDisplacement = xMass - camera.transform.position.x;
+
+        // Moves the camera to the center of mass if there is enough displacement from that point
+        if (Mathf.Abs(xDisplacement) > AmApplication.MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER)
+        {
+            camera.rigidbody.AddForce(new Vector3(xDisplacement - Mathf.Sign(xDisplacement) * AmApplication.MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER, 0, 0));
+        }
+
+        // Adds a sort of friction (avoid spring behaviour)
+        camera.rigidbody.AddForce(-camera.rigidbody.velocity * 2);
+    }
+
+    /// <summary>
+    /// Returns the mass center of all the players
+    /// </summary>
+    private Vector3 PlayersMassCenter()
+    {
+        Vector3 massCenter = Vector3.zero;
+        float totalMass = 0;
+        
+        foreach(KeyValuePair<string, ConnectedPlayer> p in _players)
+        {
+            ConnectedPlayer player = p.Value;
+            float pmass = player.rigidbody.mass;
+            Vector3 pcenter = player.rigidbody.worldCenterOfMass;
+            massCenter = (totalMass * massCenter + pmass * pcenter) / (totalMass + pmass);
+            totalMass += pmass;
+        }
+
+        return massCenter;
     }
 
     /// <summary>

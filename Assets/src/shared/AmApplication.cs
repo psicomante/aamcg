@@ -92,7 +92,7 @@ namespace Amucuga
         /// <summary>
         /// The game map width (in tiles)
         /// </summary>
-        public const int MAP_WIDTH = 10;
+        public const int MAP_WIDTH = 100;
 
         /// <summary>
         /// The game map depth (in tiles)
@@ -102,7 +102,7 @@ namespace Amucuga
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 8;
+        public const int MAP_HOLES = 70;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
@@ -117,7 +117,7 @@ namespace Amucuga
         /// <summary>
         /// The average of power up spawned for each minute
         /// </summary>
-        public const int POWERUP_AVG_PER_MINUTE = 6;
+        public const int POWERUP_AVG_PER_MINUTE = 20;
 
         /// <summary>
         /// The game object that contains the map generator
@@ -133,7 +133,13 @@ namespace Amucuga
         /// The time that a gameobject must wait for being deleted
         /// </summary>
         public const float GAMEOBJECT_DESTROY_DELAY = 0.2f;
-		
+
+        /// <summary>
+        /// The maximum of displacement between the x camera position and the x mass center.
+        /// Exceeded this value, the camera begins to move.
+        /// </summary>
+        public const float MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER = 5f;
+
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);
 		}

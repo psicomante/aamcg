@@ -87,7 +87,7 @@ public class MapGenerator : MonoBehaviour {
         }
 
         _mapCenterI = _gridWidth / 2;
-        _mapCenterJ = _gridWidth / 2;
+        _mapCenterJ = _gridDepth / 2;
 
         GameObject playerSpawnTile = SearchSpawnTile();
         PlayerSpawnPoint = playerSpawnTile.transform.position;
