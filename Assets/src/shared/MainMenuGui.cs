@@ -15,12 +15,8 @@ public class MainMenuGui : MonoBehaviour
     //Server configuration vars
 	//TODO: a better naming?
 	//TODO: a better code class position?
-    private int GUIPort = AmApplication.DEFAULT_SERVER_PORT;
-    private string GUIServerHost;
-    private string GUIServerName = AmApplication.DEFAULT_SERVER_NAME;
-    private int GUIServerPort = AmApplication.DEFAULT_SERVER_PORT;
-    private int GUIMaxPlayers = AmApplication.DEFAULT_MAX_PLAYERS;
-    private string GUIClientName;
+    private int GUIPort, GUIMaxPlayers;
+    private string GUIServerHost, GUIServerName, GUIPlayerName;
 
     /// <summary>
     /// Start this instance.
@@ -38,7 +34,13 @@ public class MainMenuGui : MonoBehaviour
 		go.GetComponent<GameVersionController> ().versionNumber = AmApplication.VERSION_NUMBER;
 		go.guiText.text = go.GetComponent<GameVersionController> ().versionNumber;
 		
-		GUIServerHost = PlayerSettings.GetHost();
+		// GUI variables initialization 
+		GUIServerHost = PlayerSettings.GetHost ();
+		GUIPlayerName = PlayerSettings.GetPlayerName ();
+		GUIPort = PlayerSettings.GetPort ();
+		GUIServerName = AmApplication.DEFAULT_SERVER_NAME;
+		GUIMaxPlayers = AmApplication.DEFAULT_MAX_PLAYERS;
+		
 	}
 
     /// <summary>
@@ -96,6 +98,8 @@ public class MainMenuGui : MonoBehaviour
 
 		//start a server
 		if (GUI.Button (new Rect (10, 60, 180, 25), "Start a Dedicated Server")) {
+			PlayerSettings.SetPort (GUIPort);
+			
 			Network.InitializeServer (GUIMaxPlayers, GUIPort, false); //!Network.HavePublicAddress());
 		}
 
@@ -110,8 +114,6 @@ public class MainMenuGui : MonoBehaviour
     /// </summary>
     private void displayClientSettings ()
 	{
-		GUIClientName = "Player" + (Mathf.Round (Random.value * 100)).ToString ();
-
 		GUILayout.BeginArea (new Rect (10, 10, 100, 50));
 		GUILayout.Label ("Direct connect");
 		GUILayout.EndArea ();
@@ -123,19 +125,22 @@ public class MainMenuGui : MonoBehaviour
 
 		GUILayout.BeginArea (new Rect (120, 30, 100, 50));
 		GUILayout.Label ("Game Port: ");
-		GUIServerPort = int.Parse (GUI.TextField (new Rect (0, 20, 80, 21), GUIServerPort.ToString ()));
+		GUIPort = int.Parse (GUI.TextField (new Rect (0, 20, 80, 21), GUIPort.ToString ()));
 		GUILayout.EndArea ();
 
 		GUILayout.BeginArea (new Rect (230, 30, 100, 50));
 		GUILayout.Label ("Player Name: ");
-		GUIClientName = GUI.TextField (new Rect (0, 20, 80, 21), GUIClientName);
+		GUIPlayerName = GUI.TextField (new Rect (0, 20, 80, 21), GUIPlayerName);
 		GUILayout.EndArea ();
 
 		// connection to server
 		if (GUI.Button (new Rect (10, 80, 100, 24), "Connect")) {
-			PlayerSettings.SetHost(GUIServerHost);
-			Debug.Log ("Connecting to " + GUIServerHost + ":" + GUIServerPort);
-			Network.Connect (GUIServerHost, GUIServerPort);
+			PlayerSettings.SetHost (GUIServerHost);
+			PlayerSettings.SetPlayerName (GUIPlayerName);
+			PlayerSettings.SetPort(GUIPort);
+			
+			Debug.Log ("Connecting to " + GUIServerHost + ":" + GUIPort);
+			Network.Connect (GUIServerHost, GUIPort);
 		}
 
 		//return to the main menu

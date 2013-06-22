@@ -78,6 +78,11 @@ namespace Amucuga
         /// An upper bound for the velocity of the player
         /// </summary>
         public const float DEFAULT_MAX_VELOCITY_MAGNITUDE = 4;
+		
+		/// <summary>
+		/// Constant default player name
+		/// </summary>
+		public const string DEFAULT_PLAYER_NAME = "Player";
 
         /// <summary>
         /// The width of a tile (in meters)
@@ -144,6 +149,16 @@ namespace Amucuga
 		/// Constant player preference key for server host.
 		/// </summary>
 		public const string PLAYERPREF_HOST_KEY = "host";
+		
+		/// <summary>
+		/// Constant player name preference key
+		/// </summary>
+		public const string PLAYERPREF_PLAYER_NAME_KEY = "playername";
+		
+		/// <summary>
+		/// Constant service port preference key
+		/// </summary>
+		public const string PLAYERPREF_PORT_KEY = "port";
 
         /// <summary>
         /// The maximum of displacemente between the x player position and the x of the spawn.
