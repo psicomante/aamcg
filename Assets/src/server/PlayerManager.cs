@@ -69,7 +69,6 @@ public class PlayerManager : MonoBehaviour
     /// </summary>
     private void CenterCamera()
     {
-        Rigidbody camBody = camera.rigidbody;
         float xMass = PlayersMassCenter().x;
         float xDisplacement = xMass - camera.transform.position.x;
 
@@ -200,22 +199,6 @@ public class PlayerManager : MonoBehaviour
             return true;
         return false;
     }
-
-    /// <summary>
-    /// Repositions the players HIGH SPERIMENTAL CODE. Must refactoring based on input
-    /// </summary>
-    void RepositionPlayers()
-    {
-        foreach (KeyValuePair<string, ConnectedPlayer> p in _players)
-        {
-            float x = p.Value.Cube.transform.rotation.x;
-            float y = p.Value.Cube.transform.rotation.y;
-            float z = p.Value.Cube.transform.rotation.z;
-            float w = p.Value.Cube.transform.rotation.w;
-            p.Value.Cube.transform.rotation = new Quaternion(x, y, 0, 0);
-        }
-    }
-
 
     /// <summary>
     /// Applies a force to a player

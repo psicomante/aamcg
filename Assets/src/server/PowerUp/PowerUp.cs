@@ -154,6 +154,25 @@ namespace Amucuga
         }
 
         /// <summary>
+        /// Overrides Equals
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            if (obj is PowerUp)
+                return this == obj;
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// Overrides GetHashCode
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        /// <summary>
         /// Resets the current powerup
         /// </summary>
         public void Reset()

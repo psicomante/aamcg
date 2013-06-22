@@ -162,5 +162,10 @@ public class MainMenuGui : MonoBehaviour
         {
             currentGUIState = GUIState.CLIENT_PANEL;
         }
+
+        if (GUI.Button(new Rect(210, 90, 100, 25), "Exit"))
+        {
+            Application.Quit();
+        }
     }
 }
