@@ -17,6 +17,16 @@ public class PlayerManager : MonoBehaviour
     /// The list of connected players
     /// </summary>
     private SortedList<string, ConnectedPlayer> _players;
+	
+	/// <summary>
+	/// Gets the players list.
+	/// </summary>
+	/// <returns>
+	/// The players list.
+	/// </returns>
+	public SortedList<string, ConnectedPlayer> GetPlayersList () {
+		return _players;
+	}
 
     /// <summary>
     /// Gets the spawn point position

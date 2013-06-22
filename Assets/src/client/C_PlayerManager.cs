@@ -16,9 +16,9 @@ public class C_PlayerManager : MonoBehaviour
 		//Blocks the server execution
 		if (Network.isServer)
 			return;
-		
+
 		Debug.Log ("Player Name: " + PlayerSettings.PlayerName);		
-		networkView.RPC ("AddPlayerName", RPCMode.All, Network.player.guid, PlayerSettings.PlayerName);
+		networkView.RPC ("AddPlayerName", RPCMode.Server, Network.player.guid, PlayerSettings.PlayerName);
 
 		Debug.Log ("Start Client Player Manager");
 	}
