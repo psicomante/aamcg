@@ -59,13 +59,17 @@ namespace Amucuga
         /// <summary>
         /// Initialize the player
         /// </summary>
-        public void Start()
-        {
-            _powerUps = new List<PowerUp>();
-            ForceMultiplier = AmApplication.DEFAULT_FORCE_MULTIPLIER;
-            CanFly = false;
-            MaxVelocityMagnitude = AmApplication.DEFAULT_MAX_VELOCITY_MAGNITUDE;
-        }
+        public void Start ()
+		{
+			// resets score
+			Score = 0;
+			
+			//
+			_powerUps = new List<PowerUp> ();
+			ForceMultiplier = AmApplication.DEFAULT_FORCE_MULTIPLIER;
+			CanFly = false;
+			MaxVelocityMagnitude = AmApplication.DEFAULT_MAX_VELOCITY_MAGNITUDE;
+		}
 
         /// <summary>
         /// Updates the player
@@ -116,22 +120,25 @@ namespace Amucuga
         /// Adds a new powerup to the player, or resets a powerup if exists in the list.
         /// </summary>
         /// <param name="powerUp"></param>
-        private void ResetOrAddPowerUp(PowerUp powerUp)
-        {
-            bool contains = false;
-            foreach (PowerUp p in _powerUps)
-            {
-                if (p == powerUp)
-                {
-                    p.Reset();
-                    contains = true;
-                    break;
-                }
-            }
-            if (!contains)
-            {
-                _powerUps.Add(powerUp);
-            }
-        }
+        private void ResetOrAddPowerUp (PowerUp powerUp)
+		{
+			bool contains = false;
+			foreach (PowerUp p in _powerUps) {
+				if (p == powerUp) {
+					p.Reset ();
+					contains = true;
+					break;
+				}
+			}
+			if (!contains) {
+				_powerUps.Add (powerUp);
+			}
+		}
+		
+		public override string ToString ()
+		{
+			return (Name + " \t " + Score);
+		}		
+		
 	}
 }

@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using Amucuga;
 
 /// <summary>
@@ -7,7 +7,16 @@ using Amucuga;
 /// </summary>
 public class GameGui : MonoBehaviour {
 	
+	public GameObject GUIScorePrefab;	
+	private GameObject _GUIScore;
+	
 	private string _serverIPAddress;
+	private bool _displayScore = true;
+	
+	public const int SCOREBOX_WIDTH = 150;
+	public const int SCOREBOX_HEIGHT = 50;
+	public const int SCOREBOX_TOPMARGIN = 20;
+	public const int SCOREBOX_RIGHTMARGIN = 10;
 
 	/// <summary>
 	/// Start the Game GUI
@@ -18,7 +27,8 @@ public class GameGui : MonoBehaviour {
 		if (Network.isClient)
 			return;
 		
-		_serverIPAddress = NetworkManager.GetLocalIPAddress();
+		_GUIScore = (GameObject)GameObject.Instantiate (GUIScorePrefab);
+		_serverIPAddress = NetworkManager.GetLocalIPAddress ();
 		
 	}
 
@@ -37,6 +47,22 @@ public class GameGui : MonoBehaviour {
 		if (GUI.Button (new Rect (10, 60, 180, 25), "Logout")) {
 			NetworkManager.Shutdown ();
 			AmApplication.LoadMainMenu ();
-		}		
+		}
+
+		if (_displayScore && Network.isServer) {
+			GUI.Box (new Rect (Screen.width - SCOREBOX_WIDTH - SCOREBOX_RIGHTMARGIN, SCOREBOX_TOPMARGIN, SCOREBOX_WIDTH, SCOREBOX_HEIGHT + Network.connections.Length * 20), "Score");
+			PrintScore();
+		}
+			
 	}
+	
+	void PrintScore ()
+	{
+		SortedList<string, ConnectedPlayer> playersList = GameObject.Find (AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME).GetComponent<PlayerManager> ().GetPlayersList ();
+		_GUIScore.guiText.text = "";
+		foreach (KeyValuePair<string, ConnectedPlayer> p in playersList) {
+			_GUIScore.guiText.text += p.Value.ToString () + "\n";
+		}
+	}
+
 }
