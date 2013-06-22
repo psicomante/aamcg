@@ -45,6 +45,11 @@ namespace Amucuga
 		/// Constant The default server IP the client connects
 		/// </summary>
 		public const string DEFAULT_SERVER_HOST = "localhost";
+
+        /// <summary>
+        /// Indicates wether or not the server is dedicated by default
+        /// </summary>
+        public const bool DEFAULT_DEDICATED_SERVER = false;
 	
 		/// <summary>
 		/// Constant Max Allowed simultaneous players for the server.

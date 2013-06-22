@@ -17,6 +17,7 @@ public class MainMenuGui : MonoBehaviour
 	//TODO: a better code class position?
     private int GUIPort, GUIMaxPlayers;
     private string GUIServerHost, GUIServerName, GUIPlayerName;
+    private bool GUIDedicatedServer;
 
     /// <summary>
     /// Start this instance.
@@ -40,7 +41,7 @@ public class MainMenuGui : MonoBehaviour
 		GUIPort = PlayerSettings.GetPort ();
 		GUIServerName = AmApplication.DEFAULT_SERVER_NAME;
 		GUIMaxPlayers = AmApplication.DEFAULT_MAX_PLAYERS;
-		
+        GUIDedicatedServer = AmApplication.DEFAULT_DEDICATED_SERVER;
 	}
 
     /// <summary>
@@ -96,10 +97,15 @@ public class MainMenuGui : MonoBehaviour
 		GUIServerName = GUI.TextField (new Rect (0, 20, 150, 21), GUIServerName);
 		GUILayout.EndArea ();
 
+        //Dedicated server
+        GUILayout.BeginArea(new Rect(330, 10, 200, 50));
+        GUILayout.Label("Dedicated server");
+        GUIDedicatedServer = GUI.Toggle(new Rect(0, 20, 10, 10), GUIDedicatedServer, "");
+        GUILayout.EndArea();
+
 		//start a server
-		if (GUI.Button (new Rect (10, 60, 180, 25), "Start a Dedicated Server")) {
+		if (GUI.Button (new Rect (10, 60, 180, 25), "Start a Server")) {
 			PlayerSettings.SetPort (GUIPort);
-			
 			Network.InitializeServer (GUIMaxPlayers, GUIPort, false); //!Network.HavePublicAddress());
 		}
 
