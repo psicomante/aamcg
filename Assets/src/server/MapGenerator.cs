@@ -141,6 +141,16 @@ public class MapGenerator : MonoBehaviour {
         return new Vector3(AmApplication.MapTileWidth * (i - _gridWidth / 2), 0, AmApplication.MapTileDepth * (j - _gridDepth / 2));
     }
 
+    private Vector3 CalculateTileScaling()
+    {
+        return new Vector3(AmApplication.MapTileWidth, 1, AmApplication.MapTileDepth);
+    }
+
+    private Vector3 CalculateTilePosition(int i, int j)
+    {
+        return new Vector3(AmApplication.MapTileWidth * (i - _gridWidth / 2), 0, AmApplication.MapTileDepth * (j - _gridDepth / 2));
+    }
+
     /// <summary>
     /// Generates a single hole
     /// </summary>

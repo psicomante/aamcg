@@ -232,8 +232,7 @@ namespace Amucuga
 		/// <summary>
 		/// Constant Color decay of touched tile.
 		/// </summary>
-<<<<<<< HEAD
-		public const float TILE_COLOR_DECAY = 0.0001f;
+		public const float TILE_COLOR_DECAY = 0.001f;
 		
 		public const bool IS_DEVELOPMENT = true;
 		
@@ -249,9 +248,6 @@ namespace Amucuga
 		/// Save if the match has been first-started;
 		/// </summary>
 		public static bool MatchFirstStart = false;
-=======
-		public const float TILE_COLOR_DECAY = 0.001f;
->>>>>>> db288315ab2d656443b947f27328c9c706070201
 
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);
