@@ -39,6 +39,11 @@ public class MapGenerator : MonoBehaviour {
     /// The j index of the map center
     /// </summary>
     private int _mapCenterJ;
+	
+	/// <summary>
+	/// The last player spawn tile.
+	/// </summary>
+	private GameObject _lastPlayerSpawnTile;
 
     /// <summary>
     /// The player spawn point
@@ -261,25 +266,28 @@ public class MapGenerator : MonoBehaviour {
     /// Search the spawn point
     /// </summary>
     /// <returns>The tile of the spawn point</returns>
-    private GameObject SearchSpawnTile()
-    {
-        int i = _mapCenterI;
-        int j = _mapCenterJ;
+    private GameObject SearchSpawnTile ()
+	{
+		if (_lastPlayerSpawnTile != null)
+			_lastPlayerSpawnTile.renderer.material.color = Color.cyan;
+		int i = _mapCenterI;
+		int j = _mapCenterJ;
 
-        if (camera != null)
-        {
-            i += (int)(camera.transform.position.x / AmApplication.MAP_TILE_WIDTH);
-            if (i >= _gridWidth)
-                i = _gridWidth - 1;
-            else if (i < 0)
-                i = 0;
-        }
+		if (camera != null) {
+			i += (int)(camera.transform.position.x / AmApplication.MAP_TILE_WIDTH);
+			if (i >= _gridWidth)
+				i = _gridWidth - 1;
+			else if (i < 0)
+				i = 0;
+		}
 
-        while (_map[i, j] == null)
-        {
-            IncrementIndices(ref i, ref j);
+		while (_map[i, j] == null) {
+			IncrementIndices (ref i, ref j);
 
-        }
-        return _map[i, j];
-    }
+		}
+		
+		_lastPlayerSpawnTile = _map [i, j];
+		_map [i, j].renderer.material.color = Color.red;
+		return _map [i, j];
+	}
 }
