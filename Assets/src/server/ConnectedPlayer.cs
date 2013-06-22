@@ -24,7 +24,7 @@ namespace Amucuga
 		/// <summary>
 		/// The player name. Displayed on the player cube (on the server)
 		/// </summary>
-		public string Name { get; private set; }
+		public string Name { get; set; }
 		
 		/// <summary>
 		/// The player score. Displayed in the server (on the player list), in the client (on the hud)

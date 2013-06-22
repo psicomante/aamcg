@@ -90,7 +90,7 @@ public class NetworkManager : MonoBehaviour {
 	/// </param>
 	void OnPlayerConnected (NetworkPlayer player)
 	{
-		Debug.Log ("Player connected from: " + player.ipAddress + ":" + player.port);
+		Debug.Log ("Player connected from: " + player.ipAddress + ":" + player.port + ":" + player.guid);
 	}
 	
 	/// <summary>
