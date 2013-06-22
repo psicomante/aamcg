@@ -112,7 +112,7 @@ namespace Amucuga
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 2000;
+        public const int MAP_HOLES = 600;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
