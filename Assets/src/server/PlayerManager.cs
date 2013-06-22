@@ -26,7 +26,7 @@ public class PlayerManager : MonoBehaviour
         get
         {
             Vector3 playerSpawnPoint = GameObject.Find(AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME).GetComponent<MapGenerator>().PlayerSpawnPoint;
-            playerSpawnPoint.y = Network.connections.Length;
+            playerSpawnPoint.y = _players.Count;
             return playerSpawnPoint;
         }
     }
@@ -48,25 +48,28 @@ public class PlayerManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Handles the map generated event
+    /// </summary>
+    public void OnMapGenerated()
+    {
+        OnPlayerConnected(Network.player);
+        AddPlayerName(Network.player.guid, "Server player");
+    }
+
+    /// <summary>
     /// Update is called once per frame
     /// </summary>
-    void Update ()
-	{
-		//Blocks client execution
-		if (Network.peerType != NetworkPeerType.Server)
-			return;
+    void Update()
+    {
+        //Blocks client execution
+        if (Network.peerType != NetworkPeerType.Server)
+            return;
 
-		// checks if the player is Dead
-		CheckRespawn ();
-		CenterCamera ();
-		// reposition players
-		// WARNING: HIGH SPERIMENTAL
-		//RepositionPlayers ();
-		foreach (KeyValuePair<string, ConnectedPlayer> p in _players) {
-			Debug.Log ("GUID: " + p.Key + " Name: " + p.Value.Name);
-		}		
-		
-	}
+        // checks if the player is Dead
+        CheckRespawn();
+        CenterCamera();
+
+    }
 
     /// <summary>
     /// Adds a force to the camera for moving it to the mass center of the world
@@ -93,8 +96,8 @@ public class PlayerManager : MonoBehaviour
     {
         Vector3 massCenter = Vector3.zero;
         float totalMass = 0;
-        
-        foreach(KeyValuePair<string, ConnectedPlayer> p in _players)
+
+        foreach (KeyValuePair<string, ConnectedPlayer> p in _players)
         {
             ConnectedPlayer player = p.Value;
             float pmass = player.rigidbody.mass;
@@ -109,50 +112,68 @@ public class PlayerManager : MonoBehaviour
     /// <summary>
     /// Fixed update is called once per frame
     /// </summary>
-    void FixedUpdate ()
-	{
-		// Blocks client execution
-		if (Network.isClient)
-			return;
+    void FixedUpdate()
+    {
+        // Blocks client execution
+        if (Network.isClient)
+            return;
 
-		// Limits the player speed
-		foreach (KeyValuePair<string, ConnectedPlayer> p in _players) {
-			ConnectedPlayer player = p.Value;
+        // *** SPAGHETTI *** //
+        //Input management
+        if (Input.GetKey("left"))
+            AddForce(Network.player.guid, Vector3.left);
+        if (Input.GetKey("right"))
+            AddForce(Network.player.guid, Vector3.right);
+        if (Input.GetKey("up"))
+            AddForce(Network.player.guid, Vector3.forward);
+        if (Input.GetKey("down"))
+            AddForce(Network.player.guid, Vector3.back);
+        if (Input.GetKey("space"))
+            AddForce(Network.player.guid, Vector3.up);
+        if (Input.acceleration.magnitude != 0)
+            AddForce(Network.player.guid, new Vector3(Input.acceleration.x, Input.acceleration.z, Input.acceleration.y) * 1.5f);
+        // *** END SPAGHETTI AREA *** //
 
-			// Limits the player's velocity
-			if (player.Cube.rigidbody.velocity.sqrMagnitude > player.MaxVelocityMagnitude * player.MaxVelocityMagnitude) {
-				Vector3 v = player.Cube.rigidbody.velocity;
-				v.Normalize ();
-				player.Cube.rigidbody.velocity = v * player.MaxVelocityMagnitude;
-			}
-		}
-		
-	}
+        // Limits the player speed
+        foreach (KeyValuePair<string, ConnectedPlayer> p in _players)
+        {
+            ConnectedPlayer player = p.Value;
+
+            // Limits the player's velocity
+            if (player.Cube.rigidbody.velocity.sqrMagnitude > player.MaxVelocityMagnitude * player.MaxVelocityMagnitude)
+            {
+                Vector3 v = player.Cube.rigidbody.velocity;
+                v.Normalize();
+                player.Cube.rigidbody.velocity = v * player.MaxVelocityMagnitude;
+            }
+        }
+
+    }
 
     /// <summary>
     /// Handles the PlayerConnected event
     /// </summary>
     /// <param name="np">The NetworkPlayer</param>
-    void OnPlayerConnected (NetworkPlayer np)
-	{
-		print ("Player from " + np.ipAddress + " connected");
-		print ("Connections " + Network.connections.Length);
-		GameObject playerCube = (GameObject)GameObject.Instantiate (playerPrefab, SpawnPoint, Quaternion.identity);
-		playerCube.renderer.material.color = new Color (Random.value, Random.value, Random.value);
-		ConnectedPlayer cp = playerCube.GetComponent<ConnectedPlayer> ();
-		cp.NPlayer = np;
-		_players.Add (np.guid, cp);
-	}
+    void OnPlayerConnected(NetworkPlayer np)
+    {
+        print("Player from " + np.ipAddress + " connected");
+        print("Connections " + Network.connections.Length);
+        GameObject playerCube = (GameObject)GameObject.Instantiate(playerPrefab, SpawnPoint + Vector3.up, Quaternion.identity);
+        playerCube.renderer.material.color = new Color(Random.value, Random.value, Random.value);
+        ConnectedPlayer cp = playerCube.GetComponent<ConnectedPlayer>();
+        cp.NPlayer = np;
+        _players.Add(np.guid, cp);
+    }
 
     /// <summary>
     /// Handles the PlayerDisconnected event
     /// </summary>
     /// <param name="np">The NetworkPlayer</param>
-    void OnPlayerDisconnected (NetworkPlayer np)
-	{
-		_players [np.guid].Destroy ();
-		_players.Remove (np.guid);
-	}
+    void OnPlayerDisconnected(NetworkPlayer np)
+    {
+        _players[np.guid].Destroy();
+        _players.Remove(np.guid);
+    }
 
     /// <summary>
     /// Checks the respawn.
@@ -195,7 +216,7 @@ public class PlayerManager : MonoBehaviour
     /// </param>
     bool IsDead(string guid)
     {
-        if (_players[guid].Cube.transform.position.y > AmApplication.MAX_PLAYABLE_AREA_Y || _players[guid].Cube.transform.position.y < -1 * AmApplication.MAX_PLAYABLE_AREA_Y)
+        if (_players[guid].Cube.transform.position.y < -AmApplication.MAX_PLAYABLE_AREA_Y)
             return true;
         float xSpawn = SpawnPoint.x;
         if (Mathf.Abs(_players[guid].Cube.transform.position.x - xSpawn) > AmApplication.MAX_PLAYER_DISPLACEMENT_FROM_SPAWN)
@@ -209,14 +230,15 @@ public class PlayerManager : MonoBehaviour
     /// <param name="force">The force to apply</param>
     /// <param name="guid">The guid of the player</param>
     [RPC]
-    void AddForce (string guid, Vector3 force)
-	{
-		ConnectedPlayer player = _players [guid];
-		player.Cube.rigidbody.AddForce (new Vector3 (force.x, player.CanFly ? force.y : 0, force.z) * player.ForceMultiplier);
-	}
-	
-	[RPC]
-	public void AddPlayerName (string guid, string playerName) {
-		_players[guid].Name = playerName;
-	}
+    void AddForce(string guid, Vector3 force)
+    {
+        ConnectedPlayer player = _players[guid];
+        player.Cube.rigidbody.AddForce(new Vector3(force.x, player.CanFly ? force.y : 0, force.z) * player.ForceMultiplier);
+    }
+
+    [RPC]
+    public void AddPlayerName(string guid, string playerName)
+    {
+        _players[guid].Name = playerName;
+    }
 }

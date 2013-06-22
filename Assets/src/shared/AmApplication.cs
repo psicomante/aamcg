@@ -165,6 +165,8 @@ namespace Amucuga
 		/// </summary>
 		public const string PLAYERPREF_PORT_KEY = "port";
 
+        public const string PLAYERPREF_DEDICATED_SERVER_KEY = "dedicated server";
+
         /// <summary>
         /// The maximum of displacemente between the x player position and the x of the spawn.
         /// Exceeded this value, the player respawns

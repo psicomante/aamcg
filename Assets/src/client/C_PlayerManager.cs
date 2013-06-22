@@ -17,8 +17,8 @@ public class C_PlayerManager : MonoBehaviour
 		if (Network.isServer)
 			return;
 		
-		Debug.Log ("Player Name: " + PlayerSettings.GetPlayerName ());		
-		networkView.RPC ("AddPlayerName", RPCMode.All, Network.player.guid, PlayerSettings.GetPlayerName ());		
+		Debug.Log ("Player Name: " + PlayerSettings.PlayerName);		
+		networkView.RPC ("AddPlayerName", RPCMode.All, Network.player.guid, PlayerSettings.PlayerName);
 
 		Debug.Log ("Start Client Player Manager");
 	}
@@ -39,7 +39,7 @@ public class C_PlayerManager : MonoBehaviour
     void FixedUpdate ()
 	{
 		//Blocks the Server execution
-		if (Network.isServer)
+		if (Network.isServer && PlayerSettings.DedicatedServer)
 			return;
 
 		//Input management
@@ -59,7 +59,7 @@ public class C_PlayerManager : MonoBehaviour
 	
 	[RPC]
 	string GetPlayerName () {
-		return PlayerSettings.GetPlayerName ();
+		return PlayerSettings.PlayerName;
 	}
 
 }

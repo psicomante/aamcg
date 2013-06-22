@@ -94,6 +94,11 @@ public class MapGenerator : MonoBehaviour {
 
         _mapCenterI = _gridWidth / 2;
         _mapCenterJ = _gridDepth / 2;
+
+        if (!PlayerSettings.DedicatedServer)
+        {
+            gameObject.GetComponent<PlayerManager>().OnMapGenerated();
+        }
 	}
 
     /// <summary>

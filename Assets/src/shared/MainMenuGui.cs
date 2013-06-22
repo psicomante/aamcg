@@ -36,9 +36,9 @@ public class MainMenuGui : MonoBehaviour
 		go.guiText.text = go.GetComponent<GameVersionController> ().versionNumber;
 		
 		// GUI variables initialization 
-		GUIServerHost = PlayerSettings.GetHost ();
-		GUIPlayerName = PlayerSettings.GetPlayerName ();
-		GUIPort = PlayerSettings.GetPort ();
+		GUIServerHost = PlayerSettings.Host;
+		GUIPlayerName = PlayerSettings.PlayerName;
+		GUIPort = PlayerSettings.Port;
 		GUIServerName = AmApplication.DEFAULT_SERVER_NAME;
 		GUIMaxPlayers = AmApplication.DEFAULT_MAX_PLAYERS;
         GUIDedicatedServer = AmApplication.DEFAULT_DEDICATED_SERVER;
@@ -105,7 +105,10 @@ public class MainMenuGui : MonoBehaviour
 
 		//start a server
 		if (GUI.Button (new Rect (10, 60, 180, 25), "Start a Server")) {
-			PlayerSettings.SetPort (GUIPort);
+			PlayerSettings.Port = GUIPort;
+            PlayerSettings.DedicatedServer = GUIDedicatedServer;
+            if (!GUIDedicatedServer)
+                PlayerSettings.PlayerName = "Server player";
 			Network.InitializeServer (GUIMaxPlayers, GUIPort, false); //!Network.HavePublicAddress());
 		}
 
@@ -141,9 +144,9 @@ public class MainMenuGui : MonoBehaviour
 
 		// connection to server
 		if (GUI.Button (new Rect (10, 80, 100, 24), "Connect")) {
-			PlayerSettings.SetHost (GUIServerHost);
-			PlayerSettings.SetPlayerName (GUIPlayerName);
-			PlayerSettings.SetPort(GUIPort);
+            PlayerSettings.Host = GUIServerHost;
+            PlayerSettings.PlayerName = GUIPlayerName;
+            PlayerSettings.Port = GUIPort;
 			
 			Debug.Log ("Connecting to " + GUIServerHost + ":" + GUIPort);
 			Network.Connect (GUIServerHost, GUIPort);
