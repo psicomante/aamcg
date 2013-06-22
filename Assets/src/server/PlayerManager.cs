@@ -52,6 +52,7 @@ public class PlayerManager : MonoBehaviour
 
         Debug.Log("Start Server Player Manager");
 
+        camera.transform.position = new Vector3(AmApplication.INITIAL_X_CAMERA_POSITION, AmApplication.INITIAL_Y_CAMERA_POSITION, AmApplication.INITIAL_Z_CAMERA_POSITION);
         //Initializes the scene objects
         GameObject.Instantiate(lightPrefab);
         _players = new SortedList<string, ConnectedPlayer>();
@@ -86,13 +87,22 @@ public class PlayerManager : MonoBehaviour
     /// </summary>
     private void CenterCamera()
     {
-        float xMass = PlayersMassCenter().x;
-        float xDisplacement = xMass - camera.transform.position.x;
+        Vector3 playersMassCenter = PlayersMassCenter();
+        float xMass = playersMassCenter.x;
+        float xDisplacement = xMass - camera.transform.position.x + AmApplication.INITIAL_X_CAMERA_POSITION;
+        float zMass = playersMassCenter.z;
+        float zDisplacement = zMass - camera.transform.position.z + AmApplication.INITIAL_Z_CAMERA_POSITION;
 
-        // Moves the camera to the center of mass if there is enough displacement from that point
-        if (Mathf.Abs(xDisplacement) > AmApplication.MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER)
+        // Moves the camera to the center of mass if there is enough x displacement from that point
+        if (Mathf.Abs(xDisplacement) > AmApplication.MAX_X_CAMERA_DISPLACEMENT_FROM_MASS_CENTER)
         {
-            camera.rigidbody.AddForce(new Vector3(xDisplacement * 2 - Mathf.Sign(xDisplacement) * AmApplication.MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER, 0, 0));
+            camera.rigidbody.AddForce(new Vector3(xDisplacement * 2 - Mathf.Sign(xDisplacement) * AmApplication.MAX_X_CAMERA_DISPLACEMENT_FROM_MASS_CENTER, 0, 0));
+        }
+
+        // Moves the camera to the center of mass if ther is enough z displacement from that point
+        if (Mathf.Abs(zDisplacement) > AmApplication.MAX_Z_CAMERA_DISPLACEMENT_FROM_MASS_CENTER)
+        {
+            camera.rigidbody.AddForce(new Vector3(0, 0, zDisplacement * 2 - Mathf.Sign(zDisplacement) * AmApplication.MAX_Z_CAMERA_DISPLACEMENT_FROM_MASS_CENTER));
         }
 
         // Adds a sort of friction (avoid spring behaviour)
@@ -229,7 +239,7 @@ public class PlayerManager : MonoBehaviour
         if (_players[guid].Cube.transform.position.y < -AmApplication.MAX_PLAYABLE_AREA_Y)
             return true;
         float xSpawn = SpawnPoint.x;
-        if (Mathf.Abs(_players[guid].Cube.transform.position.x - xSpawn) > AmApplication.MAX_PLAYER_DISPLACEMENT_FROM_SPAWN)
+        if (Mathf.Abs(_players[guid].Cube.transform.position.x - xSpawn) > AmApplication.MAX_X_PLAYER_DISPLACEMENT_FROM_SPAWN)
             return true;
         return false;
     }

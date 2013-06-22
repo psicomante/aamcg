@@ -107,12 +107,12 @@ namespace Amucuga
         /// <summary>
         /// The game map depth (in tiles)
         /// </summary>
-        public const int MAP_DEPTH = 10;
+        public const int MAP_DEPTH = 100;
 
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 70;
+        public const int MAP_HOLES = 2000;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
@@ -148,7 +148,40 @@ namespace Amucuga
         /// The maximum of displacement between the x camera position and the x mass center.
         /// Exceeded this value, the camera begins to move.
         /// </summary>
-        public const float MAX_CAMERA_DISPLACEMENT_FROM_MASS_CENTER = 2f;
+        public const float MAX_X_CAMERA_DISPLACEMENT_FROM_MASS_CENTER = 2f;
+
+        /// <summary>
+        /// The maximum of displacement between the z camera position and the z mass center.
+        /// Exceeded this value, the camera begins to move.
+        /// </summary>
+        public const float MAX_Z_CAMERA_DISPLACEMENT_FROM_MASS_CENTER = 2f;
+
+        /// <summary>
+        /// The maximum of displacemente between the x player position and the x of the spawn.
+        /// Exceeded this value, the player respawns
+        /// </summary>
+        public const float MAX_X_PLAYER_DISPLACEMENT_FROM_SPAWN = 25f;
+
+        /// <summary>
+        /// The maximum of displacemente between the z player position and the z of the spawn.
+        /// Exceeded this value, the player respawns
+        /// </summary>
+        public const float MAX_Z_PLAYER_DISPLACEMENT_FROM_SPAWN = 5f;
+
+        /// <summary>
+        /// Indicates the initial x component of the displacement between the camera and the spawn point
+        /// </summary>
+        public const float INITIAL_X_CAMERA_POSITION = 0f;
+
+        /// <summary>
+        /// Indicates the initial z component of the displacement between the camera and the spawn point
+        /// </summary>
+        public const float INITIAL_Z_CAMERA_POSITION = -20f;
+
+        /// <summary>
+        /// Indicates the initial y component of the displacement between the camera and the spawn point
+        /// </summary>
+        public const float INITIAL_Y_CAMERA_POSITION = 20f;
 		
 		/// <summary>
 		/// Constant player preference key for server host.
@@ -166,12 +199,6 @@ namespace Amucuga
 		public const string PLAYERPREF_PORT_KEY = "port";
 
         public const string PLAYERPREF_DEDICATED_SERVER_KEY = "dedicated server";
-
-        /// <summary>
-        /// The maximum of displacemente between the x player position and the x of the spawn.
-        /// Exceeded this value, the player respawns
-        /// </summary>
-        public const float MAX_PLAYER_DISPLACEMENT_FROM_SPAWN = 25f;
 
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);

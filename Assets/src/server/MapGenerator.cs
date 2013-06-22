@@ -268,17 +268,21 @@ public class MapGenerator : MonoBehaviour {
 
         if (camera != null)
         {
-            i += (int)(camera.transform.position.x / AmApplication.MAP_TILE_WIDTH);
+            i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MAP_TILE_WIDTH);
+            j += (int)((camera.transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MAP_TILE_DEPTH);
             if (i >= _gridWidth)
                 i = _gridWidth - 1;
             else if (i < 0)
                 i = 0;
+            if (j >= _gridDepth)
+                j = _gridDepth + 1;
+            else if (j < 0)
+                j = 0;
         }
 
         while (_map[i, j] == null)
         {
-            IncrementIndices(ref i, ref j);
-
+            IncrementIndices(ref i, ref j, i - 2, i + 2, j -2, j + 2);
         }
         return _map[i, j];
     }
