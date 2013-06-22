@@ -34,7 +34,7 @@ namespace Amucuga
 		/// <summary>
 		/// Constant Version Number. Displayed on MainMenu
 		/// </summary>
-		public const string VERSION_NUMBER = "0.1-alpha";
+		public const string VERSION_NUMBER = "0.2-alpha";
 	
 		/// <summary>
 		/// Constant Server Port
@@ -112,7 +112,7 @@ namespace Amucuga
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 70;
+        public const int MAP_HOLES = 2000;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
@@ -168,10 +168,20 @@ namespace Amucuga
         public const string PLAYERPREF_DEDICATED_SERVER_KEY = "dedicated server";
 
         /// <summary>
-        /// The maximum of displacemente between the x player position and the x of the spawn.
+        /// The maximum of displacement between the x player position and the x of the spawn.
         /// Exceeded this value, the player respawns
         /// </summary>
         public const float MAX_PLAYER_DISPLACEMENT_FROM_SPAWN = 25f;
+		
+		/// <summary>
+		/// Timeout after the tile color is reset .
+		/// </summary>
+		public const int TILE_TOUCHEDBY_TIMEOUT = 100;
+		
+		/// <summary>
+		/// Constant Color decay of touched tile.
+		/// </summary>
+		public const float TILE_COLOR_DECAY = 0.0001f;
 
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);
