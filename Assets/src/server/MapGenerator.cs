@@ -78,15 +78,12 @@ public class MapGenerator : MonoBehaviour {
 				_powerups [i, j] = null;
 			}
 		}
-
-<<<<<<< HEAD
 		//Generates the holes.
 		for (int counter = 0; counter < _gridHoles; counter++) {
 			int i = Random.Range (0, _gridWidth - 1);
 			int j = Random.Range (0, _gridDepth - 1);
 			GenerateHole (i, j);
 		}
-=======
         for (int i = 0; i < _gridWidth; i++)
         {
             for (int j = 0; j < _gridDepth; j++)
@@ -98,14 +95,6 @@ public class MapGenerator : MonoBehaviour {
                 }
             }
         }
->>>>>>> db288315ab2d656443b947f27328c9c706070201
-
-		for (int i = 0; i < _gridWidth; i++) {
-			for (int j = 0; j < _gridDepth; j++) {
-				if (_grid [i, j])
-					_map [i, j] = (GameObject)GameObject.Instantiate (tilePrefab, new Vector3 (AmApplication.MAP_TILE_WIDTH * (i - _gridWidth / 2), 0, AmApplication.MAP_TILE_DEPTH * (j - _gridDepth / 2)), Quaternion.identity);
-			}
-		}
 
 		_mapCenterI = _gridWidth / 2;
 		_mapCenterJ = _gridDepth / 2;
@@ -130,16 +119,6 @@ public class MapGenerator : MonoBehaviour {
 		Start ();
 	}
 	
-
-    private Vector3 CalculateTileScaling()
-    {
-        return new Vector3(AmApplication.MapTileWidth, 1, AmApplication.MapTileDepth);
-    }
-
-    private Vector3 CalculateTilePosition(int i, int j)
-    {
-        return new Vector3(AmApplication.MapTileWidth * (i - _gridWidth / 2), 0, AmApplication.MapTileDepth * (j - _gridDepth / 2));
-    }
 
     private Vector3 CalculateTileScaling()
     {
@@ -330,20 +309,6 @@ public class MapGenerator : MonoBehaviour {
 		int i = _mapCenterI;
 		int j = _mapCenterJ;
 
-<<<<<<< HEAD
-		if (camera != null) {
-			i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MAP_TILE_WIDTH);
-			j += (int)((camera.transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MAP_TILE_DEPTH);
-			if (i >= _gridWidth)
-				i = _gridWidth - 1;
-			else if (i < 0)
-				i = 0;
-			if (j >= _gridDepth)
-				j = _gridDepth + 1;
-			else if (j < 0)
-				j = 0;
-		}
-=======
         if (camera != null)
         {
             i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MapTileWidth);
@@ -357,7 +322,6 @@ public class MapGenerator : MonoBehaviour {
             else if (j < 0)
                 j = 0;
         }
->>>>>>> db288315ab2d656443b947f27328c9c706070201
 
 		while (_map[i, j] == null) {
 			IncrementIndices (ref i, ref j, i - 2, i + 2, j - 2, j + 2);
