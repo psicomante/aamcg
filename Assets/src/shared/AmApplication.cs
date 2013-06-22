@@ -127,7 +127,7 @@ namespace Amucuga
         /// <summary>
         /// The average of power up spawned for each minute
         /// </summary>
-        public const int POWERUP_AVG_PER_MINUTE = 20;
+        public const int POWERUP_AVG_PER_MINUTE = 200;
 
         /// <summary>
         /// The game object that contains the map generator
