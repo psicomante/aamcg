@@ -135,6 +135,27 @@ namespace Amucuga
 			}
 		}
 		
+		/// <summary>
+		/// Resets the score at the end of the match
+		/// </summary>
+		public void ResetScore ()
+		{
+			Score = 0;
+		}
+		
+		public void RandomScore ()
+		{
+			Score = (int)(UnityEngine.Random.value * 1000);
+			Debug.Log (Score);	
+		}
+		
+		
+		/// <summary>
+		/// Returns a <see cref="System.String"/> that represents the current <see cref="Amucuga.ConnectedPlayer"/>.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="System.String"/> that represents the current <see cref="Amucuga.ConnectedPlayer"/>.
+		/// </returns>
 		public override string ToString ()
 		{
 			return (Name + " \t " + Score);

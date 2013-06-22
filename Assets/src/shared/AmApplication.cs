@@ -62,6 +62,11 @@ namespace Amucuga
 		public const string DEFAULT_SERVER_NAME = "Game 1";
 		
 		/// <summary>
+		/// Constant default match duration, in seconds
+		/// </summary>
+		public const int DEFAULT_MATCH_DURATION = 3;		
+		
+		/// <summary>
 		/// The Server scene name. Loaded on serverInitialized
 		/// </summary>
 		/// <seealso>
@@ -92,27 +97,32 @@ namespace Amucuga
         /// <summary>
         /// The width of a tile (in meters)
         /// </summary>
-        public const int MAP_TILE_WIDTH = 2;
+        public static float MapTileWidth = 2f;
 
         /// <summary>
         /// The width of a tile (in meters)
         /// </summary>
-        public const int MAP_TILE_DEPTH = 2;
+        public static float MapTileDepth = 2f;
+
+        /// <summary>
+        /// The height of a tile (in meters)
+        /// </summary>
+        public const float MAP_TILE_HEIGHT = 0.5f;
 
         /// <summary>
         /// The game map width (in tiles)
         /// </summary>
-        public const int MAP_WIDTH = 100;
+        public const int MAP_WIDTH = 50;
 
         /// <summary>
         /// The game map depth (in tiles)
         /// </summary>
-        public const int MAP_DEPTH = 100;
+        public const int MAP_DEPTH = 50;
 
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 600;
+        public const int MAP_HOLES = 100;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
@@ -160,13 +170,13 @@ namespace Amucuga
         /// The maximum of displacemente between the x player position and the x of the spawn.
         /// Exceeded this value, the player respawns
         /// </summary>
-        public const float MAX_X_PLAYER_DISPLACEMENT_FROM_SPAWN = 25f;
+        public const float MAX_X_PLAYER_DISPLACEMENT_FROM_SPAWN = 30f;
 
         /// <summary>
         /// The maximum of displacemente between the z player position and the z of the spawn.
         /// Exceeded this value, the player respawns
         /// </summary>
-        public const float MAX_Z_PLAYER_DISPLACEMENT_FROM_SPAWN = 5f;
+        public const float MAX_Z_PLAYER_DISPLACEMENT_FROM_SPAWN = 25f;
 
         /// <summary>
         /// Indicates the initial x component of the displacement between the camera and the spawn point
@@ -197,8 +207,16 @@ namespace Amucuga
 		/// Constant service port preference key
 		/// </summary>
 		public const string PLAYERPREF_PORT_KEY = "port";
-
-        public const string PLAYERPREF_DEDICATED_SERVER_KEY = "dedicated server";
+		
+		/// <summary>
+		/// Constant dedicated server preference key.
+		/// </summary>
+        public const string PLAYERPREF_DEDICATED_SERVER_KEY = "dedicated_server";
+		
+		/// <summary>
+		/// Constant match duration preference key.
+		/// </summary>
+		public const string PLAYERPREF_MATCH_DURATION_KEY = "match_duration";
 
         /// <summary>
         /// The maximum of displacement between the x player position and the x of the spawn.
@@ -214,7 +232,26 @@ namespace Amucuga
 		/// <summary>
 		/// Constant Color decay of touched tile.
 		/// </summary>
+<<<<<<< HEAD
 		public const float TILE_COLOR_DECAY = 0.0001f;
+		
+		public const bool IS_DEVELOPMENT = true;
+		
+		/// <summary>
+		/// Gets or sets the match count down.
+		/// </summary>
+		/// <value>
+		/// The match count down.
+		/// </value>
+		public static float MatchCountDown { get; set; }
+		
+		/// <summary>
+		/// Save if the match has been first-started;
+		/// </summary>
+		public static bool MatchFirstStart = false;
+=======
+		public const float TILE_COLOR_DECAY = 0.001f;
+>>>>>>> db288315ab2d656443b947f27328c9c706070201
 
 		public static void LoadMainMenu(){
 			Application.LoadLevel (MAIN_MENU);

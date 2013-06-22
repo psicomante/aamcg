@@ -15,16 +15,14 @@ using Amucuga;
 public class NetworkManager : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () 
+	void Start ()
 	{
-        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+		// blocks the sleep timeout on smartphones
+		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 	}
 	
 	// Update is called once per frame
-	void Update ()
-	{
-
-	}
+	void Update () {}
 	
 	//////////////////////////////////////////////////////////////////
 	// UNITY BUILT-IN NETWORK EVENTS: CLIENT

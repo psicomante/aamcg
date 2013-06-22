@@ -63,18 +63,27 @@ namespace Amucuga
         /// <summary>
         /// Sets or get wether the server is dedicated or not
         /// </summary>
-        public static bool DedicatedServer 
-        {
-            get
-            {
-                return PlayerPrefs.GetInt(AmApplication.PLAYERPREF_DEDICATED_SERVER_KEY, AmApplication.DEFAULT_DEDICATED_SERVER ? 1 : 0) == 0 ? false : true;
-            }
+        public static bool DedicatedServer {
+			get {
+				return PlayerPrefs.GetInt (AmApplication.PLAYERPREF_DEDICATED_SERVER_KEY, AmApplication.DEFAULT_DEDICATED_SERVER ? 1 : 0) == 0 ? false : true;
+			}
 
-            set
-            {
-                PlayerPrefs.SetInt(AmApplication.PLAYERPREF_DEDICATED_SERVER_KEY, value == true ? 1 : 0);
-                PlayerPrefs.Save();
-            }
-        }
+			set {
+				PlayerPrefs.SetInt (AmApplication.PLAYERPREF_DEDICATED_SERVER_KEY, value == true ? 1 : 0);
+				PlayerPrefs.Save ();
+			}
+		}
+		
+		public static float MatchDuration {
+			get {
+				return PlayerPrefs.GetFloat (AmApplication.PLAYERPREF_MATCH_DURATION_KEY, AmApplication.DEFAULT_MATCH_DURATION);
+			}
+			
+			set {
+				PlayerPrefs.SetFloat (AmApplication.PLAYERPREF_MATCH_DURATION_KEY, value);
+				PlayerPrefs.Save ();				
+			}
+		}
+		
     }
 }

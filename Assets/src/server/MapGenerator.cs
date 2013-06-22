@@ -59,57 +59,92 @@ public class MapGenerator : MonoBehaviour {
 	/// <summary>
 	/// Initialize the MapGenerator
 	/// </summary>
-	void Start () {
-        //Blocks client execution
-        if (Network.isClient)
-            return;
+	void Start ()
+	{
+		//Blocks client execution
+		if (Network.isClient)
+			return;
 
-        _timer = 0;
-        _grid = new bool[_gridWidth, _gridDepth];
-        _map = new GameObject[_gridWidth, _gridDepth];
-        _powerups = new GameObject[_gridWidth, _gridDepth];
+		_timer = 0;
+		_grid = new bool[_gridWidth, _gridDepth];
+		_map = new GameObject[_gridWidth, _gridDepth];
+		_powerups = new GameObject[_gridWidth, _gridDepth];
 
-        //Generates the map (without holes).
-        for (int i = 0; i < _gridWidth; i++)
-        {
-            for (int j = 0; j < _gridDepth; j++)
-            {
-                _grid[i, j] = true;
-                _map[i, j] = null;
-                _powerups[i, j] = null;
-            }
-        }
+		//Generates the map (without holes).
+		for (int i = 0; i < _gridWidth; i++) {
+			for (int j = 0; j < _gridDepth; j++) {
+				_grid [i, j] = true;
+				_map [i, j] = null;
+				_powerups [i, j] = null;
+			}
+		}
 
-        //Generates the holes.
-        for (int counter = 0; counter < _gridHoles; counter++)
-        {
-            int i = Random.Range(0, _gridWidth - 1);
-            int j = Random.Range(0, _gridDepth - 1);
-            GenerateHole(i, j);
-        }
-
+<<<<<<< HEAD
+		//Generates the holes.
+		for (int counter = 0; counter < _gridHoles; counter++) {
+			int i = Random.Range (0, _gridWidth - 1);
+			int j = Random.Range (0, _gridDepth - 1);
+			GenerateHole (i, j);
+		}
+=======
         for (int i = 0; i < _gridWidth; i++)
         {
             for (int j = 0; j < _gridDepth; j++)
             {
                 if (_grid[i, j])
-                    _map[i, j] = (GameObject)GameObject.Instantiate(tilePrefab, new Vector3(AmApplication.MAP_TILE_WIDTH * (i - _gridWidth / 2), 0, AmApplication.MAP_TILE_DEPTH * (j - _gridDepth / 2)), Quaternion.identity);
+                {
+                    _map[i, j] = (GameObject)GameObject.Instantiate(tilePrefab, CalculateTilePosition(i,j), Quaternion.identity);
+                    _map[i, j].transform.localScale = CalculateTileScaling();
+                }
             }
         }
+>>>>>>> db288315ab2d656443b947f27328c9c706070201
 
-        _mapCenterI = _gridWidth / 2;
-        _mapCenterJ = _gridDepth / 2;
+		for (int i = 0; i < _gridWidth; i++) {
+			for (int j = 0; j < _gridDepth; j++) {
+				if (_grid [i, j])
+					_map [i, j] = (GameObject)GameObject.Instantiate (tilePrefab, new Vector3 (AmApplication.MAP_TILE_WIDTH * (i - _gridWidth / 2), 0, AmApplication.MAP_TILE_DEPTH * (j - _gridDepth / 2)), Quaternion.identity);
+			}
+		}
 
-        if (!PlayerSettings.DedicatedServer)
-        {
-            gameObject.GetComponent<PlayerManager>().OnMapGenerated();
-        }
+		_mapCenterI = _gridWidth / 2;
+		_mapCenterJ = _gridDepth / 2;
+		// checks if we should instantiate a first testing player.
+		if (!PlayerSettings.DedicatedServer && !AmApplication.MatchFirstStart) {
+			gameObject.GetComponent<PlayerManager> ().OnMapGenerated ();
+			AmApplication.MatchFirstStart = true;
+		}
 	}
+	
+	public void Reset ()
+	{
+		// reset players
+		GameObject.Find (AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME).GetComponent<PlayerManager> ().ResetPlayers ();
+	
+		// destroy tiles and powerups
+		foreach (GameObject g in GameObject.FindGameObjectsWithTag("Respawn")) {
+			GameObject.DestroyImmediate (g);
+		}
+		
+		// loading map
+		Start ();
+	}
+	
+
+    private Vector3 CalculateTileScaling()
+    {
+        return new Vector3(AmApplication.MapTileWidth, 1, AmApplication.MapTileDepth);
+    }
+
+    private Vector3 CalculateTilePosition(int i, int j)
+    {
+        return new Vector3(AmApplication.MapTileWidth * (i - _gridWidth / 2), 0, AmApplication.MapTileDepth * (j - _gridDepth / 2));
+    }
 
     /// <summary>
     /// Generates a single hole
     /// </summary>
-    private void GenerateHole(int i, int j)
+	private void GenerateHole(int i, int j)
     {
         int iCursor = i;
         int jCursor = j;
@@ -238,6 +273,18 @@ public class MapGenerator : MonoBehaviour {
                 SpawnPowerUp();
             }
         }
+
+        for (int i = 0; i < _gridWidth; i++)
+        {
+            for (int j = 0; j < _gridDepth; j++)
+            {
+                if (_map[i, j] != null)
+                {
+                    _map[i, j].transform.position = CalculateTilePosition(i, j);
+                    _map[i, j].transform.localScale = CalculateTileScaling();
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -273,26 +320,41 @@ public class MapGenerator : MonoBehaviour {
 		int i = _mapCenterI;
 		int j = _mapCenterJ;
 
+<<<<<<< HEAD
+		if (camera != null) {
+			i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MAP_TILE_WIDTH);
+			j += (int)((camera.transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MAP_TILE_DEPTH);
+			if (i >= _gridWidth)
+				i = _gridWidth - 1;
+			else if (i < 0)
+				i = 0;
+			if (j >= _gridDepth)
+				j = _gridDepth + 1;
+			else if (j < 0)
+				j = 0;
+		}
+=======
         if (camera != null)
         {
-            i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MAP_TILE_WIDTH);
-            j += (int)((camera.transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MAP_TILE_DEPTH);
+            i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MapTileWidth);
+            j += (int)((camera.transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MapTileDepth);
             if (i >= _gridWidth)
                 i = _gridWidth - 1;
             else if (i < 0)
                 i = 0;
             if (j >= _gridDepth)
-                j = _gridDepth + 1;
+                j = _gridDepth - 1;
             else if (j < 0)
                 j = 0;
         }
+>>>>>>> db288315ab2d656443b947f27328c9c706070201
 
-        while (_map[i, j] == null)
-        {
-            IncrementIndices(ref i, ref j, i - 2, i + 2, j -2, j + 2);
-        }
-        _lastPlayerSpawnTile = _map [i, j];
+		while (_map[i, j] == null) {
+			IncrementIndices (ref i, ref j, i - 2, i + 2, j - 2, j + 2);
+		}
+		_lastPlayerSpawnTile = _map [i, j];
 		_map [i, j].renderer.material.color = Color.red;
-        return _map[i, j];
-    }
+		return _map [i, j];
+	}
+	
 }

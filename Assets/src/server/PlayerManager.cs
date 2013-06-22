@@ -198,32 +198,48 @@ public class PlayerManager : MonoBehaviour
     /// <summary>
     /// Checks the respawn.
     /// </summary>
-    void CheckRespawn()
-    {
-        foreach (KeyValuePair<string, ConnectedPlayer> p in _players)
-        {
-            string guid = p.Value.NPlayer.guid;
-            if (IsDead(guid))
-                ResetPlayer(guid);
-        }
+    void CheckRespawn ()
+	{
+		foreach (KeyValuePair<string, ConnectedPlayer> p in _players) {
+			string guid = p.Value.NPlayer.guid;
+			if (IsDead (guid))
+				ResetPlayer (guid);
+		}
 
-    }
-
+	}
+	
+	/// <summary>
+	/// Resets the players.
+	/// </summary>
+	public void ResetPlayers ()
+	{
+		foreach (KeyValuePair<string, ConnectedPlayer> cp in _players) {
+			ResetPlayer(cp.Key);
+		}
+	}
+	
     /// <summary>
     /// Respawn the specified Player.
     /// </summary>
     /// <param name='guid'>
     /// GUID.
     /// </param>
-    void ResetPlayer(string guid)
-    {
-        GameObject cube = _players[guid].Cube;
-        cube.transform.position = SpawnPoint;
-        cube.rigidbody.velocity = Vector3.zero;
-        cube.transform.rotation = Quaternion.identity;
-        cube.transform.localRotation = Quaternion.identity;
-        cube.rigidbody.angularVelocity = Vector3.zero;
-    }
+    void ResetPlayer (string guid)
+	{
+		// reset rigid body and transforms
+		GameObject cube = _players [guid].Cube;
+		cube.transform.position = SpawnPoint;
+		cube.rigidbody.velocity = Vector3.zero;
+		cube.transform.rotation = Quaternion.identity;
+		cube.transform.localRotation = Quaternion.identity;
+		cube.rigidbody.angularVelocity = Vector3.zero;
+		
+		// reset score
+		_players [guid].ResetScore ();
+		// random score
+		if (AmApplication.IS_DEVELOPMENT)
+			_players [guid].RandomScore ();			
+	}
 
     /// <summary>
     /// Determines whether this instance is dead the specified guid.
@@ -238,8 +254,11 @@ public class PlayerManager : MonoBehaviour
     {
         if (_players[guid].Cube.transform.position.y < -AmApplication.MAX_PLAYABLE_AREA_Y)
             return true;
-        float xSpawn = SpawnPoint.x;
-        if (Mathf.Abs(_players[guid].Cube.transform.position.x - xSpawn) > AmApplication.MAX_X_PLAYER_DISPLACEMENT_FROM_SPAWN)
+        Vector3 spawnPoint = SpawnPoint;
+        float xSpawn = spawnPoint.x;
+        float zSpawn = spawnPoint.z;
+        if (Mathf.Abs(_players[guid].Cube.transform.position.x - xSpawn) > AmApplication.MAX_X_PLAYER_DISPLACEMENT_FROM_SPAWN
+            || Mathf.Abs(_players[guid].Cube.transform.position.z - zSpawn) > AmApplication.MAX_Z_PLAYER_DISPLACEMENT_FROM_SPAWN)
             return true;
         return false;
     }
