@@ -273,21 +273,26 @@ public class MapGenerator : MonoBehaviour {
 		int i = _mapCenterI;
 		int j = _mapCenterJ;
 
-		if (camera != null) {
-			i += (int)(camera.transform.position.x / AmApplication.MAP_TILE_WIDTH);
-			if (i >= _gridWidth)
-				i = _gridWidth - 1;
-			else if (i < 0)
-				i = 0;
-		}
+        if (camera != null)
+        {
+            i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MAP_TILE_WIDTH);
+            j += (int)((camera.transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MAP_TILE_DEPTH);
+            if (i >= _gridWidth)
+                i = _gridWidth - 1;
+            else if (i < 0)
+                i = 0;
+            if (j >= _gridDepth)
+                j = _gridDepth + 1;
+            else if (j < 0)
+                j = 0;
+        }
 
-		while (_map[i, j] == null) {
-			IncrementIndices (ref i, ref j);
-
-		}
-		
-		_lastPlayerSpawnTile = _map [i, j];
+        while (_map[i, j] == null)
+        {
+            IncrementIndices(ref i, ref j, i - 2, i + 2, j -2, j + 2);
+        }
+        _lastPlayerSpawnTile = _map [i, j];
 		_map [i, j].renderer.material.color = Color.red;
-		return _map [i, j];
-	}
+        return _map[i, j];
+    }
 }
