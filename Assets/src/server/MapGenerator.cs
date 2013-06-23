@@ -60,65 +60,85 @@ public class MapGenerator : MonoBehaviour {
 	/// <summary>
 	/// Initialize the MapGenerator
 	/// </summary>
-	void Start ()
-	{
-		//Blocks client execution
-		if (Network.isClient)
-			return;
+    void Start()
+    {
+        //Blocks client execution
+        if (Network.isClient)
+            return;
 
-		_timer = 0;
-		_grid = new bool[_gridWidth, _gridDepth];
-		_map = new GameObject[_gridWidth, _gridDepth];
-		_powerups = new GameObject[_gridWidth, _gridDepth];
+        _timer = 0;
+        _grid = new bool[_gridWidth, _gridDepth];
+        _map = new GameObject[_gridWidth, _gridDepth];
+        _powerups = new GameObject[_gridWidth, _gridDepth];
 
-		//Generates the map (without holes).
-		for (int i = 0; i < _gridWidth; i++) {
-			for (int j = 0; j < _gridDepth; j++) {
-				_grid [i, j] = true;
-				_map [i, j] = null;
-				_powerups [i, j] = null;
-			}
-		}
-		//Generates the holes.
-		for (int counter = 0; counter < _gridHoles; counter++) {
-			int i = Random.Range (0, _gridWidth - 1);
-			int j = Random.Range (0, _gridDepth - 1);
-			GenerateHole (i, j);
-		}
+        //Generates the map (without holes).
+        for (int i = 0; i < _gridWidth; i++)
+        {
+            for (int j = 0; j < _gridDepth; j++)
+            {
+                _grid[i, j] = true;
+                _map[i, j] = null;
+                _powerups[i, j] = null;
+            }
+        }
+        //Generates the holes.
+        for (int counter = 0; counter < _gridHoles; counter++)
+        {
+            int i = Random.Range(0, _gridWidth - 1);
+            int j = Random.Range(0, _gridDepth - 1);
+            GenerateHole(i, j);
+        }
         for (int i = 0; i < _gridWidth; i++)
         {
             for (int j = 0; j < _gridDepth; j++)
             {
                 if (_grid[i, j])
                 {
-                    _map[i, j] = (GameObject)GameObject.Instantiate(tilePrefab, CalculateTilePosition(i,j), Quaternion.identity);
+                    _map[i, j] = (GameObject)GameObject.Instantiate(tilePrefab, CalculateTilePosition(i, j), Quaternion.identity);
                     _map[i, j].transform.localScale = CalculateTileScaling();
                 }
             }
         }
 
-		_mapCenterI = _gridWidth / 2;
-		_mapCenterJ = _gridDepth / 2;
-		// checks if we should instantiate a first testing player.
-		if (!PlayerSettings.DedicatedServer && !AmApplication.MatchFirstStart) {
-			gameObject.GetComponent<PlayerManager> ().OnMapGenerated ();
-			AmApplication.MatchFirstStart = true;
-		}
-	}
-	
-	public void Reset ()
-	{
-		// reset players
-		GameObject.Find (AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME).GetComponent<PlayerManager> ().ResetPlayers ();
-	
-		// destroy tiles and powerups
-		foreach (GameObject g in GameObject.FindGameObjectsWithTag("Respawn")) {
-			GameObject.DestroyImmediate (g);
-		}
-		
-		// loading map
-		Start ();
-	}
+        _mapCenterI = _gridWidth / 2;
+        _mapCenterJ = _gridDepth / 2;
+        // checks if we should instantiate a first testing player.
+        if (!PlayerSettings.DedicatedServer && !AmApplication.MatchFirstStart)
+        {
+            gameObject.GetComponent<PlayerManager>().OnMapGenerated();
+            AmApplication.MatchFirstStart = true;
+        }
+    }
+
+    public void DestroyAll()
+    {
+        // destroy tiles and powerups
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("Respawn"))
+        {
+            g.AddComponent<Rigidbody>();
+            g.rigidbody.AddExplosionForce(700f, new Vector3(0,-100,0), 10000f);
+        }
+        Camera.main.rigidbody.velocity = Vector3.zero;
+    }
+
+    public void Restart()
+    {
+        Camera.main.transform.position = new Vector3(AmApplication.INITIAL_X_CAMERA_POSITION, AmApplication.INITIAL_Y_CAMERA_POSITION, AmApplication.INITIAL_Z_CAMERA_POSITION);
+
+        // reset players
+        GameObject.Find(AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME).GetComponent<PlayerManager>().ResetPlayers();
+
+        // destroy tiles and powerups
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("Respawn"))
+        {
+            GameObject.DestroyImmediate(g);
+        }
+        _grid = null;
+        _map = null;
+        _timer = 0;
+        _powerups = null;
+        Start();
+    }
 	
 
     private Vector3 CalculateTileScaling()
@@ -129,6 +149,11 @@ public class MapGenerator : MonoBehaviour {
     private Vector3 CalculateTilePosition(int i, int j)
     {
         return new Vector3(AmApplication.MapTileWidth * (i - _gridWidth / 2), 0, AmApplication.MapTileDepth * (j - _gridDepth / 2));
+    }
+
+    private Vector3 CalculatePowerUpPosition(int i, int j)
+    {
+        return _map[i, j].transform.position + Vector3.up;
     }
 
     /// <summary>
@@ -249,8 +274,8 @@ public class MapGenerator : MonoBehaviour {
     /// </summary>
     void Update()
     {
-        // Blocks client execution
-        if (Network.isClient)
+        // Blocks wrong state execution
+        if (!Network.isServer || AmApplication.CurrentMatchState != MatchState.MATCH)
             return;
 
         _timer += Time.deltaTime;
@@ -272,6 +297,8 @@ public class MapGenerator : MonoBehaviour {
                 {
                     _map[i, j].transform.position = CalculateTilePosition(i, j);
                     _map[i, j].transform.localScale = CalculateTileScaling();
+                    if(_powerups[i,j] != null)
+                        _powerups[i, j].transform.position = CalculatePowerUpPosition(i, j);
                 }
             }
         }
@@ -296,7 +323,7 @@ public class MapGenerator : MonoBehaviour {
                 return;
             }
         }
-        _powerups[i,j] = (GameObject)GameObject.Instantiate(powerupPrefab, _map[i,j].transform.position + new Vector3(0,1,0), Quaternion.identity);
+        _powerups[i, j] = (GameObject)GameObject.Instantiate(powerupPrefab, CalculatePowerUpPosition(i, j), Quaternion.identity);
     }
 
     /// <summary>

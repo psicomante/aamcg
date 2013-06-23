@@ -120,6 +120,31 @@ namespace Amucuga
         {
 
         }
+
+        /// <summary>
+        /// Immediately cancels the effect of the powerup and terminates its life-cycle
+        /// </summary>
+        public override void TerminateImmediate()
+        {
+            switch (_type)
+            {
+                case ModifierType.TILE_WIDTH_INCREMENT:
+                    AmApplication.MapTileWidth -= _totalModified;
+                    break;
+                case ModifierType.TILE_DEPTH_INCREMENT:
+                    AmApplication.MapTileDepth -= _totalModified;
+                    break;
+                case ModifierType.TILE_WIDTH_DECREMENT:
+                    AmApplication.MapTileWidth += _totalModified;
+                    break;
+                case ModifierType.TILE_DEPTH_DECREMENT:
+                    AmApplication.MapTileDepth += _totalModified;
+                    break;
+                default:
+                    throw new System.NotImplementedException();
+            }
+            base.TerminateImmediate();
+        }
     }
 
 }

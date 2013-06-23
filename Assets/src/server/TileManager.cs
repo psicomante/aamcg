@@ -19,6 +19,9 @@ public class TileManager : MonoBehaviour {
 	/// </summary>
 	public void Update ()
 	{
+        //blocks wrong execution
+        if (!Network.isServer || AmApplication.CurrentMatchState != MatchState.MATCH)
+            return;
 
 		Color currentTileColor = gameObject.renderer.material.color;
 		

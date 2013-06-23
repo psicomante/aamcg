@@ -24,6 +24,22 @@ namespace Amucuga
         SERVER_PANEL
     }
 
+    /// <summary>
+    /// Enums the match states
+    /// </summary>
+    public enum MatchState
+    {
+        /// <summary>
+        /// Waiting room state (score board displayed)
+        /// </summary>
+        WAITING_ROOM,
+
+        /// <summary>
+        /// Match state (the game)
+        /// </summary>
+        MATCH
+    }
+
 	public static class AmApplication
 	{
 		/// <summary>
@@ -64,7 +80,7 @@ namespace Amucuga
 		/// <summary>
 		/// Constant default match duration, in seconds
 		/// </summary>
-		public const int DEFAULT_MATCH_DURATION = 300;		
+		public const int DEFAULT_MATCH_DURATION = 180;		
 		
 		/// <summary>
 		/// The Server scene name. Loaded on serverInitialized
@@ -112,12 +128,12 @@ namespace Amucuga
         /// <summary>
         /// The game map width (in tiles)
         /// </summary>
-        public const int MAP_WIDTH = 50;
+        public const int MAP_WIDTH = 30;
 
         /// <summary>
         /// The game map depth (in tiles)
         /// </summary>
-        public const int MAP_DEPTH = 50;
+        public const int MAP_DEPTH = 30;
 
         /// <summary>
         /// The number of holes on the game map
@@ -251,6 +267,11 @@ namespace Amucuga
 		/// The match count down.
 		/// </value>
 		public static float MatchCountDown { get; set; }
+
+        /// <summary>
+        /// The current state of the match
+        /// </summary>
+        public static MatchState CurrentMatchState { get; set; }
 		
 		/// <summary>
 		/// Save if the match has been first-started;

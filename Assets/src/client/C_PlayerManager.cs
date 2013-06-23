@@ -29,7 +29,7 @@ public class C_PlayerManager : MonoBehaviour
     void Update()
     {
         //Blocks the Server exectution
-        if (Network.isServer)
+        if (!Network.isClient || AmApplication.CurrentMatchState != MatchState.MATCH)
             return;
     }
 
@@ -39,7 +39,7 @@ public class C_PlayerManager : MonoBehaviour
     void FixedUpdate ()
 	{
 		//Blocks the Server execution
-		if (Network.isServer && PlayerSettings.DedicatedServer)
+		if (!Network.isClient || AmApplication.CurrentMatchState != MatchState.MATCH)
 			return;
 
 		//Input management

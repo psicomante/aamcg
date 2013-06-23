@@ -122,6 +122,10 @@ namespace Amucuga
         /// </summary>
         void Update()
         {
+            // blocks wrong execution
+            if (!Network.isServer || AmApplication.CurrentMatchState != MatchState.MATCH)
+                return;
+
             List<PowerUp> mustDie = new List<PowerUp>();
 
             // Updates all the powerups in the player
@@ -293,6 +297,17 @@ namespace Amucuga
         public void OnGenerateExplosion()
         {
             Camera.main.GetComponent<PlayerManager>().OnGenerateExplosion(NPlayer.guid);
+        }
+
+        /// <summary>
+        /// Resets all the powerups
+        /// </summary>
+        public void ResetPowerUps()
+        {
+            foreach (PowerUp p in _powerUps)
+            {
+                p.TerminateImmediate();
+            }
         }
 		
 		/// <summary>

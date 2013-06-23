@@ -8,7 +8,7 @@ namespace Amucuga
     /// </summary>
     public class StrengthPowerUp : PowerUp
     {
-        private const float FORCE_MULTIPLIER_INCREMENT = 4f;
+        private const float FORCE_MULTIPLIER_INCREMENT = 6f;
 
         /// <summary>
         /// Initializes the powerup

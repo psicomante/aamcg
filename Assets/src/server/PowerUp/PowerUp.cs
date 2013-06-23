@@ -179,5 +179,15 @@ namespace Amucuga
         {
             _remainingTime = _lifeTime;
         }
+
+        /// <summary>
+        /// Immediately cancels the effect of the powerup and terminates its life-cycle
+        /// </summary>
+        public virtual void TerminateImmediate()
+        {
+            DisablePowerUpEffect();
+            _remainingTime = 0;
+            State = PowerUpState.DEAD;
+        }
     }
 }

@@ -73,7 +73,7 @@ public class PlayerManager : MonoBehaviour
     void Update()
     {
         //Blocks client execution
-        if (Network.peerType != NetworkPeerType.Server)
+        if (!Network.isServer || AmApplication.CurrentMatchState != MatchState.MATCH)
             return;
 
         // checks if the player is Dead
@@ -135,7 +135,7 @@ public class PlayerManager : MonoBehaviour
     void FixedUpdate()
     {
         // Blocks client execution
-        if (Network.isClient)
+        if (!Network.isServer || AmApplication.CurrentMatchState != MatchState.MATCH)
             return;
 
         // *** SPAGHETTI *** //
@@ -197,7 +197,7 @@ public class PlayerManager : MonoBehaviour
 		foreach (KeyValuePair<string, ConnectedPlayer> p in _players) {
 			string guid = p.Value.NPlayer.guid;
 			if (IsDead (guid))
-				ResetPlayer (guid);
+				RespawnPlayer (guid);
 		}
 
 	}
@@ -208,8 +208,9 @@ public class PlayerManager : MonoBehaviour
 	public void ResetPlayers ()
 	{
 		foreach (KeyValuePair<string, ConnectedPlayer> cp in _players) {
-			ResetPlayer(cp.Key);
-            cp.Value.ResetScore();	
+			RespawnPlayer(cp.Key);
+            cp.Value.ResetScore();
+            cp.Value.ResetPowerUps();
 		}
 	}
 	
@@ -219,7 +220,7 @@ public class PlayerManager : MonoBehaviour
     /// <param name='guid'>
     /// GUID.
     /// </param>
-    void ResetPlayer (string guid)
+    void RespawnPlayer (string guid)
 	{
 		// reset rigid body and transforms
 		GameObject cube = _players [guid].Cube;
@@ -282,7 +283,7 @@ public class PlayerManager : MonoBehaviour
         {
             if (p.Value != explodePlayer)
             {
-                p.Value.rigidbody.AddExplosionForce(3000f, explodePlayer.Cube.transform.position, 10f);
+                p.Value.rigidbody.AddExplosionForce(4000f, explodePlayer.Cube.transform.position, 15f);
             }
         }
     }
