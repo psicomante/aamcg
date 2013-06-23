@@ -46,7 +46,7 @@ public class TileManager : MonoBehaviour {
 	/// Collision detection
 	/// </summary>
 	public void OnCollisionEnter (Collision collision)
-	{		
+	{
 		// hey, you touched me!
 		Touched = true;
 		_touchedBy = collision.gameObject.GetComponent<ConnectedPlayer> ();
