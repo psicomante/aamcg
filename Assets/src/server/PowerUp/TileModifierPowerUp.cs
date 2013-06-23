@@ -39,7 +39,6 @@ namespace Amucuga
             _transitionTime = DURATION / 6f;
             _step = DIMENSIONS_INCREMENT / _transitionTime;
             _totalModified = 0;
-            Debug.Log(_step);
             switch(Random.Range(0,3))
             {
                 case 0:

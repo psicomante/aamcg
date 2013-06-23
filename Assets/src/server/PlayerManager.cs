@@ -215,6 +215,7 @@ public class PlayerManager : MonoBehaviour
 	{
 		foreach (KeyValuePair<string, ConnectedPlayer> cp in _players) {
 			ResetPlayer(cp.Key);
+            cp.Value.ResetScore();	
 		}
 	}
 	
@@ -233,12 +234,7 @@ public class PlayerManager : MonoBehaviour
 		cube.transform.rotation = Quaternion.identity;
 		cube.transform.localRotation = Quaternion.identity;
 		cube.rigidbody.angularVelocity = Vector3.zero;
-		
-		// reset score
-		_players [guid].ResetScore ();
-		// random score
-		if (AmApplication.IS_DEVELOPMENT)
-			_players [guid].RandomScore ();			
+        _players[guid].OnRespawn();
 	}
 
     /// <summary>

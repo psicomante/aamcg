@@ -40,9 +40,6 @@ public class TileManager : MonoBehaviour {
 	/// </summary>
 	public void OnCollisionEnter (Collision collision)
 	{
-		// previous owner
-		if (_touchedBy != null)
-			Debug.Log ("previous owner: " + _touchedBy.Name);
 		
 		// hey, you touched me!
 		_touched = true;
