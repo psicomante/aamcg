@@ -4,14 +4,15 @@ using Amucuga;
 
 public class TileManager : MonoBehaviour {
 	
-	private float _remainingTime = 0;
-	private bool _touched;
 	private ConnectedPlayer _touchedBy;
-
-	// Use this for initialization
-	void Start () {
-		_remainingTime = AmApplication.TILE_TOUCHEDBY_TIMEOUT;
-	}
+	
+	// records the touched state of tile
+	public bool Touched { get; set; }
+	
+	/// <summary>
+	/// The default tile material.
+	/// </summary>
+	public Material defaultTileMaterial;	
 	
 	/// <summary>
 	/// Updates the tiles
@@ -22,14 +23,20 @@ public class TileManager : MonoBehaviour {
 		Color currentTileColor = gameObject.renderer.material.color;
 		
 		// increment the current color to white (tile color decay)
-		if (_touched && gameObject.renderer.material.color != Color.white) {
-			currentTileColor.r += AmApplication.TILE_COLOR_DECAY;
-			currentTileColor.g += AmApplication.TILE_COLOR_DECAY;
-			currentTileColor.b += AmApplication.TILE_COLOR_DECAY;
-			gameObject.renderer.material.color = currentTileColor;
-		} else if (_touched && gameObject.renderer.material.color == Color.white) {
-			_touched = false;
-			_touchedBy = null;
+		// if touched (by a player or spawner)
+		if (Touched) {
+			if (currentTileColor != AmApplication.DEFAULT_COLOR) {
+				currentTileColor.r += AmApplication.TILE_COLOR_DECAY;
+				currentTileColor.g += AmApplication.TILE_COLOR_DECAY;
+				currentTileColor.b += AmApplication.TILE_COLOR_DECAY;
+				currentTileColor.a = 0.5f;
+				gameObject.renderer.material.color = currentTileColor;
+				// color has been reset: reset touch variables too
+			} else {
+				gameObject.renderer.material = defaultTileMaterial;
+				Touched = false;
+				_touchedBy = null;				
+			}
 		}
 		
 	
@@ -39,13 +46,9 @@ public class TileManager : MonoBehaviour {
 	/// Collision detection
 	/// </summary>
 	public void OnCollisionEnter (Collision collision)
-	{
-		// previous owner
-		if (_touchedBy != null)
-			Debug.Log ("previous owner: " + _touchedBy.Name);
-		
+	{		
 		// hey, you touched me!
-		_touched = true;
+		Touched = true;
 		_touchedBy = collision.gameObject.GetComponent<ConnectedPlayer> ();
 		
 		//update the color

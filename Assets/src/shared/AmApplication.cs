@@ -234,7 +234,15 @@ namespace Amucuga
 		/// </summary>
 		public const float TILE_COLOR_DECAY = 0.001f;
 		
+		/// <summary>
+		/// Development Options
+		/// </summary>
 		public const bool IS_DEVELOPMENT = true;
+		
+		public const bool SPAWNER_HAS_TRACK = false;
+		public const bool SPAWNER = false;
+		public static Color SPAWNER_COLOR = new Color (1,0,0,.5f);
+		public static Color DEFAULT_COLOR = new Color (1,1,1,.5f);
 		
 		/// <summary>
 		/// Gets or sets the match count down.

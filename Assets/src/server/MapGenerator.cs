@@ -24,7 +24,7 @@ public class MapGenerator : MonoBehaviour {
     /// </summary>
     public GameObject tilePrefab;
     public GameObject powerupPrefab;
-
+	
     /// <summary>
     /// A timer
     /// </summary>
@@ -44,6 +44,7 @@ public class MapGenerator : MonoBehaviour {
 	/// The last player spawn tile.
 	/// </summary>
 	private GameObject _lastPlayerSpawnTile;
+	private Color _lastPlayerSpawnTileColor;
 
     /// <summary>
     /// The player spawn point
@@ -304,30 +305,47 @@ public class MapGenerator : MonoBehaviour {
     /// <returns>The tile of the spawn point</returns>
     private GameObject SearchSpawnTile ()
 	{
-		if (_lastPlayerSpawnTile != null)
-			_lastPlayerSpawnTile.renderer.material.color = Color.cyan;
 		int i = _mapCenterI;
 		int j = _mapCenterJ;
 
-        if (camera != null)
-        {
-            i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MapTileWidth);
-            j += (int)((camera.transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MapTileDepth);
-            if (i >= _gridWidth)
-                i = _gridWidth - 1;
-            else if (i < 0)
-                i = 0;
-            if (j >= _gridDepth)
-                j = _gridDepth - 1;
-            else if (j < 0)
-                j = 0;
-        }
+		if (camera != null) {
+			i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MapTileWidth);
+			j += (int)((camera.transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MapTileDepth);
+			if (i >= _gridWidth)
+				i = _gridWidth - 1;
+			else if (i < 0)
+				i = 0;
+			if (j >= _gridDepth)
+				j = _gridDepth - 1;
+			else if (j < 0)
+				j = 0;
+		}
 
 		while (_map[i, j] == null) {
 			IncrementIndices (ref i, ref j, i - 2, i + 2, j - 2, j + 2);
 		}
-		_lastPlayerSpawnTile = _map [i, j];
-		_map [i, j].renderer.material.color = Color.red;
+		
+		if (AmApplication.SPAWNER) {
+		
+			if (!AmApplication.SPAWNER_HAS_TRACK) {			
+				if (_lastPlayerSpawnTile != null) {
+					
+					if (_lastPlayerSpawnTileColor != null) {
+						// the _lastPlayerSpawnTile had a color
+						_lastPlayerSpawnTile.renderer.material.color = _lastPlayerSpawnTileColor;
+					} else {
+						// set the default diffuse
+						_lastPlayerSpawnTile.renderer.material = _lastPlayerSpawnTile.GetComponent<TileManager> ().defaultTileMaterial;
+					}
+				}
+				_lastPlayerSpawnTile = _map [i, j];
+				_lastPlayerSpawnTileColor = _map [i, j].renderer.material.color;	
+			}
+			
+			_map [i, j].renderer.material.color = AmApplication.SPAWNER_COLOR;
+			_map [i, j].GetComponent<TileManager> ().Touched = true;
+		}
+
 		return _map [i, j];
 	}
 	
