@@ -85,11 +85,6 @@ namespace Amucuga
         public float ForceMultiplier { get; set; }
 
         /// <summary>
-        /// Limits the speed of the player
-        /// </summary>
-        public float MaxVelocityMagnitude { get; set; }
-
-        /// <summary>
         /// The last player that touched this player
         /// </summary>
         public ConnectedPlayer LastTouched { get; private set; }
@@ -115,7 +110,6 @@ namespace Amucuga
 			_powerUps = new List<PowerUp> ();
 			ForceMultiplier = AmApplication.DEFAULT_FORCE_MULTIPLIER;
 			CanFly = false;
-			MaxVelocityMagnitude = AmApplication.DEFAULT_MAX_VELOCITY_MAGNITUDE;
             LastTouched = null;
             _touchCounter = 0;
             _comboScoreTemp = 0;
@@ -292,6 +286,14 @@ namespace Amucuga
                 }
             }
         }
+
+        /// <summary>
+        /// Generates an explosion
+        /// </summary>
+        public void OnGenerateExplosion()
+        {
+            Camera.main.GetComponent<PlayerManager>().OnGenerateExplosion(NPlayer.guid);
+        }
 		
 		/// <summary>
 		/// Returns a <see cref="System.String"/> that represents the current <see cref="Amucuga.ConnectedPlayer"/>.
@@ -303,6 +305,5 @@ namespace Amucuga
 		{
 			return (Name + " \t " + Score);
 		}
-		
-	}
+    }
 }

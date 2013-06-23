@@ -29,7 +29,7 @@ public class PowerUpManager : MonoBehaviour {
                 powerUp = new StrengthPowerUp();
                 break;
             case 4:
-                powerUp = new SpeedPowerUp();
+                powerUp = new ExplosionPowerUp();
                 break;
             case 5:
                 powerUp = new BlowPowerUp();
