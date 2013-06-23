@@ -157,15 +157,9 @@ public class PlayerManager : MonoBehaviour
         // Limits the player speed
         foreach (KeyValuePair<string, ConnectedPlayer> p in _players)
         {
-            ConnectedPlayer player = p.Value;
+            Rigidbody pBody = p.Value.rigidbody;
 
-            // Limits the player's velocity
-            if (player.Cube.rigidbody.velocity.sqrMagnitude > player.MaxVelocityMagnitude * player.MaxVelocityMagnitude)
-            {
-                Vector3 v = player.Cube.rigidbody.velocity;
-                v.Normalize();
-                player.Cube.rigidbody.velocity = v * player.MaxVelocityMagnitude;
-            }
+            pBody.AddForce(new Vector3(-pBody.velocity.x * 2, 0, -pBody.velocity.z * 2));
         }
 
     }
@@ -215,6 +209,7 @@ public class PlayerManager : MonoBehaviour
 	{
 		foreach (KeyValuePair<string, ConnectedPlayer> cp in _players) {
 			ResetPlayer(cp.Key);
+            cp.Value.ResetScore();	
 		}
 	}
 	
@@ -233,12 +228,7 @@ public class PlayerManager : MonoBehaviour
 		cube.transform.rotation = Quaternion.identity;
 		cube.transform.localRotation = Quaternion.identity;
 		cube.rigidbody.angularVelocity = Vector3.zero;
-		
-		// reset score
-		_players [guid].ResetScore ();
-		// random score
-		if (AmApplication.IS_DEVELOPMENT)
-			_players [guid].RandomScore ();			
+        _players[guid].OnRespawn();
 	}
 
     /// <summary>
@@ -279,5 +269,21 @@ public class PlayerManager : MonoBehaviour
     public void AddPlayerName(string guid, string playerName)
     {
         _players[guid].Name = playerName;
+    }
+
+    /// <summary>
+    /// Generates an explosion
+    /// </summary>
+    /// <param name="guid">the player that generates the explosion</param>
+    public void OnGenerateExplosion(string guid)
+    {
+        ConnectedPlayer explodePlayer = _players[guid];
+        foreach (KeyValuePair<string, ConnectedPlayer> p in _players)
+        {
+            if (p.Value != explodePlayer)
+            {
+                p.Value.rigidbody.AddExplosionForce(3000f, explodePlayer.Cube.transform.position, 10f);
+            }
+        }
     }
 }

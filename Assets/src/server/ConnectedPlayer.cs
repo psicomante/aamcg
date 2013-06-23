@@ -9,7 +9,38 @@ namespace Amucuga
     /// </summary>
 	public class ConnectedPlayer : MonoBehaviour
 	{
+        private const float LAST_TOUCHED_DURATION = 5;
+        private const float KILL_COMBO_DURATION = 5;
+        
+        /// <summary>
+        /// The current player score (modified by getter and setter)
+        /// </summary>
+        private int _score;
+
+        /// <summary>
+        /// The list of active powerups collected by player
+        /// </summary>
         private List<PowerUp> _powerUps;
+
+        /// <summary>
+        /// A counter for last touched player
+        /// </summary>
+        private float _touchCounter;
+
+        /// <summary>
+        /// A counter for kill combo (multikill)
+        /// </summary>
+        private float _killComboCounter;
+
+        /// <summary>
+        /// A storage for the combo score
+        /// </summary>
+        private int _comboScoreTemp;
+
+        /// <summary>
+        /// The current multiplier for the combo score
+        /// </summary>
+        private int _comboScoreMultiplier;
 
         /// <summary>
         /// The player cube
@@ -29,7 +60,19 @@ namespace Amucuga
 		/// <summary>
 		/// The player score. Displayed in the server (on the player list), in the client (on the hud)
 		/// </summary>
-		public int Score {get; private set;}
+		public int Score 
+        {
+            get
+            {
+                return _score;
+            }
+
+            private set
+            {
+                CreateScoreText(value - _score);
+                _score = value;
+            }
+        }
 
         /// <summary>
         /// Indicates if the player can fly
@@ -42,9 +85,9 @@ namespace Amucuga
         public float ForceMultiplier { get; set; }
 
         /// <summary>
-        /// Limits the speed of the player
+        /// The last player that touched this player
         /// </summary>
-        public float MaxVelocityMagnitude { get; set; }
+        public ConnectedPlayer LastTouched { get; private set; }
 
         /// <summary>
         /// Destroys all the player objects
@@ -64,11 +107,14 @@ namespace Amucuga
 			// resets score
 			Score = 0;
 			
-			//
 			_powerUps = new List<PowerUp> ();
 			ForceMultiplier = AmApplication.DEFAULT_FORCE_MULTIPLIER;
 			CanFly = false;
-			MaxVelocityMagnitude = AmApplication.DEFAULT_MAX_VELOCITY_MAGNITUDE;
+            LastTouched = null;
+            _touchCounter = 0;
+            _comboScoreTemp = 0;
+            _comboScoreMultiplier = 0;
+            _killComboCounter = KILL_COMBO_DURATION;
 		}
 
         /// <summary>
@@ -91,6 +137,40 @@ namespace Amucuga
             {
                 _powerUps.Remove(p);
             }
+
+            UpdateCounters();
+        }
+
+        /// <summary>
+        /// Updates all the counters of the player logic
+        /// </summary>
+        private void UpdateCounters()
+        {
+            // Updates the last touched counter
+            _touchCounter -= Time.deltaTime;
+            if (_touchCounter <= 0)
+            {
+                LastTouched = null;
+                _touchCounter = LAST_TOUCHED_DURATION;
+            }
+
+            // Updates the score
+            _killComboCounter -= Time.deltaTime;
+            if (_killComboCounter <= 0)
+            {
+                UpdateScore();
+            }
+        }
+
+        /// <summary>
+        /// Update the score and empty the score temp
+        /// </summary>
+        private void UpdateScore()
+        {
+            Score += _comboScoreTemp * _comboScoreMultiplier;
+            _comboScoreTemp = 0;
+            _comboScoreMultiplier = 0;
+            _killComboCounter = KILL_COMBO_DURATION;
         }
 
         /// <summary>
@@ -114,6 +194,7 @@ namespace Amucuga
                 _powerUps.Add(powerUp);
             else
                 ResetOrAddPowerUp(powerUp);
+            Score += 1;
         }
 
         /// <summary>
@@ -142,13 +223,77 @@ namespace Amucuga
 		{
 			Score = 0;
 		}
-		
-		public void RandomScore ()
-		{
-			Score = (int)(UnityEngine.Random.value * 1000);
-			Debug.Log (Score);	
-		}
-		
+
+        /// <summary>
+        /// The player respawns.
+        /// </summary>
+        public void OnRespawn()
+        {   
+            // Killed by another player
+            if (LastTouched != null)
+            {
+                LastTouched.OnKill(this);
+                UpdateScore();
+                Score -= 20;
+            }
+
+            // Suicided
+            else
+            {
+                UpdateScore();
+                Score -= 30;
+            }
+        }
+
+        /// <summary>
+        /// This player just killed another player
+        /// </summary>
+        /// <param name="connectedPlayer">The killed player</param>
+        private void OnKill(ConnectedPlayer connectedPlayer)
+        {
+            // The points for the kill are storage (for potential multiKill)
+            _comboScoreTemp += 100;
+
+            // Multikill multiplier increased by 1
+            _comboScoreMultiplier += 1;
+        }
+
+        /// <summary>
+        /// Creates a score text over the player
+        /// </summary>
+        private void CreateScoreText(int score)
+        {
+            if (score != 0)
+            {
+                Debug.Log(Name + " scored: " + score);
+                Debug.LogError("TODO: Implement CreateScoreText");
+            }
+        }
+
+        /// <summary>
+        /// Updates collision
+        /// </summary>
+        /// <param name="collision"></param>
+        void OnCollisionEnter(Collision collision)
+        {
+            if (gameObject.transform.position.y > 0)
+            {
+                ConnectedPlayer touchedPlayer = collision.gameObject.GetComponent<ConnectedPlayer>();
+                if (touchedPlayer != null)
+                {
+                    LastTouched = touchedPlayer;
+                    _touchCounter = LAST_TOUCHED_DURATION;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates an explosion
+        /// </summary>
+        public void OnGenerateExplosion()
+        {
+            Camera.main.GetComponent<PlayerManager>().OnGenerateExplosion(NPlayer.guid);
+        }
 		
 		/// <summary>
 		/// Returns a <see cref="System.String"/> that represents the current <see cref="Amucuga.ConnectedPlayer"/>.
@@ -159,7 +304,6 @@ namespace Amucuga
 		public override string ToString ()
 		{
 			return (Name + " \t " + Score);
-		}		
-		
-	}
+		}
+    }
 }
