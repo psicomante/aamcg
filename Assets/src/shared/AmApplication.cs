@@ -80,7 +80,7 @@ namespace Amucuga
 		/// <summary>
 		/// Constant default match duration, in seconds
 		/// </summary>
-		public const int DEFAULT_MATCH_DURATION = 180;		
+		public const int DEFAULT_MATCH_DURATION = 5;		
 		
 		/// <summary>
 		/// The Server scene name. Loaded on serverInitialized
