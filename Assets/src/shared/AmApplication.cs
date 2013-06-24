@@ -80,7 +80,7 @@ namespace Amucuga
 		/// <summary>
 		/// Constant default match duration, in seconds
 		/// </summary>
-		public const int DEFAULT_MATCH_DURATION = 10;		
+		public const int DEFAULT_MATCH_DURATION = 180;		
 		
 		/// <summary>
 		/// The Server scene name. Loaded on serverInitialized
@@ -123,22 +123,22 @@ namespace Amucuga
         /// <summary>
         /// The height of a tile (in meters)
         /// </summary>
-        public const float MAP_TILE_HEIGHT = 0.5f;
+        public const float MAP_TILE_HEIGHT = 1f;
 
         /// <summary>
         /// The game map width (in tiles)
         /// </summary>
-        public const int MAP_WIDTH = 30;
+        public const int MAP_WIDTH = 40;
 
         /// <summary>
         /// The game map depth (in tiles)
         /// </summary>
-        public const int MAP_DEPTH = 30;
+        public const int MAP_DEPTH = 40;
 
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 30;
+        public const int MAP_HOLES = 40;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
