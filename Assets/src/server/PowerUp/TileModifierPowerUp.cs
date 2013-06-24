@@ -16,7 +16,7 @@ namespace Amucuga
             TILE_DEPTH_DECREMENT
         }
 
-        private const float DIMENSIONS_INCREMENT = 0.5f;
+        private const float DIMENSIONS_INCREMENT = 1f;
         private const float DURATION = 15;
         private float _transitionTime;
         private float _step;

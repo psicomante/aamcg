@@ -116,7 +116,10 @@ public class MapGenerator : MonoBehaviour {
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Respawn"))
         {
             g.AddComponent<Rigidbody>();
-            g.rigidbody.AddExplosionForce(700f, new Vector3(0,-100,0), 10000f);
+            g.GetComponent<BoxCollider>().enabled = false;
+            g.rigidbody.AddExplosionForce(700f, new Vector3(0,-10,0), 300f);
+            g.rigidbody.AddTorque(new Vector3(Random.value, Random.value, Random.value) * 100);
+            g.rigidbody.AddForce(new Vector3(Random.value, Random.value, Random.value) * 100);
         }
 
         // destroy powerups
