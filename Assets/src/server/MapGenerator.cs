@@ -112,12 +112,19 @@ public class MapGenerator : MonoBehaviour {
 
     public void DestroyAll()
     {
-        // destroy tiles and powerups
+        // explode tiles
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Respawn"))
         {
             g.AddComponent<Rigidbody>();
             g.rigidbody.AddExplosionForce(700f, new Vector3(0,-100,0), 10000f);
         }
+
+        // destroy powerups
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("Finish"))
+        {
+            GameObject.DestroyImmediate(g);
+        }
+
         Camera.main.rigidbody.velocity = Vector3.zero;
     }
 

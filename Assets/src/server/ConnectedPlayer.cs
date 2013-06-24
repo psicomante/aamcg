@@ -87,13 +87,14 @@ namespace Amucuga
         /// <summary>
         /// The last player that touched this player
         /// </summary>
-        public ConnectedPlayer LastTouched { get; private set; }
+        public ConnectedPlayer LastTouched { get; set; }
 
         /// <summary>
         /// Destroys all the player objects
         /// </summary>
         public void Destroy()
         {
+            ResetPowerUps();
             GameObject.DestroyImmediate(Cube);
             Network.RemoveRPCs(NPlayer);
             Network.DestroyPlayerObjects(NPlayer);

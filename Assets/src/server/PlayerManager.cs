@@ -284,6 +284,7 @@ public class PlayerManager : MonoBehaviour
             if (p.Value != explodePlayer)
             {
                 p.Value.rigidbody.AddExplosionForce(4000f, explodePlayer.Cube.transform.position, 15f);
+                p.Value.LastTouched = explodePlayer;
             }
         }
     }

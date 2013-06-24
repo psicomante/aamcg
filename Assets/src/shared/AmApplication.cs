@@ -202,7 +202,7 @@ namespace Amucuga
         /// <summary>
         /// Indicates the initial z component of the displacement between the camera and the spawn point
         /// </summary>
-        public const float INITIAL_Z_CAMERA_POSITION = -20f;
+        public const float INITIAL_Z_CAMERA_POSITION = -30f;
 
         /// <summary>
         /// Indicates the initial y component of the displacement between the camera and the spawn point
