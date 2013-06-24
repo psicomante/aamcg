@@ -7,7 +7,6 @@ using Amucuga;
 /// </summary>
 public class C_PlayerManager : MonoBehaviour
 {
-
     /// <summary>
     /// Initializes the PlayerManager
     /// </summary>
@@ -56,10 +55,4 @@ public class C_PlayerManager : MonoBehaviour
 		if (Input.acceleration.magnitude != 0)
 			networkView.RPC ("AddForce", RPCMode.Server, Network.player.guid, new Vector3 (Input.acceleration.x, Input.acceleration.z, Input.acceleration.y) * 1.5f);
 	}
-	
-	[RPC]
-	string GetPlayerName () {
-		return PlayerSettings.PlayerName;
-	}
-
 }

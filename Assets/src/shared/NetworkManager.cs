@@ -141,7 +141,7 @@ public class NetworkManager : MonoBehaviour {
 	void OnSerializeNetworkView (BitStream stream, NetworkMessageInfo info)
 	{
 		Debug.Log ("Stream " + stream.ToString ());
-		Debug.Log ("NetworkMessageInfo" + info);	
+		Debug.Log ("NetworkMessageInfo" + info);
 	}	
 	
 	//////////////////////////////////////////////////////////////////

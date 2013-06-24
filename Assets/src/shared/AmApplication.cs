@@ -42,6 +42,11 @@ namespace Amucuga
 
 	public static class AmApplication
 	{
+        /// <summary>
+        /// A timer for the status update of the client. When it expires, an RPC call updates the client status
+        /// </summary>
+        public const float CLIENT_STATUS_UPDATE_TIMER = 5f;
+
 		/// <summary>
 		/// Constant the game name. It's showed in the main screen.
 		/// </summary>
@@ -80,7 +85,7 @@ namespace Amucuga
 		/// <summary>
 		/// Constant default match duration, in seconds
 		/// </summary>
-		public const int DEFAULT_MATCH_DURATION = 5;		
+		public const int DEFAULT_MATCH_DURATION = 180;		
 		
 		/// <summary>
 		/// The Server scene name. Loaded on serverInitialized
