@@ -75,7 +75,7 @@ namespace Amucuga
 		/// <summary>
 		/// Constant Max Allowed simultaneous players for the server.
 		/// </summary>
-		public const int DEFAULT_MAX_PLAYERS = 5;
+		public const int DEFAULT_MAX_PLAYERS = 100;
 	
 		/// <summary>
 		/// Constant the name of the server. It should be showed in the server list (in case of master server)
@@ -85,7 +85,7 @@ namespace Amucuga
 		/// <summary>
 		/// Constant default match duration, in seconds
 		/// </summary>
-		public const int DEFAULT_MATCH_DURATION = 180;		
+		public const int DEFAULT_MATCH_DURATION = 300;		
 		
 		/// <summary>
 		/// The Server scene name. Loaded on serverInitialized
@@ -118,12 +118,12 @@ namespace Amucuga
         /// <summary>
         /// The width of a tile (in meters)
         /// </summary>
-        public static float MapTileWidth = 4f;
+        public static float MapTileWidth = 3f;
 
         /// <summary>
         /// The width of a tile (in meters)
         /// </summary>
-        public static float MapTileDepth = 4f;
+        public static float MapTileDepth = 3f;
 
         /// <summary>
         /// The height of a tile (in meters)
@@ -143,7 +143,7 @@ namespace Amucuga
         /// <summary>
         /// The number of holes on the game map
         /// </summary>
-        public const int MAP_HOLES = 40;
+        public const int MAP_HOLES = 100;
 
         /// <summary>
         /// The min dimension of an hole (in tiles)
@@ -158,7 +158,7 @@ namespace Amucuga
         /// <summary>
         /// The average of power up spawned for each minute
         /// </summary>
-        public const int POWERUP_AVG_PER_MINUTE = 200;
+        public const int POWERUP_AVG_PER_MINUTE = 400;
 
         /// <summary>
         /// The game object that contains the map generator
