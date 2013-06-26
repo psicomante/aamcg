@@ -19,6 +19,10 @@ public class NetworkManager : MonoBehaviour {
 	{
 		// blocks the sleep timeout on smartphones
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+		
+		// if in game_scene and disconnected load main menu
+		if (Application.loadedLevelName == AmApplication.GAME_SCENE && Network.peerType == NetworkPeerType.Disconnected)
+			Application.LoadLevel(AmApplication.MAIN_MENU);
 	}
 	
 	// Update is called once per frame
