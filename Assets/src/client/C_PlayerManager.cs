@@ -98,6 +98,17 @@ public class C_PlayerManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Updates the client player score
+    /// </summary>
+    /// <param name="Score"></param>
+    [RPC]
+    void UpdateScore(int Score)
+    {
+        _player.Score = Score;
+        Debug.Log("New score update: " + Score);
+    }
+
+    /// <summary>
     /// Updates the whole status of the player
     /// </summary>
     [RPC]

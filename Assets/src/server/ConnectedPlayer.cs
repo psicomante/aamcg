@@ -88,10 +88,11 @@ namespace Amucuga
                 return _score;
             }
 
-            private set
+            set
             {
-                CreateScoreText(value - _score);
                 _score = value;
+                CreateScoreText(value - _score);
+                RPC("UpdateScore", _score);
             }
         }
 
@@ -244,7 +245,10 @@ namespace Amucuga
                 _powerUps.Add(powerUp);
             else
                 ResetOrAddPowerUp(powerUp);
-            Score += 1;
+
+            // Only the server can update the score, because the client receives score updates via RPC
+            if(Network.isServer)
+                Score += 1;
         }
 
         /// <summary>
@@ -315,7 +319,6 @@ namespace Amucuga
         {
             if (score != 0)
             {
-                Debug.Log(Name + " scored: " + score);
                 Debug.LogError("TODO: Implement CreateScoreText");
             }
         }
