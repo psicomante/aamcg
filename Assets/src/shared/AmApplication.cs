@@ -42,11 +42,6 @@ namespace Amucuga
 
 	public static class AmApplication
 	{
-        /// <summary>
-        /// A timer for the status update of the client. When it expires, an RPC call updates the client status
-        /// </summary>
-        public const float CLIENT_STATUS_UPDATE_TIMER = 5f;
-
 		/// <summary>
 		/// Constant the game name. It's showed in the main screen.
 		/// </summary>

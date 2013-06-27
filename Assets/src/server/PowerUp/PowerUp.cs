@@ -189,35 +189,5 @@ namespace Amucuga
             _remainingTime = 0;
             State = PowerUpState.DEAD;
         }
-
-        /// <summary>
-        /// Serializes this powerup in a string
-        /// </summary>
-        public string AmSerialize()
-        {
-            string serialized = "Name:" + this.GetType().ToString();
-            serialized += ";CountDown:" + this.CountDown;
-            return serialized;
-        }
-
-        /// <summary>
-        /// Serializes a collection of powerups
-        /// </summary>
-        /// <param name="powerups"></param>
-        /// <returns></returns>
-        public static string AmSerializePowerUpCollection(ICollection<PowerUp> powerups)
-        {
-            string serialized = null;
-            foreach (PowerUp p in powerups)
-            {
-                if (serialized != null)
-                    serialized += ",";
-                else
-                    serialized = "PowerUps[";
-                serialized += p.AmSerialize();
-            }
-            serialized += "]";
-            return serialized;
-        }
     }
 }

@@ -138,21 +138,24 @@ public class PlayerManager : MonoBehaviour
         if (!Network.isServer || AmApplication.CurrentMatchState != MatchState.MATCH)
             return;
 
-        // *** SPAGHETTI *** //
-        //Input management
-        if (Input.GetKey("left"))
-            AddForce(Network.player.guid, Vector3.left);
-        if (Input.GetKey("right"))
-            AddForce(Network.player.guid, Vector3.right);
-        if (Input.GetKey("up"))
-            AddForce(Network.player.guid, Vector3.forward);
-        if (Input.GetKey("down"))
-            AddForce(Network.player.guid, Vector3.back);
-        if (Input.GetKey("space"))
-            AddForce(Network.player.guid, Vector3.up);
-        if (Input.acceleration.magnitude != 0)
-            AddForce(Network.player.guid, new Vector3(Input.acceleration.x, Input.acceleration.z, Input.acceleration.y) * 1.5f);
-        // *** END SPAGHETTI AREA *** //
+        if (!PlayerSettings.DedicatedServer)
+        {
+            // *** SPAGHETTI *** //
+            //Input management
+            if (Input.GetKey("left"))
+                AddForce(Network.player.guid, Vector3.left);
+            if (Input.GetKey("right"))
+                AddForce(Network.player.guid, Vector3.right);
+            if (Input.GetKey("up"))
+                AddForce(Network.player.guid, Vector3.forward);
+            if (Input.GetKey("down"))
+                AddForce(Network.player.guid, Vector3.back);
+            if (Input.GetKey("space"))
+                AddForce(Network.player.guid, Vector3.up);
+            if (Input.acceleration.magnitude != 0)
+                AddForce(Network.player.guid, new Vector3(Input.acceleration.x, Input.acceleration.z, Input.acceleration.y) * 1.5f);
+            // *** END SPAGHETTI AREA *** //
+        }
 
         // Limits the player speed
         foreach (KeyValuePair<string, ConnectedPlayer> p in _players)

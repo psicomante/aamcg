@@ -43,11 +43,6 @@ namespace Amucuga
         private int _comboScoreMultiplier;
 
         /// <summary>
-        /// A timer for the status update
-        /// </summary>
-        private float _statusUpdateTimer;
-
-        /// <summary>
         /// The main networkView
         /// </summary>
         private NetworkView _networkView;
@@ -79,7 +74,6 @@ namespace Amucuga
 
             private set
             {
-                OnScoreChanged();
                 CreateScoreText(value - _score);
                 _score = value;
             }
@@ -124,7 +118,6 @@ namespace Amucuga
             _comboScoreTemp = 0;
             _comboScoreMultiplier = 0;
             _killComboCounter = KILL_COMBO_DURATION;
-            _statusUpdateTimer = AmApplication.CLIENT_STATUS_UPDATE_TIMER;
             _networkView = GameObject.Find(AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME).GetComponent<NetworkView>();
             Debug.Log("Network view imported: " + _networkView);
             // resets score
@@ -178,14 +171,6 @@ namespace Amucuga
             {
                 UpdateScore();
             }
-
-            // Updates the client
-            _statusUpdateTimer -= Time.deltaTime;
-            if (_statusUpdateTimer <= 0)
-            {
-                _networkView.RPC("UpdateStatus", NPlayer, AmSerializeAllPlayer());
-                _statusUpdateTimer = AmApplication.CLIENT_STATUS_UPDATE_TIMER;
-            }
         }
 
         /// <summary>
@@ -208,7 +193,6 @@ namespace Amucuga
             PowerUp powerUp = powerUpCollider.gameObject.GetComponent<PowerUpManager>().powerUp;
             AddPowerUp(powerUp);
             powerUp.CollectedByPlayer(this);
-            OnNewPowerUp(powerUp);
         }
 
         /// <summary>
@@ -331,71 +315,6 @@ namespace Amucuga
             {
                 p.TerminateImmediate();
             }
-        }
-
-        /// <summary>
-        /// Serialize all the player info
-        /// </summary>
-        /// <returns>The serialized info</returns>
-        public string AmSerializeAllPlayer()
-        {
-            string serialized = "Name:" + Name;
-            serialized += ".Score:" + Score;
-            if (_powerUps != null && _powerUps.Count > 0)
-                serialized += "." + PowerUp.AmSerializePowerUpCollection(_powerUps);
-            return serialized;
-        }
-
-        /// <summary>
-        /// Serialize all the powerups
-        /// </summary>
-        /// <returns></returns>
-        public string AmSerializePowerUps()
-        {
-            return PowerUp.AmSerializePowerUpCollection(_powerUps);
-        }
-
-        /// <summary>
-        /// Serialize the player name
-        /// </summary>
-        /// <returns></returns>
-        public string AmSerializeName()
-        {
-            return "Name:" + Name;
-        }
-
-        /// <summary>
-        /// Serialize the score
-        /// </summary>
-        /// <returns></returns>
-        public string AmSerializeScore()
-        {
-            return "Score:" + Score;
-        }
-
-        /// <summary>
-        /// Serializes a new powerup event
-        /// </summary>
-        /// <returns></returns>
-        public string AmSerializeNewPowerUp(PowerUp powerup)
-        {
-            return "NewPowerUp:" + powerup.Name;
-        }
-
-        /// <summary>
-        /// Submit new score to client
-        /// </summary>
-        private void OnScoreChanged()
-        {
-            _networkView.RPC("UpdateStatus", NPlayer, AmSerializeScore());
-        }
-
-        /// <summary>
-        /// Submit new powerup to client
-        /// </summary>
-        private void OnNewPowerUp(PowerUp powerup)
-        {
-            _networkView.RPC("UpdateStatus", NPlayer, AmSerializeNewPowerUp(powerup));
         }
 		
 		/// <summary>
