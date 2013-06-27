@@ -63,7 +63,7 @@ public class MapGenerator : MonoBehaviour {
     void Start()
     {
         //Blocks client execution
-        if (Network.isClient)
+        if (!Network.isServer)
             return;
 
         _timer = 0;

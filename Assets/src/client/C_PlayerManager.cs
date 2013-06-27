@@ -12,8 +12,8 @@ public class C_PlayerManager : MonoBehaviour
     /// </summary>
     void Start ()
 	{
-		//Blocks the server execution
-		if (Network.isServer)
+		//Blocks wrong execution
+		if (!Network.isClient)
 			return;
 
 		Debug.Log ("Player Name: " + PlayerSettings.PlayerName);		

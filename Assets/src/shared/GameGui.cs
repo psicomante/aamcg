@@ -46,7 +46,7 @@ public class GameGui : MonoBehaviour
 		Debug.Log ("GameGui.cs Started");
 		
 		//Blocks client execution
-		if (Network.isClient)
+		if (!Network.isServer)
 			return;
 
 		_serverIPAddress = NetworkManager.GetLocalIPAddress ();
