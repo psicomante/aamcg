@@ -20,7 +20,7 @@ namespace Amucuga
         /// <summary>
         /// The list of active powerups collected by player
         /// </summary>
-        private List<PowerUp> _powerUps;
+        public List<PowerUp> PowerUps {get; private set;}
 
         /// <summary>
         /// A counter for last touched player
@@ -116,7 +116,7 @@ namespace Amucuga
         /// </summary>
         public void Start ()
 		{
-			_powerUps = new List<PowerUp> ();
+			PowerUps = new List<PowerUp> ();
 			ForceMultiplier = AmApplication.DEFAULT_FORCE_MULTIPLIER;
 			CanFly = false;
             LastTouched = null;
@@ -143,7 +143,7 @@ namespace Amucuga
             List<PowerUp> mustDie = new List<PowerUp>();
 
             // Updates all the powerups in the player
-            foreach (PowerUp p in _powerUps)
+            foreach (PowerUp p in PowerUps)
             {
                 p.Update(Time.deltaTime);
                 if (p.State == PowerUpState.DEAD)
@@ -153,7 +153,7 @@ namespace Amucuga
             // Deletes all the powerups that must die
             foreach (PowerUp p in mustDie)
             {
-                _powerUps.Remove(p);
+                PowerUps.Remove(p);
             }
 
             UpdateCounters();
@@ -218,7 +218,7 @@ namespace Amucuga
         public void AddPowerUp(PowerUp powerUp)
         {
             if (powerUp.IsCumulative)
-                _powerUps.Add(powerUp);
+                PowerUps.Add(powerUp);
             else
                 ResetOrAddPowerUp(powerUp);
             Score += 1;
@@ -231,7 +231,7 @@ namespace Amucuga
         private void ResetOrAddPowerUp (PowerUp powerUp)
 		{
 			bool contains = false;
-			foreach (PowerUp p in _powerUps) {
+			foreach (PowerUp p in PowerUps) {
 				if (p == powerUp) {
 					p.Reset ();
 					contains = true;
@@ -239,7 +239,7 @@ namespace Amucuga
 				}
 			}
 			if (!contains) {
-				_powerUps.Add (powerUp);
+				PowerUps.Add (powerUp);
 			}
 		}
 		
@@ -327,7 +327,7 @@ namespace Amucuga
         /// </summary>
         public void ResetPowerUps()
         {
-            foreach (PowerUp p in _powerUps)
+            foreach (PowerUp p in PowerUps)
             {
                 p.TerminateImmediate();
             }
@@ -341,8 +341,8 @@ namespace Amucuga
         {
             string serialized = "Name:" + Name;
             serialized += ".Score:" + Score;
-            if (_powerUps != null && _powerUps.Count > 0)
-                serialized += "." + PowerUp.AmSerializePowerUpCollection(_powerUps);
+            if (PowerUps != null && PowerUps.Count > 0)
+                serialized += "." + PowerUp.AmSerializePowerUpCollection(PowerUps);
             return serialized;
         }
 
@@ -352,7 +352,7 @@ namespace Amucuga
         /// <returns></returns>
         public string AmSerializePowerUps()
         {
-            return PowerUp.AmSerializePowerUpCollection(_powerUps);
+            return PowerUp.AmSerializePowerUpCollection(PowerUps);
         }
 
         /// <summary>

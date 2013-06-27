@@ -33,7 +33,7 @@ namespace Amucuga
         /// <summary>
         /// The remainingTime of the PowerUp
         /// </summary>
-        private float _remainingTime;
+        public float RemainingTime {get; private set;}
 
         /// <summary>
         /// The total lifeTime of the PowerUp
@@ -72,7 +72,7 @@ namespace Amucuga
         {
             get
             {
-                return _remainingTime;
+                return RemainingTime;
             }
         }
 
@@ -83,7 +83,7 @@ namespace Amucuga
         public PowerUp(float lifeTime)
         {
             _lifeTime = lifeTime;
-            _remainingTime = lifeTime;
+            RemainingTime = lifeTime;
             State = PowerUpState.CREATED;
         }
 
@@ -94,8 +94,8 @@ namespace Amucuga
         {
             if (State == PowerUpState.ATTACHED)
             {
-                _remainingTime -= deltaTime;
-                if (_remainingTime >= 0)
+                RemainingTime -= deltaTime;
+                if (RemainingTime >= 0)
                     UpdatePowerUpEffect();
                 else
                 {
@@ -177,7 +177,7 @@ namespace Amucuga
         /// </summary>
         public void Reset()
         {
-            _remainingTime = _lifeTime;
+            RemainingTime = _lifeTime;
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace Amucuga
         public virtual void TerminateImmediate()
         {
             DisablePowerUpEffect();
-            _remainingTime = 0;
+            RemainingTime = 0;
             State = PowerUpState.DEAD;
         }
 
