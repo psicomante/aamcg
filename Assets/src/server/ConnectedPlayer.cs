@@ -43,6 +43,11 @@ namespace Amucuga
         private int _comboScoreMultiplier;
 
         /// <summary>
+        /// A counter for updating the client status.
+        /// </summary>
+        private float _clientUpdateCounter;
+
+        /// <summary>
         /// The main networkView
         /// </summary>
         private NetworkView _networkView;
@@ -130,6 +135,7 @@ namespace Amucuga
             _comboScoreMultiplier = 0;
             _killComboCounter = KILL_COMBO_DURATION;
             _networkView = GameObject.Find(AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME).GetComponent<NetworkView>();
+            _clientUpdateCounter = AmApplication.CLIENT_UPDATE_TIME;
             Debug.Log("Network view imported: " + _networkView);
             // resets score
             Score = 0;
@@ -194,6 +200,14 @@ namespace Amucuga
             if (_killComboCounter <= 0)
             {
                 UpdateScore();
+            }
+
+            // Updates the client status
+            _clientUpdateCounter -= Time.deltaTime;
+            if (_clientUpdateCounter <= 0)
+            {
+                _clientUpdateCounter = AmApplication.CLIENT_UPDATE_TIME;
+                UpdateClientStatus();
             }
         }
 
@@ -344,6 +358,14 @@ namespace Amucuga
             {
                 p.TerminateImmediate();
             }
+        }
+
+        /// <summary>
+        /// Updates the status of the client
+        /// </summary>
+        private void UpdateClientStatus()
+        {
+            RPC("UpdateWholeStatus", "new status");
         }
 
         /// <summary>

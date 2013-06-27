@@ -96,4 +96,13 @@ public class C_PlayerManager : MonoBehaviour
         _player.AddPowerUp(newPowerUp);
         newPowerUp.CollectedByPlayer(_player);
     }
+
+    /// <summary>
+    /// Updates the whole status of the player
+    /// </summary>
+    [RPC]
+    void UpdateWholeStatus(string message)
+    {
+        Debug.Log(message);
+    }
 }

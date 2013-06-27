@@ -7,7 +7,7 @@ public class MatchManager : MonoBehaviour
     public GameObject GUIMatchCountDownPrefab;
 
     /// <summary>
-    /// A counter for update the client status.
+    /// A counter for updating the client status.
     /// </summary>
     private float _clientUpdateCounter;
 
