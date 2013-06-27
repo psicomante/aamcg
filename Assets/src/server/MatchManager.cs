@@ -11,7 +11,6 @@ public class MatchManager : MonoBehaviour
     {
         // initializes the matchcountdown
         AmApplication.MatchCountDown = PlayerSettings.MatchDuration;
-        GameObject.Instantiate(GUIMatchCountDownPrefab);
         AmApplication.CurrentMatchState = MatchState.MATCH;
     }
 
