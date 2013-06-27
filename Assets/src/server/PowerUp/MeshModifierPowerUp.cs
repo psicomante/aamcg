@@ -11,10 +11,10 @@ namespace Amucuga
 		private const float DIMENSIONS_INCREMENT = 1f;
 
 		public MeshModifierPowerUp ()
-            : base(15)
+            : base(30)
 		{
 			PowerUpColor = Color.red;
-			IsCumulative = true;
+			IsCumulative = false;
 			Name = "Shapeshifter";
 		}
 
@@ -23,7 +23,9 @@ namespace Amucuga
 		/// </summary>
 		protected override void EnablePowerUpEffect ()
 		{
-			AttachedPlayer.Cube.GetComponent<MeshFilter>().mesh = GameObject.CreatePrimitive (PrimitiveType.Sphere).GetComponent<MeshFilter>().mesh;
+			AttachedPlayer.Cube.GetComponent<MeshFilter> ().mesh = GameObject.CreatePrimitive (PrimitiveType.Sphere).GetComponent<MeshFilter> ().mesh;
+			AttachedPlayer.Cube.AddComponent<SphereCollider> ();
+			AttachedPlayer.Cube.GetComponent<BoxCollider> ().enabled = false;
 		}
 
 		/// <summary>
@@ -32,6 +34,7 @@ namespace Amucuga
 		protected override void DisablePowerUpEffect ()
 		{
 			AttachedPlayer.Cube.GetComponent<MeshFilter> ().mesh = GameObject.CreatePrimitive (PrimitiveType.Cube).GetComponent<MeshFilter> ().mesh;
+			AttachedPlayer.Cube.GetComponent<BoxCollider> ().enabled = true;
 		}
 	}
 
