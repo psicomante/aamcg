@@ -7,6 +7,10 @@ using Amucuga;
 /// </summary>
 public class C_PlayerManager : MonoBehaviour
 {
+    public GameObject playerPrefab;
+
+    private GameObject _playerCube;
+
     /// <summary>
     /// Initializes the PlayerManager
     /// </summary>
@@ -16,8 +20,13 @@ public class C_PlayerManager : MonoBehaviour
 		if (!Network.isClient)
 			return;
 
-		Debug.Log ("Player Name: " + PlayerSettings.PlayerName);		
+        _playerCube = (GameObject)GameObject.Instantiate(playerPrefab);
+        _playerCube.GetComponent<Rigidbody>().useGravity = false;
+        _playerCube.GetComponent<BoxCollider>().enabled = false;
+        Color color = new Color(Random.value, Random.value, Random.value);
+        _playerCube.renderer.material.color = color;
 		networkView.RPC ("AddPlayerName", RPCMode.Server, Network.player.guid, PlayerSettings.PlayerName);
+        networkView.RPC("AddPlayerColor", RPCMode.Server, Network.player.guid, color.r, color.g, color.b);
 
 		Debug.Log ("Start Client Player Manager");
 	}

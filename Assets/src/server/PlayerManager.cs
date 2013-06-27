@@ -11,7 +11,6 @@ public class PlayerManager : MonoBehaviour
 
     //Prefabs
     public GameObject playerPrefab;
-    public GameObject lightPrefab;
 
     /// <summary>
     /// The list of connected players
@@ -54,7 +53,6 @@ public class PlayerManager : MonoBehaviour
 
         camera.transform.position = new Vector3(AmApplication.INITIAL_X_CAMERA_POSITION, AmApplication.INITIAL_Y_CAMERA_POSITION, AmApplication.INITIAL_Z_CAMERA_POSITION);
         //Initializes the scene objects
-        GameObject.Instantiate(lightPrefab);
         _players = new SortedList<string, ConnectedPlayer>();
     }
 
@@ -65,6 +63,7 @@ public class PlayerManager : MonoBehaviour
     {
         OnPlayerConnected(Network.player);
         AddPlayerName(Network.player.guid, "Server player");
+        AddPlayerColor(Network.player.guid, Random.value, Random.value, Random.value);
     }
 
     /// <summary>
@@ -176,7 +175,6 @@ public class PlayerManager : MonoBehaviour
         print("Player from " + np.ipAddress + " connected");
         print("Connections " + Network.connections.Length);
         GameObject playerCube = (GameObject)GameObject.Instantiate(playerPrefab, SpawnPoint + Vector3.up, Quaternion.identity);
-        playerCube.renderer.material.color = new Color(Random.value, Random.value, Random.value);
         ConnectedPlayer cp = playerCube.GetComponent<ConnectedPlayer>();
         cp.NPlayer = np;
         _players.Add(np.guid, cp);
@@ -269,10 +267,28 @@ public class PlayerManager : MonoBehaviour
         player.Cube.rigidbody.AddForce(new Vector3(force.x, player.CanFly ? force.y : 0, force.z) * player.ForceMultiplier);
     }
 
+    /// <summary>
+    /// Sets the name of the given player
+    /// </summary>
+    /// <param name="guid">The guid of the player</param>
+    /// <param name="playerName">The name of the player</param>
     [RPC]
     public void AddPlayerName(string guid, string playerName)
     {
         _players[guid].Name = playerName;
+    }
+
+    /// <summary>
+    /// Sets the color of the given player
+    /// </summary>
+    /// <param name="guid">The guid of the player</param>
+    /// <param name="red">The red component of the color</param>
+    /// <param name="green">The green component of the color</param>
+    /// <param name="blue">The blue component of the color</param>
+    [RPC]
+    public void AddPlayerColor(string guid, float red, float green, float blue)
+    {
+        _players[guid].Cube.renderer.material.color = new Color(red, green, blue);
     }
 
     /// <summary>

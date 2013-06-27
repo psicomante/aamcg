@@ -303,6 +303,10 @@ namespace Amucuga
         /// </summary>
         public void OnGenerateExplosion()
         {
+            //blocks wrong execution
+            if (!Network.isServer)
+                return;
+
             Camera.main.GetComponent<PlayerManager>().OnGenerateExplosion(NPlayer.guid);
         }
 
