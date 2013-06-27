@@ -149,7 +149,7 @@ namespace Amucuga
         public override bool Equals(object obj)
         {
             if (obj is PowerUp)
-                return this == obj;
+                return this == (PowerUp)obj;
             else
                 return false;
         }

@@ -116,7 +116,7 @@ namespace Amucuga
         /// </summary>
         public void Destroy()
         {
-            ResetPowerUps();
+            TerminatePowerUps();
             GameObject.DestroyImmediate(Cube);
             Network.RemoveRPCs(NPlayer);
             Network.DestroyPlayerObjects(NPlayer);
@@ -355,7 +355,7 @@ namespace Amucuga
         /// <summary>
         /// Resets all the powerups
         /// </summary>
-        public void ResetPowerUps()
+        public void TerminatePowerUps()
         {
             foreach (PowerUp p in _powerUps)
             {
@@ -364,20 +364,32 @@ namespace Amucuga
         }
 
         /// <summary>
+        /// Resets and instantiate a new list of powerups
+        /// </summary>
+        public void EmptyPowerUps()
+        {
+            TerminatePowerUps();
+            _powerUps.RemoveRange(0, _powerUps.Count);
+        }
+
+        /// <summary>
         /// Updates the status of the client
         /// </summary>
         private void UpdateClientPowerUps()
         {
-            object[] args = new object[_powerUps.Count * 2 + 1];
-            args[0] = _powerUps.Count;
+            string serializedPowerUpTypes = "";
+            string serializedPowerUpCountDowns = "";
             for (int i = 0; i < _powerUps.Count; i++)
             {
-                args[i*2 + 1] = _powerUps[i].GetType().ToString();
-                args[i * 2 + 2] = _powerUps[i].CountDown;
+                if (i > 0)
+                {
+                    serializedPowerUpTypes += ",";
+                    serializedPowerUpCountDowns += ",";
+                }
+                serializedPowerUpTypes += _powerUps[i].GetType().ToString();
+                serializedPowerUpCountDowns += _powerUps[i].CountDown.ToString();
             }
-            object[] wrapper = new object[1];
-            wrapper[0] = args;
-            RPC("UpdatePowerUps", wrapper);
+            RPC("UpdatePowerUps", serializedPowerUpTypes, serializedPowerUpCountDowns);
         }
 
         /// <summary>

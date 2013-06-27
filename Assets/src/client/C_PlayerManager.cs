@@ -110,42 +110,35 @@ public class C_PlayerManager : MonoBehaviour
     /// Updates the whole status of the player
     /// </summary>
     [RPC]
-    void UpdatePowerUps(object[] args)
+    void UpdatePowerUps(string SerializedPowerUpTypes, string SerializedPowerUpCountDowns)
     {
-        try
+        string[] powerUpTypes = SerializedPowerUpTypes.Split(',');
+        string[] powerUpCountDowns = SerializedPowerUpCountDowns.Split(',');
+        if (powerUpTypes.Length != powerUpCountDowns.Length)
         {
-            if (args.Length < 1)
-            {
-                Debug.LogError("UpdatePowerUps: empty args");
-            }
+            Debug.LogError("UpdatePowerUps arguments error: PowerUp types and PowerUp countdowns are not of the same length");
+            return;
+        }
 
-            int PowerUpLength = (int)args[0];
-            bool isReadingType = true;
-            PowerUp current = null;
+        _player.EmptyPowerUps();
+        for (int i = 0; i < powerUpTypes.Length; i++)
+        {
+            powerUpTypes[i] = powerUpTypes[i].Trim();
+            if (powerUpTypes[i] == "")
+                continue;
 
-            for (int i = 1; i < args.Length; i++)
+            try
             {
-                if (isReadingType)
-                {
-                    current = CreatePowerUp((string)args[i]);
-                }
-                else
-                {
-                    current.CountDown = (float)args[i];
-                    AddPowerUp(current);
-                }
-                isReadingType = !isReadingType;
+                PowerUp current = CreatePowerUp(powerUpTypes[i]);
+                AddPowerUp(current);
+                current.CountDown = float.Parse(powerUpCountDowns[i]);
+            }
+            catch (FormatException ex)
+            {
+                Debug.LogError("UpdatePowerUps arguments error: " + ex.Message);
             }
         }
-        catch (InvalidCastException ex)
-        {
-            Debug.LogError("UpdatePowerUps: cast error");
-        }
-        catch (IndexOutOfRangeException ex)
-        {
-            Debug.LogError("UpdatePowerUps: indices error");
-        }
-        Debug.Log("OK!");
+        Debug.Log("Succesfully Updated powerups");
     }
 
     /// <summary>

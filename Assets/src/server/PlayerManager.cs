@@ -211,7 +211,7 @@ public class PlayerManager : MonoBehaviour
 		foreach (KeyValuePair<string, ConnectedPlayer> cp in _players) {
 			RespawnPlayer(cp.Key);
             cp.Value.ResetScore();
-            cp.Value.ResetPowerUps();
+            cp.Value.TerminatePowerUps();
 		}
 	}
 	
