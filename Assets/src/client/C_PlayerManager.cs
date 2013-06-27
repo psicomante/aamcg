@@ -1,6 +1,6 @@
 using UnityEngine;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Amucuga;
 
 /// <summary>
@@ -91,10 +91,8 @@ public class C_PlayerManager : MonoBehaviour
     [RPC]
     void NewPowerUpCollected(string PowerUpType)
     {
-        Type type = Type.GetType(PowerUpType);
-        PowerUp newPowerUp = (PowerUp)Activator.CreateInstance(type);
-        _player.AddPowerUp(newPowerUp);
-        newPowerUp.CollectedByPlayer(_player);
+        PowerUp newPowerUp = CreatePowerUp(PowerUpType);
+        AddPowerUp(newPowerUp);
     }
 
     /// <summary>
@@ -112,8 +110,63 @@ public class C_PlayerManager : MonoBehaviour
     /// Updates the whole status of the player
     /// </summary>
     [RPC]
-    void UpdateWholeStatus(string message)
+    void UpdatePowerUps(object[] args)
     {
-        Debug.Log(message);
+        try
+        {
+            if (args.Length < 1)
+            {
+                Debug.LogError("UpdatePowerUps: empty args");
+            }
+
+            int PowerUpLength = (int)args[0];
+            bool isReadingType = true;
+            PowerUp current = null;
+
+            for (int i = 1; i < args.Length; i++)
+            {
+                if (isReadingType)
+                {
+                    current = CreatePowerUp((string)args[i]);
+                }
+                else
+                {
+                    current.CountDown = (float)args[i];
+                    AddPowerUp(current);
+                }
+                isReadingType = !isReadingType;
+            }
+        }
+        catch (InvalidCastException ex)
+        {
+            Debug.LogError("UpdatePowerUps: cast error");
+        }
+        catch (IndexOutOfRangeException ex)
+        {
+            Debug.LogError("UpdatePowerUps: indices error");
+        }
+        Debug.Log("OK!");
+    }
+
+    /// <summary>
+    /// Instantiates a new powerup from the name of its type.
+    /// </summary>
+    /// <param name="PowerUpType">The type of the powerup</param>
+    /// <returns>The powerup instance</returns>
+    private PowerUp CreatePowerUp(string PowerUpType)
+    {
+        Type type = Type.GetType(PowerUpType);
+        PowerUp newPowerUp = (PowerUp)Activator.CreateInstance(type);
+        return newPowerUp;
+    }
+
+    /// <summary>
+    /// Adds a powerup to the player
+    /// </summary>
+    /// <param name="newPowerUp">The powerup to add</param>
+    private void AddPowerUp(PowerUp newPowerUp)
+    {
+        _player.AddPowerUp(newPowerUp);
+        newPowerUp.CollectedByPlayer(_player);
     }
 }

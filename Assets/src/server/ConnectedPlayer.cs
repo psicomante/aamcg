@@ -208,7 +208,7 @@ namespace Amucuga
             if (_clientUpdateCounter <= 0)
             {
                 _clientUpdateCounter = AmApplication.CLIENT_UPDATE_TIME;
-                UpdateClientStatus();
+                UpdateClientPowerUps();
             }
         }
 
@@ -366,9 +366,18 @@ namespace Amucuga
         /// <summary>
         /// Updates the status of the client
         /// </summary>
-        private void UpdateClientStatus()
+        private void UpdateClientPowerUps()
         {
-            RPC("UpdateWholeStatus", "new status");
+            object[] args = new object[_powerUps.Count * 2 + 1];
+            args[0] = _powerUps.Count;
+            for (int i = 0; i < _powerUps.Count; i++)
+            {
+                args[i*2 + 1] = _powerUps[i].GetType().ToString();
+                args[i * 2 + 2] = _powerUps[i].CountDown;
+            }
+            object[] wrapper = new object[1];
+            wrapper[0] = args;
+            RPC("UpdatePowerUps", wrapper);
         }
 
         /// <summary>
