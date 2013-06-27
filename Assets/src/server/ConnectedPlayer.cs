@@ -56,7 +56,18 @@ namespace Amucuga
         /// The NetworkPlayer associated to the player
         /// </summary>
 		public NetworkPlayer NPlayer { get; set; }
-		
+
+        /// <summary>
+        /// Indicates wether or not this ConnectedPlayer instance can send RPCs
+        /// </summary>
+        public bool CanSendRPC
+        {
+            get
+            {
+                return Network.isServer && (Network.player.guid != NPlayer.guid);
+            }
+        }
+
 		/// <summary>
 		/// The player name. Displayed on the player cube (on the server)
 		/// </summary>
@@ -129,10 +140,25 @@ namespace Amucuga
         /// </summary>
         void Update()
         {
+            // blocks update if not in match state
+            if (AmApplication.CurrentMatchState != MatchState.MATCH)
+                return;
+            
+            // The powerups are updated also by the client
+            UpdatePowerUps();
+
             // blocks wrong execution
-            if (!Network.isServer || AmApplication.CurrentMatchState != MatchState.MATCH)
+            if (!Network.isServer)
                 return;
 
+            UpdateCounters();
+        }
+
+        /// <summary>
+        /// Updates the powerups
+        /// </summary>
+        private void UpdatePowerUps()
+        {
             List<PowerUp> mustDie = new List<PowerUp>();
 
             // Updates all the powerups in the player
@@ -148,8 +174,6 @@ namespace Amucuga
             {
                 _powerUps.Remove(p);
             }
-
-            UpdateCounters();
         }
 
         /// <summary>
@@ -193,6 +217,7 @@ namespace Amucuga
             PowerUp powerUp = powerUpCollider.gameObject.GetComponent<PowerUpManager>().powerUp;
             AddPowerUp(powerUp);
             powerUp.CollectedByPlayer(this);
+            RPC("NewPowerUpCollected", powerUp.GetType().ToString());
         }
 
         /// <summary>
@@ -320,7 +345,17 @@ namespace Amucuga
                 p.TerminateImmediate();
             }
         }
-		
+
+        /// <summary>
+        /// Sends an RPC call to the client associated to this instance of ConnectedPlayer
+        /// </summary>
+        /// <param name="type">The type of the powerup</param>
+        private void RPC(string methodName, params object[] args)
+        {
+            if(CanSendRPC)
+                _networkView.RPC(methodName, NPlayer, args);
+        }
+
 		/// <summary>
 		/// Returns a <see cref="System.String"/> that represents the current <see cref="Amucuga.ConnectedPlayer"/>.
 		/// </summary>

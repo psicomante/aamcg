@@ -189,5 +189,10 @@ namespace Amucuga
             _remainingTime = 0;
             State = PowerUpState.DEAD;
         }
+
+        public override string ToString()
+        {
+            return Name + " - " + CountDown;
+        } 
     }
 }

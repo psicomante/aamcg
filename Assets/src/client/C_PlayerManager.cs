@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using Amucuga;
 
@@ -9,7 +10,10 @@ public class C_PlayerManager : MonoBehaviour
 {
     public GameObject playerPrefab;
 
-    private GameObject _playerCube;
+    /// <summary>
+    /// The current player
+    /// </summary>
+    private ConnectedPlayer _player;
 
     /// <summary>
     /// Initializes the PlayerManager
@@ -20,14 +24,15 @@ public class C_PlayerManager : MonoBehaviour
 		if (!Network.isClient)
 			return;
 
-        _playerCube = (GameObject)GameObject.Instantiate(playerPrefab);
+        GameObject _playerCube = (GameObject)GameObject.Instantiate(playerPrefab);
         _playerCube.GetComponent<Rigidbody>().useGravity = false;
         _playerCube.GetComponent<BoxCollider>().enabled = false;
-        Color color = new Color(Random.value, Random.value, Random.value);
+        Color color = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
         _playerCube.renderer.material.color = color;
 		networkView.RPC ("AddPlayerName", RPCMode.Server, Network.player.guid, PlayerSettings.PlayerName);
         networkView.RPC("AddPlayerColor", RPCMode.Server, Network.player.guid, color.r, color.g, color.b);
-
+        _player = _playerCube.GetComponent<ConnectedPlayer>();
+        Camera.main.transform.position = new Vector3(0, 5, -5);
 		Debug.Log ("Start Client Player Manager");
 	}
 
@@ -37,8 +42,10 @@ public class C_PlayerManager : MonoBehaviour
     void Update()
     {
         //Blocks the Server exectution
-        if (!Network.isClient || AmApplication.CurrentMatchState != MatchState.MATCH)
+        if (!Network.isClient)
             return;
+
+        AmApplication.MatchCountDown -= Time.deltaTime;
     }
 
     /// <summary>
@@ -64,4 +71,29 @@ public class C_PlayerManager : MonoBehaviour
 		if (Input.acceleration.magnitude != 0)
 			networkView.RPC ("AddForce", RPCMode.Server, Network.player.guid, new Vector3 (Input.acceleration.x, Input.acceleration.z, Input.acceleration.y) * 1.5f);
 	}
+
+    /// <summary>
+    /// Updates the client match status
+    /// </summary>
+    /// <param name="MatchCountDown">The match count down</param>
+    /// <param name="State">The current match state</param>
+    [RPC]
+    void UpdateMatchStatus(float MatchCountDown, string State)
+    {
+        AmApplication.MatchCountDown = MatchCountDown;
+        AmApplication.CurrentMatchState = (MatchState)System.Enum.Parse(typeof(MatchState), State);
+    }
+
+    /// <summary>
+    /// Tells the client that a new powerup has just been collected
+    /// </summary>
+    /// <param name="PowerUpType">A string representing the type of the powerup</param>
+    [RPC]
+    void NewPowerUpCollected(string PowerUpType)
+    {
+        Type type = Type.GetType(PowerUpType);
+        PowerUp newPowerUp = (PowerUp)Activator.CreateInstance(type);
+        _player.AddPowerUp(newPowerUp);
+        newPowerUp.CollectedByPlayer(_player);
+    }
 }
