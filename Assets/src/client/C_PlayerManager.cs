@@ -25,8 +25,8 @@ public class C_PlayerManager : MonoBehaviour
 			return;
 
         GameObject _playerCube = (GameObject)GameObject.Instantiate(playerPrefab);
-        _playerCube.GetComponent<Rigidbody>().useGravity = false;
         _playerCube.GetComponent<BoxCollider>().enabled = false;
+        _playerCube.AddComponent<rotate>();
         Color color = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
         _playerCube.renderer.material.color = color;
 		networkView.RPC ("AddPlayerName", RPCMode.Server, Network.player.guid, PlayerSettings.PlayerName);

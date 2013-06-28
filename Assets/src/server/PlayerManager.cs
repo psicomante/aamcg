@@ -175,6 +175,7 @@ public class PlayerManager : MonoBehaviour
         print("Player from " + np.ipAddress + " connected");
         print("Connections " + Network.connections.Length);
         GameObject playerCube = (GameObject)GameObject.Instantiate(playerPrefab, SpawnPoint + Vector3.up, Quaternion.identity);
+        playerCube.AddComponent<Rigidbody>();
         ConnectedPlayer cp = playerCube.GetComponent<ConnectedPlayer>();
         cp.NPlayer = np;
         _players.Add(np.guid, cp);
