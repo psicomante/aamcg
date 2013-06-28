@@ -30,10 +30,6 @@ namespace Amucuga
     /// </summary>
     public abstract class PowerUp
     {
-        /// <summary>
-        /// The remainingTime of the PowerUp
-        /// </summary>
-        public float RemainingTime {get; private set;}
 
         /// <summary>
         /// The total lifeTime of the PowerUp
@@ -68,13 +64,7 @@ namespace Amucuga
         /// <summary>
         /// The remaining life time of the powerup
         /// </summary>
-        public float CountDown
-        {
-            get
-            {
-                return RemainingTime;
-            }
-        }
+        public float CountDown { get; set; }
 
         /// <summary>
         /// Constructor
@@ -83,7 +73,7 @@ namespace Amucuga
         public PowerUp(float lifeTime)
         {
             _lifeTime = lifeTime;
-            RemainingTime = lifeTime;
+            CountDown = lifeTime;
             State = PowerUpState.CREATED;
         }
 
@@ -94,8 +84,8 @@ namespace Amucuga
         {
             if (State == PowerUpState.ATTACHED)
             {
-                RemainingTime -= deltaTime;
-                if (RemainingTime >= 0)
+                CountDown -= deltaTime;
+                if (CountDown >= 0)
                     UpdatePowerUpEffect();
                 else
                 {
@@ -159,7 +149,7 @@ namespace Amucuga
         public override bool Equals(object obj)
         {
             if (obj is PowerUp)
-                return this == obj;
+                return this == (PowerUp)obj;
             else
                 return false;
         }
@@ -177,7 +167,7 @@ namespace Amucuga
         /// </summary>
         public void Reset()
         {
-            RemainingTime = _lifeTime;
+            CountDown = _lifeTime;
         }
 
         /// <summary>
@@ -186,38 +176,13 @@ namespace Amucuga
         public virtual void TerminateImmediate()
         {
             DisablePowerUpEffect();
-            RemainingTime = 0;
+            CountDown = 0;
             State = PowerUpState.DEAD;
         }
 
-        /// <summary>
-        /// Serializes this powerup in a string
-        /// </summary>
-        public string AmSerialize()
+        public override string ToString()
         {
-            string serialized = "Name:" + this.GetType().ToString();
-            serialized += ";CountDown:" + this.CountDown;
-            return serialized;
-        }
-
-        /// <summary>
-        /// Serializes a collection of powerups
-        /// </summary>
-        /// <param name="powerups"></param>
-        /// <returns></returns>
-        public static string AmSerializePowerUpCollection(ICollection<PowerUp> powerups)
-        {
-            string serialized = null;
-            foreach (PowerUp p in powerups)
-            {
-                if (serialized != null)
-                    serialized += ",";
-                else
-                    serialized = "PowerUps[";
-                serialized += p.AmSerialize();
-            }
-            serialized += "]";
-            return serialized;
-        }
+            return Name + " - " + CountDown;
+        } 
     }
 }
