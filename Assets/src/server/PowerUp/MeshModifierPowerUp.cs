@@ -31,7 +31,7 @@ namespace Amucuga
 			AttachedPlayer.Cube.GetComponent<MeshFilter> ().mesh = AttachedPlayer.Cube.GetComponent<ConnectedPlayer> ().SphereMesh;
 			
 			// adding the correct collider
-			AttachedPlayer.Cube.AddComponent<SphereCollider> ();
+			AttachedPlayer.Cube.GetComponent<SphereCollider> ().enabled = true;
 			
 			// disable the old boxcollider
 			AttachedPlayer.Cube.GetComponent<BoxCollider> ().enabled = false;
