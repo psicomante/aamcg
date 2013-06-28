@@ -9,6 +9,7 @@ namespace Amucuga
 	public class MeshModifierPowerUp : PowerUp
 	{
 		private const float DIMENSIONS_INCREMENT = 1f;
+		private Mesh _oldMesh;
 
 		public MeshModifierPowerUp ()
             : base(30)
@@ -23,8 +24,16 @@ namespace Amucuga
 		/// </summary>
 		protected override void EnablePowerUpEffect ()
 		{
-			AttachedPlayer.Cube.GetComponent<MeshFilter> ().mesh = GameObject.CreatePrimitive (PrimitiveType.Sphere).GetComponent<MeshFilter> ().mesh;
+			// save the old mesh
+			_oldMesh = AttachedPlayer.Cube.GetComponent<MeshFilter> ().mesh;
+			
+			// take the new mesh from ConnectedPlayer instance (once for every player)
+			AttachedPlayer.Cube.GetComponent<MeshFilter> ().mesh = AttachedPlayer.Cube.GetComponent<ConnectedPlayer> ().SphereMesh;
+			
+			// adding the correct collider
 			AttachedPlayer.Cube.AddComponent<SphereCollider> ();
+			
+			// disable the old boxcollider
 			AttachedPlayer.Cube.GetComponent<BoxCollider> ().enabled = false;
 		}
 
@@ -33,8 +42,9 @@ namespace Amucuga
 		/// </summary>
 		protected override void DisablePowerUpEffect ()
 		{
-			AttachedPlayer.Cube.GetComponent<MeshFilter> ().mesh = GameObject.CreatePrimitive (PrimitiveType.Cube).GetComponent<MeshFilter> ().mesh;
+			AttachedPlayer.Cube.GetComponent<MeshFilter> ().mesh = _oldMesh;
 			AttachedPlayer.Cube.GetComponent<BoxCollider> ().enabled = true;
+			AttachedPlayer.Cube.GetComponent<SphereCollider> ().enabled = false;
 		}
 	}
 

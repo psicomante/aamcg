@@ -56,6 +56,14 @@ namespace Amucuga
         /// The player cube
         /// </summary>
         public GameObject Cube { get { return gameObject; } }
+		
+		/// <summary>
+		/// Gets or sets the sphere mesh. Used for powerup MeshModifier
+		/// </summary>
+		/// <value>
+		/// The sphere mesh.
+		/// </value>
+		public Mesh SphereMesh;
 	
         /// <summary>
         /// The NetworkPlayer associated to the player
