@@ -13,7 +13,7 @@ public class C_PlayerManager : MonoBehaviour
     /// <summary>
     /// The current player
     /// </summary>
-    private ConnectedPlayer _player;
+    public ConnectedPlayer Player {get; private set;}
 
     /// <summary>
     /// Initializes the PlayerManager
@@ -24,29 +24,35 @@ public class C_PlayerManager : MonoBehaviour
 		if (!Network.isClient)
 			return;
 
-        GameObject _playerCube = (GameObject)GameObject.Instantiate(playerPrefab);
-        _playerCube.GetComponent<BoxCollider>().enabled = false;
-        _playerCube.AddComponent<rotate>();
-        Color color = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
-        _playerCube.renderer.material.color = color;
+		GameObject _playerCube = (GameObject)GameObject.Instantiate (playerPrefab);
+		_playerCube.GetComponent<BoxCollider> ().enabled = false;
+		_playerCube.GetComponent<Rigidbody> ().useGravity = false;
+		_playerCube.AddComponent<rotate> ();
+		Color color = new Color (UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+		_playerCube.renderer.material.color = color;
 		networkView.RPC ("AddPlayerName", RPCMode.Server, Network.player.guid, PlayerSettings.PlayerName);
-        networkView.RPC("AddPlayerColor", RPCMode.Server, Network.player.guid, color.r, color.g, color.b);
-        _player = _playerCube.GetComponent<ConnectedPlayer>();
-        Camera.main.transform.position = new Vector3(0, 5, -5);
+		networkView.RPC ("AddPlayerColor", RPCMode.Server, Network.player.guid, color.r, color.g, color.b);
+		Player = _playerCube.GetComponent<ConnectedPlayer> ();
+		Camera.main.transform.position = new Vector3 (0, 5, -5);
 		Debug.Log ("Start Client Player Manager");
 	}
 
     /// <summary>
     /// Updates the PlayerManager
     /// </summary>
-    void Update()
-    {
-        //Blocks the Server exectution
-        if (!Network.isClient)
-            return;
+    void Update ()
+	{
+		//Blocks the Server exectution
+		if (!Network.isClient)
+			return;
+		
+		// reset position to avoid mass bug
+		Player.Cube.transform.position = Vector3.zero;
+		Player.Cube.rigidbody.velocity = Vector3.zero;
+		Player.Cube.rigidbody.angularVelocity = Vector3.zero;
 
-        AmApplication.MatchCountDown -= Time.deltaTime;
-    }
+		AmApplication.MatchCountDown -= Time.deltaTime;
+	}
 
     /// <summary>
     /// Updates the Physics of the player
@@ -102,7 +108,7 @@ public class C_PlayerManager : MonoBehaviour
     [RPC]
     void UpdateScore(int Score)
     {
-        _player.Score = Score;
+        Player.Score = Score;
         Debug.Log("New score update: " + Score);
     }
 
@@ -120,7 +126,7 @@ public class C_PlayerManager : MonoBehaviour
             return;
         }
 
-        _player.EmptyPowerUps();
+        Player.EmptyPowerUps();
         for (int i = 0; i < powerUpTypes.Length; i++)
         {
             powerUpTypes[i] = powerUpTypes[i].Trim();
@@ -159,7 +165,7 @@ public class C_PlayerManager : MonoBehaviour
     /// <param name="newPowerUp">The powerup to add</param>
     private void AddPowerUp(PowerUp newPowerUp)
     {
-        _player.AddPowerUp(newPowerUp);
-        newPowerUp.CollectedByPlayer(_player);
+        Player.AddPowerUp(newPowerUp);
+        newPowerUp.CollectedByPlayer(Player);
     }
 }
