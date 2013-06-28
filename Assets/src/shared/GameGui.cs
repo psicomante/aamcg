@@ -52,7 +52,7 @@ public class GameGui : MonoBehaviour
 		Debug.Log ("GameGui.cs Started");
 		
 		//Blocks client execution
-		if (Network.isClient)
+		if (!Network.isServer)
 			return;
 
 		_serverIPAddress = NetworkManager.GetLocalIPAddress ();
@@ -186,15 +186,15 @@ public class GameGui : MonoBehaviour
 	/// <param name='windowID'>
 	/// Window I.
 	/// </param>
-	void DrawScorePanel (int windowID)
-	{		
-		Score (GameObject.Find (
-					AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME)
-					.GetComponent<PlayerManager> ()
-					.GetPlayersList (), 
-					false
-			);
-	}	
+    void DrawScorePanel(int windowID)
+    {
+        Score(GameObject.Find(
+                    AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME)
+                    .GetComponent<PlayerManager>()
+                    .GetPlayersList(),
+                    false
+            );
+    }
 	
 	/// <summary>
 	/// Draws the server stats.
