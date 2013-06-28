@@ -160,7 +160,7 @@ public class GameGui : MonoBehaviour
 		ConnectedPlayer p = _playersList [Network.player.guid];
 		// player name + value
 		foreach (PowerUp pup in p.PowerUps) {
-			GUILayout.Label (pup.Name + ":" + pup.RemainingTime);
+			GUILayout.Label (pup.Name + ":" + pup.CountDown);
 		}
 	}
 	

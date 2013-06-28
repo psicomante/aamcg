@@ -369,7 +369,7 @@ namespace Amucuga
         public void EmptyPowerUps()
         {
             TerminatePowerUps();
-            _powerUps.RemoveRange(0, _powerUps.Count);
+            PowerUps.RemoveRange(0, PowerUps.Count);
         }
 
         /// <summary>
@@ -379,15 +379,15 @@ namespace Amucuga
         {
             string serializedPowerUpTypes = "";
             string serializedPowerUpCountDowns = "";
-            for (int i = 0; i < _powerUps.Count; i++)
+            for (int i = 0; i < PowerUps.Count; i++)
             {
                 if (i > 0)
                 {
                     serializedPowerUpTypes += ",";
                     serializedPowerUpCountDowns += ",";
                 }
-                serializedPowerUpTypes += _powerUps[i].GetType().ToString();
-                serializedPowerUpCountDowns += _powerUps[i].CountDown.ToString();
+                serializedPowerUpTypes += PowerUps[i].GetType().ToString();
+                serializedPowerUpCountDowns += PowerUps[i].CountDown.ToString();
             }
             RPC("UpdatePowerUps", serializedPowerUpTypes, serializedPowerUpCountDowns);
         }
