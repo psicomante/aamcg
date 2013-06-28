@@ -42,7 +42,7 @@ public class GameGui : MonoBehaviour
 	/// <summary>
 	/// Players List
 	/// </summary>
-	private SortedList<string, ConnectedPlayer> _playersList;
+	private ConnectedPlayer _player;
 
     /// <summary>
     /// Start the Game GUI
@@ -60,6 +60,7 @@ public class GameGui : MonoBehaviour
 		// score window dinamic size
 		_scoreWindowTopMargin = Screen.height / 30;
 		_scoreWindowLeftMargin = Screen.width / 20;	
+		
 	}
 	
 	
@@ -68,13 +69,16 @@ public class GameGui : MonoBehaviour
 	/// </summary>
 	void Update ()
 	{
-		// update player list
-		_playersList = GameObject.Find (AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME).GetComponent<PlayerManager> ().GetPlayersList ();
-		
 		// pause menu toggle
 		if (Input.GetKeyUp (KeyCode.Escape) || Input.GetKey (KeyCode.Menu)) {
-			_escPressed = !_escPressed;	
+			Debug.Log("EscKey");
+			_escPressed = !_escPressed;
 		}
+		
+		// reference to the current ConnectedPlayer
+		if (Network.isClient)
+			_player = GameObject.Find (AmApplication.GAMEOBJECT_MAP_GENERATOR_NAME).GetComponent<C_PlayerManager> ().Player;
+		
 	}
 
     /// <summary>
@@ -90,18 +94,14 @@ public class GameGui : MonoBehaviour
 		
 		// SERVER GUI
 		if (Network.isServer) {
-			if (AmApplication.CurrentMatchState == MatchState.MATCH) {
-				// Match CountDown
-				windowRect = new Rect (Screen.width - 120, 10, 100, 50);
-				windowRect = GUI.Window (0, windowRect, DrawMatchCountDown, "CountDown");				
+			if (AmApplication.CurrentMatchState == MatchState.MATCH) {		
+				// Player Scores
+				windowRect = new Rect (Screen.width - SCOREBOX_WIDTH - SCOREBOX_RIGHTMARGIN, SCOREBOX_TOPMARGIN, SCOREBOX_WIDTH, SCORE_HEIGHT_LABEL * (Network.connections.Length) + 50);
+				windowRect = GUI.Window (2, windowRect, DrawScorePanel, "Scores");		
 				
 				// show IP Address and Connections (not in waiting room)
 				windowRect = new Rect (10, 10, 200, 80);
-				windowRect = GUI.Window (1, windowRect, DrawServerStats, "Server Stats");	
-				
-				// Player Scores
-				windowRect = new Rect (Screen.width - SCOREBOX_WIDTH - SCOREBOX_RIGHTMARGIN, SCOREBOX_TOPMARGIN, SCOREBOX_WIDTH, SCORE_HEIGHT_LABEL * (Network.connections.Length) + 50);
-				windowRect = GUI.Window (2, windowRect, DrawScorePanel, "Scores");				
+				windowRect = GUI.Window (1, windowRect, DrawServerStats, "Server Stats");			
 			}
 			// Waiting Room
 			if (AmApplication.CurrentMatchState == MatchState.WAITING_ROOM) {
@@ -111,14 +111,22 @@ public class GameGui : MonoBehaviour
 			}
 		}
 		
-		if ((Network.isServer || !PlayerSettings.DedicatedServer) /*&& _playersList [Network.player.guid].PowerUps.Count > 0*/) {
-			// Player Scores
-			windowRect = new Rect (SCOREBOX_RIGHTMARGIN, SCOREBOX_TOPMARGIN + 30, SCOREBOX_WIDTH, SCORE_HEIGHT_LABEL * (_playersList [Network.player.guid].PowerUps.Count) + 20);
-			windowRect = GUI.Window (3, windowRect, DrawPlayerPowerUps, "PowerUps");
-			
+		// CLIENT GUI
+		if (Network.isClient) {
+			// player stats
 			windowRect = new Rect (SCOREBOX_RIGHTMARGIN + SCOREBOX_WIDTH, SCOREBOX_TOPMARGIN + 30, SCOREBOX_WIDTH, SCOREBOX_HEIGHT * 5);
-			windowRect = GUI.Window (4, windowRect, DrawPlayerStatistics, "Player Stats");				
+			windowRect = GUI.Window (4, windowRect, DrawPlayerStatistics, "Player Stats");		
+			
+			// active powerups panel
+			if (_player.PowerUps.Count > 0) {
+				windowRect = new Rect (SCOREBOX_RIGHTMARGIN, SCOREBOX_TOPMARGIN + 30, SCOREBOX_WIDTH, SCORE_HEIGHT_LABEL * (_player.PowerUps.Count) + 20);
+				windowRect = GUI.Window (3, windowRect, DrawPlayerPowerUps, "PowerUps");	
+			}			
 		}
+		
+		// Match CountDown
+		windowRect = new Rect (Screen.width - 120, 10, 100, 50);
+		windowRect = GUI.Window (0, windowRect, DrawMatchCountDown, "CountDown");	
 
 		// show Logout
 		if (_escPressed && GUI.Button (new Rect (Screen.width / 2 - 150, Screen.height / 2 - 150, 300, 300), "Logout")) {
@@ -129,11 +137,10 @@ public class GameGui : MonoBehaviour
 	
 	void DrawPlayerStatistics (int windowID)
 	{
-		ConnectedPlayer cp = _playersList [Network.player.guid];
-		GUILayout.Label ("Weight: " + cp.Cube.rigidbody.mass);
-		GUILayout.Label ("Size: " + cp.Cube.transform.localScale.x + "x;" + cp.Cube.transform.localScale.y + "y;" + cp.Cube.transform.localScale.z + "z;");
-		GUILayout.Label ("CanFly: " + cp.CanFly);
-		GUILayout.Label ("Strength: " + cp.ForceMultiplier);
+		GUILayout.Label ("Weight: " + _player.Cube.rigidbody.mass);
+		GUILayout.Label ("Size: " + _player.Cube.transform.localScale.x + "x;" + _player.Cube.transform.localScale.y + "y;" + _player.Cube.transform.localScale.z + "z;");
+		GUILayout.Label ("CanFly: " + _player.CanFly);
+		GUILayout.Label ("Strength: " + _player.ForceMultiplier);
 		GUILayout.Label ("Tile: " + AmApplication.MapTileDepth + "d; " + AmApplication.MapTileWidth + "w;");
 		
 	}
@@ -157,9 +164,8 @@ public class GameGui : MonoBehaviour
 	/// </param>
 	void DrawPlayerPowerUps (int windowID)
 	{
-		ConnectedPlayer p = _playersList [Network.player.guid];
 		// player name + value
-		foreach (PowerUp pup in p.PowerUps) {
+		foreach (PowerUp pup in _player.PowerUps) {
 			GUILayout.Label (pup.Name + ":" + pup.CountDown);
 		}
 	}
