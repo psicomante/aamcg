@@ -51,6 +51,6 @@ public class PowerUpManager : MonoBehaviour {
     /// </summary>
     void OnTriggerEnter(Collider collider)
     {
-        GameObject.Destroy(gameObject, AmApplication.GAMEOBJECT_DESTROY_DELAY);
+        GameObject.Destroy(gameObject);
     }
 }
