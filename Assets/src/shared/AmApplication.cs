@@ -103,7 +103,7 @@ namespace Amucuga
         /// <summary>
         /// A multiplier for the forces applied to all players.
         /// </summary>
-        public const float DEFAULT_FORCE_MULTIPLIER = 16;
+        public const float DEFAULT_FORCE_MULTIPLIER = 20;
 
         /// <summary>
         /// An upper bound for the velocity of the player
