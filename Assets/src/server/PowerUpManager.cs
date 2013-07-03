@@ -11,11 +11,6 @@ public class PowerUpManager : MonoBehaviour
     public PowerUp powerUp;
 
     /// <summary>
-    /// The shader for the Normal Powerup
-    /// </summary>
-    public Shader normalShader;
-
-    /// <summary>
     /// Initialize the powerup
     /// </summary>
     void Start()
@@ -30,8 +25,7 @@ public class PowerUpManager : MonoBehaviour
                 powerUp = new SuperMassPowerUp();
                 break;
             case 2:
-                //powerUp = new ColorPowerUp();
-                powerUp = new NormalPowerUp(normalShader);
+                powerUp = new ColorPowerUp();
                 break;
             case 3:
                 powerUp = new StrengthPowerUp();
