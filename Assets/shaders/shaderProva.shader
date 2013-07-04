@@ -13,6 +13,17 @@ Shader "Custom/shaderProva" {
 
 		// The direction of the directional light
 		_LightDirection ("Light Direction", Vector) = (1, 0, 0, 0)
+
+		// The position of the camera (to update at runtime)
+		_CameraPosition ("Camera Position", Vector) = (0, 0, 0, -10)
+
+		// Indicates the intensity of the specular shine (range from 0 to 2)
+		// The value can exceed 1, because tipically the specular shine saturates the output color
+		_SpecularIntensity ("Specular Intensity", Float) = 1
+
+		// Indicates the size and smoothness of the specular shine.
+		_SpecularHardness ("Specular Hardness", Float) = 25
+
 	}
 
 	// The shader
@@ -30,6 +41,10 @@ Shader "Custom/shaderProva" {
 			uniform fixed _AmbientIntensity;
 			uniform float _DiffuseIntensity;
 			uniform float4 _LightDirection;
+			uniform float4 _CameraPosition;
+			uniform float _SpecularIntensity;
+			uniform float _SpecularHardness;
+
 
 			// The vertex shader output (and fragment shader input)
 			struct v2f {
@@ -71,7 +86,24 @@ Shader "Custom/shaderProva" {
 				// Calculates Ambient + Diffuse colors 
 				// (used max function instead of + to avoid saturation in case of intensity values too high)
 				fixed4 ambientDiffuse = max(_AmbientIntensity * _Color, i.diffuse);
-				return ambientDiffuse;
+
+				// Calculates the specular shine intensity (same as diffuse light intensity in pixel shader)
+				float shineIntensity = dot(i.normal, normalize(_LightDirection));
+
+				// The reflection ray
+				float4 reflectionRay = i.normal - normalize(_LightDirection);
+
+				// Assigns the intensity to each reflection ray
+				float4 reflection = normalize(reflectionRay * shineIntensity);
+
+				// The view ray (it must be transformed with the world matrix)
+				float4 view = normalize(mul(normalize(_CameraPosition), UNITY_MATRIX_MV));
+				
+				// Calculates the shine
+				float dotProduct = dot(reflection, view);
+				fixed4 specular = _SpecularIntensity * fixed4(1,1,1,1) * max(pow(dotProduct, _SpecularHardness), 0) * length(i.diffuse);
+
+				return saturate(ambientDiffuse + specular);
 			}
 			ENDCG
 		}
