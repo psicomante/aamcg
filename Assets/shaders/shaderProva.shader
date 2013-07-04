@@ -14,8 +14,8 @@ Shader "Custom/shaderProva" {
 		// The direction of the directional light
 		_LightDirection ("Light Direction", Vector) = (1, 0, 0, 0)
 
-		// The position of the camera (to update at runtime)
-		_CameraPosition ("Camera Position", Vector) = (0, 0, 0, -10)
+		// The camera.transform.forward (to update at runtime)
+		_CameraPosition ("View Vector", Vector) = (0, 0, 1, 0)
 
 		// Indicates the intensity of the specular shine (range from 0 to 2)
 		// The value can exceed 1, because tipically the specular shine saturates the output color
@@ -56,6 +56,9 @@ Shader "Custom/shaderProva" {
 
 				// the transformed vertex normal
 				fixed4 normal : TEXCOORD0;
+
+				// the transformed position
+				fixed4 position : TEXCOORD1;
 			};
 			
 			// The vertex shader
@@ -67,8 +70,11 @@ Shader "Custom/shaderProva" {
 				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
 
 				// Transforms the normal
-				float4 normal = mul(UNITY_MATRIX_IT_MV, float4(v.normal,1));
+				float4 normal = mul(float4(v.normal,1), _Object2World);
 				o.normal = normal;
+
+				// Transforms the position
+				o.position = mul(_Object2World, float4(v.vertex));
 
 				// Light intensity increases when the angle between the light direction and the normal is smaller
 				// Both normal and light direction (normalized) are versors, so dot product (a * b * cos(theta)) is the perfect operand
@@ -83,27 +89,17 @@ Shader "Custom/shaderProva" {
 			// The fragment shader
 			fixed4 frag (v2f i) : COLOR0 {
 				
-				// Calculates Ambient + Diffuse colors 
-				// (used max function instead of + to avoid saturation in case of intensity values too high)
-				fixed4 ambientDiffuse = max(_AmbientIntensity * _Color, i.diffuse);
+				float3 light = normalize(_LightDirection.xyz);
+				float3 normal = normalize(i.normal.xyz);
+				float3 r = normalize(2 * dot(light, normal) * normal - light);
+				float3 v = normalize(mul((_CameraPosition - i.position), _Object2World));
 
-				// Calculates the specular shine intensity (same as diffuse light intensity in pixel shader)
-				float shineIntensity = dot(i.normal, normalize(_LightDirection));
-
-				// The reflection ray
-				float4 reflectionRay = i.normal - normalize(_LightDirection);
-
-				// Assigns the intensity to each reflection ray
-				float4 reflection = normalize(reflectionRay * shineIntensity);
-
-				// The view ray (it must be transformed with the world matrix)
-				float4 view = normalize(mul(normalize(_CameraPosition), UNITY_MATRIX_MV));
+				float dotProduct = dot(r, v);
+				float4 specular = _SpecularIntensity * float4(1,1,1,1) * max(pow(dotProduct, _SpecularHardness), 0) * length(i.diffuse);
 				
-				// Calculates the shine
-				float dotProduct = dot(reflection, view);
-				fixed4 specular = _SpecularIntensity * fixed4(1,1,1,1) * max(pow(dotProduct, _SpecularHardness), 0) * length(i.diffuse);
-
-				return saturate(ambientDiffuse + specular);
+				//return saturate(max(i.diffuse, _Color * _AmbientIntensity) + specular);
+				//return saturate(max(i.diffuse, _Color * _AmbientIntensity));
+				return i.normal;
 			}
 			ENDCG
 		}
