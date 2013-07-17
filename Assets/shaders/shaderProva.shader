@@ -15,7 +15,7 @@ Shader "Custom/shaderProva" {
 		_LightDirection ("Light Direction", Vector) = (1, 0, 0, 0)
 
 		// The camera.transform.forward (to update at runtime)
-		_CameraPosition ("View Vector", Vector) = (0, 0, 1, 0)
+		_CameraDirection ("View Vector", Vector) = (0, 0, 1, 0)
 
 		// Indicates the intensity of the specular shine (range from 0 to 2)
 		// The value can exceed 1, because tipically the specular shine saturates the output color
@@ -41,7 +41,7 @@ Shader "Custom/shaderProva" {
 			uniform fixed _AmbientIntensity;
 			uniform float _DiffuseIntensity;
 			uniform float4 _LightDirection;
-			uniform float4 _CameraPosition;
+			uniform float4 _CameraDirection;
 			uniform float _SpecularIntensity;
 			uniform float _SpecularHardness;
 
@@ -52,13 +52,10 @@ Shader "Custom/shaderProva" {
 				float4 pos : SV_POSITION;
 
 				// the diffuse vertex color
-				fixed4 diffuse : COLOR;
+				fixed4 ambient : COLOR;
 
 				// the transformed vertex normal
 				fixed4 normal : TEXCOORD0;
-
-				// the transformed position
-				fixed4 position : TEXCOORD1;
 			};
 			
 			// The vertex shader
@@ -66,40 +63,34 @@ Shader "Custom/shaderProva" {
 			{
 				v2f o;
 
-				// Transforms the position
-				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
-
-				// Transforms the normal
-				float4 normal = mul(float4(v.normal,1), _Object2World);
-				o.normal = normal;
-
-				// Transforms the position
-				o.position = mul(_Object2World, float4(v.vertex));
-
-				// Light intensity increases when the angle between the light direction and the normal is smaller
-				// Both normal and light direction (normalized) are versors, so dot product (a * b * cos(theta)) is the perfect operand
-				float lightIntensity = dot(normal, normalize(_LightDirection));
-
-				// In this case saturate is useless, because previous instructions avoid results > 1.
-				// Anyway, saturate ensure that output diffuse components never exceed 1. (possible if wrong input parameters).
-				o.diffuse = saturate(_Color * lightIntensity * _DiffuseIntensity);
+				// Transforms the position, for rasterization
+				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				
+				// Transforms the physics normal
+				o.normal = mul(float4(v.normal,0), _World2Object);
+				
+				// Set ambient color on vertex
+				o.ambient = _Color * _AmbientIntensity;
+				
 				return o;
 			}
 			
 			// The fragment shader
 			fixed4 frag (v2f i) : COLOR0 {
-				
-				float3 light = normalize(_LightDirection.xyz);
-				float3 normal = normalize(i.normal.xyz);
-				float3 r = normalize(2 * dot(light, normal) * normal - light);
-				float3 v = normalize(mul((_CameraPosition - i.position), _Object2World));
+				// ligh/view norm vector
+				float4 lightDirection = -normalize(_LightDirection);
+				float4 view = normalize(_CameraDirection);
 
-				float dotProduct = dot(r, v);
-				float4 specular = _SpecularIntensity * float4(1,1,1,1) * max(pow(dotProduct, _SpecularHardness), 0) * length(i.diffuse);
+
+				fixed4 diffuse = max(0,dot(i.normal, lightDirection)) * _Color * _DiffuseIntensity;
+				 
+				float4 reflection = lightDirection - 2 * dot(lightDirection, i.normal) * i.normal;
+				//float4 reflection = normalize(lightDirection + view);
+				//float4 reflection = reflect(lightDirection, i.normal);
+				float refDotView = max(dot(reflection, view), 0);
+				fixed4 specular = _SpecularIntensity * pow(refDotView, _SpecularHardness);
 				
-				//return saturate(max(i.diffuse, _Color * _AmbientIntensity) + specular);
-				//return saturate(max(i.diffuse, _Color * _AmbientIntensity));
-				return i.normal;
+				return saturate(diffuse + i.ambient + specular);
 			}
 			ENDCG
 		}

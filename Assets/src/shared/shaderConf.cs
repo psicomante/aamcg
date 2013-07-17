@@ -10,7 +10,9 @@ public class shaderConf : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        gameObject.renderer.material.SetVector("_CameraPosition", Camera.mainCamera.transform.position);
-        //gameObject.renderer.material.SetVector("_LightDirection", GameObject.Find("DirLight").transform.forward);
+        Vector3 cameraDirection = Camera.main.transform.forward;
+        Vector3 lightDirection = GameObject.Find("DirLight").transform.forward;
+        gameObject.renderer.material.SetVector("_CameraDirection", new Vector4(cameraDirection.x, cameraDirection.y, cameraDirection.z, 0));
+        gameObject.renderer.material.SetVector("_LightDirection", new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, 0));
 	}
 }
