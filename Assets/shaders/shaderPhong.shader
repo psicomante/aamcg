@@ -1,4 +1,4 @@
-Shader "Custom/shaderProva" {
+Shader "Custom/shaderPhong" {
 	
 	// Unity imported parameters
 	Properties {
