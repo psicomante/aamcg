@@ -32,7 +32,7 @@ namespace Amucuga
             _xMassSpeed = Random.value / 100f;
             _yMassSpeed = Random.value / 100f;
             _zMassSpeed = Random.value / 100f;
-            _backupColor = AttachedPlayer.renderer.material.color;
+            _backupColor = AttachedPlayer.GetComponent<Renderer>().material.color;
         }
 
         /// <summary>
@@ -40,8 +40,8 @@ namespace Amucuga
         /// </summary>
         protected override void DisablePowerUpEffect()
         {
-            AttachedPlayer.rigidbody.centerOfMass = Vector3.zero;
-            AttachedPlayer.renderer.material.color = _backupColor;
+            AttachedPlayer.GetComponent<Rigidbody>().centerOfMass = Vector3.zero;
+            AttachedPlayer.GetComponent<Renderer>().material.color = _backupColor;
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Amucuga
         /// </summary>
         protected override void UpdatePowerUpEffect()
         {
-            Vector3 centerOfMass = AttachedPlayer.rigidbody.centerOfMass;
+            Vector3 centerOfMass = AttachedPlayer.GetComponent<Rigidbody>().centerOfMass;
             centerOfMass += new Vector3(_xMassSpeed, _yMassSpeed, _zMassSpeed);
             
             // Limits x component of center of mass and invert x component moovement
@@ -87,9 +87,9 @@ namespace Amucuga
                 centerOfMass = new Vector3(centerOfMass.x, centerOfMass.y, -0.5f);
                 _zMassSpeed *= -1;
             }
-            AttachedPlayer.rigidbody.centerOfMass = centerOfMass;
+            AttachedPlayer.GetComponent<Rigidbody>().centerOfMass = centerOfMass;
             Vector3 color = centerOfMass + new Vector3(0.5f, 0.5f, 0.5f);
-            AttachedPlayer.renderer.material.color = new Color(color.x, color.y, color.z);
+            AttachedPlayer.GetComponent<Renderer>().material.color = new Color(color.x, color.y, color.z);
         }
     }
 

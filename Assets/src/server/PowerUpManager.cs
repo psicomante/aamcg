@@ -45,7 +45,7 @@ public class PowerUpManager : MonoBehaviour
             default:
                 throw new System.NotImplementedException("PowerUp " + powerUpType + " not implemented");
         }
-        gameObject.renderer.material.color = powerUp.PowerUpColor;
+        gameObject.GetComponent<Renderer>().material.color = powerUp.PowerUpColor;
     }
 
     /// <summary>

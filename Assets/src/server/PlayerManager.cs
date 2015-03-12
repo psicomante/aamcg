@@ -51,7 +51,7 @@ public class PlayerManager : MonoBehaviour
 
         Debug.Log("Start Server Player Manager");
 
-        camera.transform.position = new Vector3(AmApplication.INITIAL_X_CAMERA_POSITION, AmApplication.INITIAL_Y_CAMERA_POSITION, AmApplication.INITIAL_Z_CAMERA_POSITION);
+        GetComponent<Camera>().transform.position = new Vector3(AmApplication.INITIAL_X_CAMERA_POSITION, AmApplication.INITIAL_Y_CAMERA_POSITION, AmApplication.INITIAL_Z_CAMERA_POSITION);
         //Initializes the scene objects
         _players = new SortedList<string, ConnectedPlayer>();
     }
@@ -88,24 +88,24 @@ public class PlayerManager : MonoBehaviour
     {
         Vector3 playersMassCenter = PlayersMassCenter();
         float xMass = playersMassCenter.x;
-        float xDisplacement = xMass - camera.transform.position.x + AmApplication.INITIAL_X_CAMERA_POSITION;
+        float xDisplacement = xMass - GetComponent<Camera>().transform.position.x + AmApplication.INITIAL_X_CAMERA_POSITION;
         float zMass = playersMassCenter.z;
-        float zDisplacement = zMass - camera.transform.position.z + AmApplication.INITIAL_Z_CAMERA_POSITION;
+        float zDisplacement = zMass - GetComponent<Camera>().transform.position.z + AmApplication.INITIAL_Z_CAMERA_POSITION;
 
         // Moves the camera to the center of mass if there is enough x displacement from that point
         if (Mathf.Abs(xDisplacement) > AmApplication.MAX_X_CAMERA_DISPLACEMENT_FROM_MASS_CENTER)
         {
-            camera.rigidbody.AddForce(new Vector3(xDisplacement * 2 - Mathf.Sign(xDisplacement) * AmApplication.MAX_X_CAMERA_DISPLACEMENT_FROM_MASS_CENTER, 0, 0));
+            GetComponent<Camera>().GetComponent<Rigidbody>().AddForce(new Vector3(xDisplacement * 2 - Mathf.Sign(xDisplacement) * AmApplication.MAX_X_CAMERA_DISPLACEMENT_FROM_MASS_CENTER, 0, 0));
         }
 
         // Moves the camera to the center of mass if ther is enough z displacement from that point
         if (Mathf.Abs(zDisplacement) > AmApplication.MAX_Z_CAMERA_DISPLACEMENT_FROM_MASS_CENTER)
         {
-            camera.rigidbody.AddForce(new Vector3(0, 0, zDisplacement * 2 - Mathf.Sign(zDisplacement) * AmApplication.MAX_Z_CAMERA_DISPLACEMENT_FROM_MASS_CENTER));
+            GetComponent<Camera>().GetComponent<Rigidbody>().AddForce(new Vector3(0, 0, zDisplacement * 2 - Mathf.Sign(zDisplacement) * AmApplication.MAX_Z_CAMERA_DISPLACEMENT_FROM_MASS_CENTER));
         }
 
         // Adds a sort of friction (avoid spring behaviour)
-        camera.rigidbody.AddForce(-camera.rigidbody.velocity * 2);
+        GetComponent<Camera>().GetComponent<Rigidbody>().AddForce(-GetComponent<Camera>().GetComponent<Rigidbody>().velocity * 2);
     }
 
     /// <summary>
@@ -119,8 +119,8 @@ public class PlayerManager : MonoBehaviour
         foreach (KeyValuePair<string, ConnectedPlayer> p in _players)
         {
             ConnectedPlayer player = p.Value;
-            float pmass = player.rigidbody.mass;
-            Vector3 pcenter = player.rigidbody.worldCenterOfMass;
+            float pmass = player.GetComponent<Rigidbody>().mass;
+            Vector3 pcenter = player.GetComponent<Rigidbody>().worldCenterOfMass;
             massCenter = (totalMass * massCenter + pmass * pcenter) / (totalMass + pmass);
             totalMass += pmass;
         }
@@ -159,7 +159,7 @@ public class PlayerManager : MonoBehaviour
         // Limits the player speed
         foreach (KeyValuePair<string, ConnectedPlayer> p in _players)
         {
-            Rigidbody pBody = p.Value.rigidbody;
+            Rigidbody pBody = p.Value.GetComponent<Rigidbody>();
 
             pBody.AddForce(new Vector3(-pBody.velocity.x * 2, 0, -pBody.velocity.z * 2));
         }
@@ -226,10 +226,10 @@ public class PlayerManager : MonoBehaviour
 		// reset rigid body and transforms
 		GameObject cube = _players [guid].Cube;
 		cube.transform.position = SpawnPoint;
-		cube.rigidbody.velocity = Vector3.zero;
+		cube.GetComponent<Rigidbody>().velocity = Vector3.zero;
 		cube.transform.rotation = Quaternion.identity;
 		cube.transform.localRotation = Quaternion.identity;
-		cube.rigidbody.angularVelocity = Vector3.zero;
+		cube.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         _players[guid].OnRespawn();
 	}
 
@@ -264,7 +264,7 @@ public class PlayerManager : MonoBehaviour
     void AddForce(string guid, Vector3 force)
     {
         ConnectedPlayer player = _players[guid];
-        player.Cube.rigidbody.AddForce(new Vector3(force.x, player.CanFly ? force.y : 0, force.z) * player.ForceMultiplier);
+        player.Cube.GetComponent<Rigidbody>().AddForce(new Vector3(force.x, player.CanFly ? force.y : 0, force.z) * player.ForceMultiplier);
     }
 
     /// <summary>
@@ -288,7 +288,7 @@ public class PlayerManager : MonoBehaviour
     [RPC]
     public void AddPlayerColor(string guid, float red, float green, float blue)
     {
-        _players[guid].Cube.renderer.material.color = new Color(red, green, blue);
+        _players[guid].Cube.GetComponent<Renderer>().material.color = new Color(red, green, blue);
     }
 
     /// <summary>
@@ -302,7 +302,7 @@ public class PlayerManager : MonoBehaviour
         {
             if (p.Value != explodePlayer)
             {
-                p.Value.rigidbody.AddExplosionForce(4000f, explodePlayer.Cube.transform.position, 15f);
+                p.Value.GetComponent<Rigidbody>().AddExplosionForce(4000f, explodePlayer.Cube.transform.position, 15f);
                 p.Value.LastTouched = explodePlayer;
             }
         }

@@ -137,7 +137,7 @@ public class GameGui : MonoBehaviour
 	
 	void DrawPlayerStatistics (int windowID)
 	{
-		GUILayout.Label ("Weight: " + _player.Cube.rigidbody.mass);
+		GUILayout.Label ("Weight: " + _player.Cube.GetComponent<Rigidbody>().mass);
 		GUILayout.Label ("Size: " + _player.Cube.transform.localScale.x + "x;" + _player.Cube.transform.localScale.y + "y;" + _player.Cube.transform.localScale.z + "z;");
 		GUILayout.Label ("CanFly: " + _player.CanFly);
 		GUILayout.Label ("Strength: " + _player.ForceMultiplier);

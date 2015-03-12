@@ -23,7 +23,7 @@ public class TileManager : MonoBehaviour {
         if (!Network.isServer || AmApplication.CurrentMatchState != MatchState.MATCH)
             return;
 
-		Color currentTileColor = gameObject.renderer.material.color;
+		Color currentTileColor = gameObject.GetComponent<Renderer>().material.color;
 		
 		// increment the current color to white (tile color decay)
 		// if touched (by a player or spawner)
@@ -33,10 +33,10 @@ public class TileManager : MonoBehaviour {
 				currentTileColor.g += AmApplication.TILE_COLOR_DECAY;
 				currentTileColor.b += AmApplication.TILE_COLOR_DECAY;
 				currentTileColor.a = 0.5f;
-				gameObject.renderer.material.color = currentTileColor;
+				gameObject.GetComponent<Renderer>().material.color = currentTileColor;
 				// color has been reset: reset touch variables too
 			} else {
-				gameObject.renderer.material = defaultTileMaterial;
+				gameObject.GetComponent<Renderer>().material = defaultTileMaterial;
 				Touched = false;
 				_touchedBy = null;				
 			}
@@ -55,9 +55,9 @@ public class TileManager : MonoBehaviour {
 		_touchedBy = collision.gameObject.GetComponent<ConnectedPlayer> ();
 		
 		//update the color
-		Color tileColor = gameObject.renderer.material.color;
+		Color tileColor = gameObject.GetComponent<Renderer>().material.color;
 		if (tileColor != Color.red)
-			gameObject.renderer.material.color = collision.gameObject.renderer.material.color;
+			gameObject.GetComponent<Renderer>().material.color = collision.gameObject.GetComponent<Renderer>().material.color;
 	}	
 	
 }

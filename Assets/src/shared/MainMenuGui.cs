@@ -33,7 +33,7 @@ public class MainMenuGui : MonoBehaviour
 		// getting the component script named "VariableTest(.cs)" and setting 
 		// the public variable to AmApplication.VERSION_NUMBER;
 		go.GetComponent<GameVersionController> ().versionNumber = AmApplication.VERSION_NUMBER;
-		go.guiText.text = go.GetComponent<GameVersionController> ().versionNumber;
+		go.GetComponent<GUIText>().text = go.GetComponent<GameVersionController> ().versionNumber;
 		
 		// GUI variables initialization 
 		GUIServerHost = PlayerSettings.Host;

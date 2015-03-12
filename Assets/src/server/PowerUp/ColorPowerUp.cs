@@ -23,7 +23,7 @@ namespace Amucuga
         /// </summary>
         protected override void EnablePowerUpEffect()
         {
-            backupColor = AttachedPlayer.renderer.material.color;
+            backupColor = AttachedPlayer.GetComponent<Renderer>().material.color;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Amucuga
         /// </summary>
         protected override void DisablePowerUpEffect()
         {
-            AttachedPlayer.renderer.material.color = backupColor;
+            AttachedPlayer.GetComponent<Renderer>().material.color = backupColor;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Amucuga
         /// </summary>
         protected override void UpdatePowerUpEffect()
         {
-            AttachedPlayer.renderer.material.color = new Color(Random.value, Random.value, Random.value);
+            AttachedPlayer.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
         }
     }
 

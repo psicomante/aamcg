@@ -117,9 +117,9 @@ public class MapGenerator : MonoBehaviour {
         {
             g.AddComponent<Rigidbody>();
             g.GetComponent<BoxCollider>().enabled = false;
-            g.rigidbody.AddExplosionForce(700f, new Vector3(0,-10,0), 300f);
-            g.rigidbody.AddTorque(new Vector3(Random.value, Random.value, Random.value) * 100);
-            g.rigidbody.AddForce(new Vector3(Random.value, Random.value, Random.value) * 100);
+            g.GetComponent<Rigidbody>().AddExplosionForce(700f, new Vector3(0,-10,0), 300f);
+            g.GetComponent<Rigidbody>().AddTorque(new Vector3(Random.value, Random.value, Random.value) * 100);
+            g.GetComponent<Rigidbody>().AddForce(new Vector3(Random.value, Random.value, Random.value) * 100);
         }
 
         // destroy powerups
@@ -128,7 +128,7 @@ public class MapGenerator : MonoBehaviour {
             GameObject.DestroyImmediate(g);
         }
 
-        Camera.main.rigidbody.velocity = Vector3.zero;
+        Camera.main.GetComponent<Rigidbody>().velocity = Vector3.zero;
     }
 
     public void Restart()
@@ -345,9 +345,9 @@ public class MapGenerator : MonoBehaviour {
 		int i = _mapCenterI;
 		int j = _mapCenterJ;
 
-		if (camera != null) {
-			i += (int)((camera.transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MapTileWidth);
-			j += (int)((camera.transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MapTileDepth);
+		if (GetComponent<Camera>() != null) {
+			i += (int)((GetComponent<Camera>().transform.position.x - AmApplication.INITIAL_X_CAMERA_POSITION) / AmApplication.MapTileWidth);
+			j += (int)((GetComponent<Camera>().transform.position.z - AmApplication.INITIAL_Z_CAMERA_POSITION) / AmApplication.MapTileDepth);
 			if (i >= _gridWidth)
 				i = _gridWidth - 1;
 			else if (i < 0)
@@ -369,17 +369,17 @@ public class MapGenerator : MonoBehaviour {
 					
 					if (_lastPlayerSpawnTileColor != null) {
 						// the _lastPlayerSpawnTile had a color
-						_lastPlayerSpawnTile.renderer.material.color = _lastPlayerSpawnTileColor;
+						_lastPlayerSpawnTile.GetComponent<Renderer>().material.color = _lastPlayerSpawnTileColor;
 					} else {
 						// set the default diffuse
-						_lastPlayerSpawnTile.renderer.material = _lastPlayerSpawnTile.GetComponent<TileManager> ().defaultTileMaterial;
+						_lastPlayerSpawnTile.GetComponent<Renderer>().material = _lastPlayerSpawnTile.GetComponent<TileManager> ().defaultTileMaterial;
 					}
 				}
 				_lastPlayerSpawnTile = _map [i, j];
-				_lastPlayerSpawnTileColor = _map [i, j].renderer.material.color;	
+				_lastPlayerSpawnTileColor = _map [i, j].GetComponent<Renderer>().material.color;	
 			}
 			
-			_map [i, j].renderer.material.color = AmApplication.SPAWNER_COLOR;
+			_map [i, j].GetComponent<Renderer>().material.color = AmApplication.SPAWNER_COLOR;
 			_map [i, j].GetComponent<TileManager> ().Touched = true;
 		}
 

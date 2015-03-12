@@ -29,9 +29,9 @@ public class C_PlayerManager : MonoBehaviour
 		_playerCube.GetComponent<Rigidbody> ().useGravity = false;
 		_playerCube.AddComponent<rotate> ();
 		Color color = new Color (UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
-		_playerCube.renderer.material.color = color;
-		networkView.RPC ("AddPlayerName", RPCMode.Server, Network.player.guid, PlayerSettings.PlayerName);
-		networkView.RPC ("AddPlayerColor", RPCMode.Server, Network.player.guid, color.r, color.g, color.b);
+		_playerCube.GetComponent<Renderer>().material.color = color;
+		GetComponent<NetworkView>().RPC ("AddPlayerName", RPCMode.Server, Network.player.guid, PlayerSettings.PlayerName);
+		GetComponent<NetworkView>().RPC ("AddPlayerColor", RPCMode.Server, Network.player.guid, color.r, color.g, color.b);
 		Player = _playerCube.GetComponent<ConnectedPlayer> ();
 		Camera.main.transform.position = new Vector3 (0, 5, -5);
 		Debug.Log ("Start Client Player Manager");
@@ -48,8 +48,8 @@ public class C_PlayerManager : MonoBehaviour
 		
 		// reset position to avoid mass bug
 		Player.Cube.transform.position = Vector3.zero;
-		Player.Cube.rigidbody.velocity = Vector3.zero;
-		Player.Cube.rigidbody.angularVelocity = Vector3.zero;
+		Player.Cube.GetComponent<Rigidbody>().velocity = Vector3.zero;
+		Player.Cube.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 
 		AmApplication.MatchCountDown -= Time.deltaTime;
 	}
@@ -65,17 +65,17 @@ public class C_PlayerManager : MonoBehaviour
 
 		//Input management
 		if (Input.GetKey ("left"))
-			networkView.RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.left);
+			GetComponent<NetworkView>().RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.left);
 		if (Input.GetKey ("right"))
-			networkView.RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.right);
+			GetComponent<NetworkView>().RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.right);
 		if (Input.GetKey ("up"))
-			networkView.RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.forward);
+			GetComponent<NetworkView>().RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.forward);
 		if (Input.GetKey ("down"))
-			networkView.RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.back);
+			GetComponent<NetworkView>().RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.back);
 		if (Input.GetKey ("space"))
-			networkView.RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.up);
+			GetComponent<NetworkView>().RPC ("AddForce", RPCMode.Server, Network.player.guid, Vector3.up);
 		if (Input.acceleration.magnitude != 0)
-			networkView.RPC ("AddForce", RPCMode.Server, Network.player.guid, new Vector3 (Input.acceleration.x, Input.acceleration.z, Input.acceleration.y) * 1.5f);
+			GetComponent<NetworkView>().RPC ("AddForce", RPCMode.Server, Network.player.guid, new Vector3 (Input.acceleration.x, Input.acceleration.z, Input.acceleration.y) * 1.5f);
 	}
 
     /// <summary>

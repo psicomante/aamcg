@@ -78,6 +78,6 @@ public class MatchManager : MonoBehaviour
     private void UpdateClientStatus()
     {
         if(Network.isServer)
-            networkView.RPC("UpdateMatchStatus", RPCMode.Others, AmApplication.MatchCountDown, AmApplication.CurrentMatchState.ToString());
+            GetComponent<NetworkView>().RPC("UpdateMatchStatus", RPCMode.Others, AmApplication.MatchCountDown, AmApplication.CurrentMatchState.ToString());
     }
 }

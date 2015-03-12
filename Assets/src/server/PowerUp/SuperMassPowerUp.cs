@@ -23,7 +23,7 @@ namespace Amucuga
         /// </summary>
         protected override void EnablePowerUpEffect()
         {
-            AttachedPlayer.rigidbody.mass += 1;
+            AttachedPlayer.GetComponent<Rigidbody>().mass += 1;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Amucuga
         /// </summary>
         protected override void DisablePowerUpEffect()
         {
-            AttachedPlayer.rigidbody.mass -= 1;
+            AttachedPlayer.GetComponent<Rigidbody>().mass -= 1;
         }
     }
 }
